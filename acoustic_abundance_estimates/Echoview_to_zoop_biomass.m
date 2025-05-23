@@ -99,7 +99,6 @@ for i=1:num_cells % for each triplet of pings
         data.Species(i+num_cells) = "Gelatinous Zooplankton";
         data.Species(i+2*num_cells) = "Gelatinous Zooplankton";
         data.Species(i+3*num_cells) = "Gelatinous Zooplankton";
-
     elseif ((data.Difference(i+num_cells*2)) > 14.1) && ((data.Difference(i+num_cells*2)) < 14.6)
         data.Species(i) = "Large Copepod";
         data.Species(i+num_cells) = "Large Copepod";
@@ -111,38 +110,6 @@ for i=1:num_cells % for each triplet of pings
         data.Species(i+num_cells) = "Small Copepod";
         data.Species(i+2*num_cells) = "Small Copepod";
         data.Species(i+3*num_cells) = "Small Copepod";      
-
-%     elseif ((data.Difference(i+num_cells*2)) > 10.1) && ((data.Difference(i+num_cells*2)) < 10.5)
-%         data.Species(i) = "Small Copepod";
-%         data.Species(i+num_cells) = "Small Copepod";
-%         data.Species(i+2*num_cells) = "Small Copepod";
-%         data.Species(i+3*num_cells) = "Small Copepod";
-
-%     elseif ((data.Difference(i+num_cells*2)) > 10.1) && ((data.Difference(i+num_cells*2)) < 12.9)
-%         data.Species(i) = "Small Copepod";
-%         data.Species(i+num_cells) = "Small Copepod";
-%         data.Species(i+2*num_cells) = "Small Copepod";
-%         data.Species(i+3*num_cells) = "Small Copepod";
-% 
-%     elseif ((data.Difference(i+num_cells*2)) > 12.9) && ((data.Difference(i+num_cells*2)) < 13.8)
-%         data.Species(i) = "Small Copepod/Larvacean";
-%         data.Species(i+num_cells) = "Small Copepod/Larvacean";
-%         data.Species(i+2*num_cells) = "Small Copepod/Larvacean";
-%         data.Species(i+3*num_cells) = "Small Copepod/Larvacean";
-
-%     elseif ((data.Difference(i+num_cells*2)) > 12.9) && ((data.Difference(i+num_cells*2)) < 13.8)
-%         data.Species(i) = "Small Copepod/Cladoceran/Larvacean";
-%         data.Species(i+num_cells) = "Small Copepod/Cladoceran/Larvacean";
-%         data.Species(i+2*num_cells) = "Small Copepod/Cladoceran/Larvacean";
-%         data.Species(i+3*num_cells) = "Small Copepod/Cladoceran/Larvacean";
-
-% % According to Joe (Warren), larvaceans are harder to detect than this,
-% % oops
-%     elseif ((data.Difference(i+num_cells*2)) > 13.8) && ((data.Difference(i+num_cells*2)) < 14.21)
-%         data.Species(i) = "Larvacean";
-%         data.Species(i+num_cells) = "Larvacean";
-%         data.Species(i+2*num_cells) = "Larvacean";
-%         data.Species(i+3*num_cells) = "Larvacean";
     end
 end
 
@@ -156,11 +123,11 @@ data.Species(data.Species == "0") = "Empty Cell";
 
 for k = 1:height(data)
     if data.Species(k) == "Large Copepod" && data.Frequency(k) == 455
-        data.Abundance(k) = 10.^((data.Sv_mean(k) - -108.3)/10);
-        data.Biomass(k) = data.Abundance(k) * 269.66e-6;
+        data.Abundance(k) = 10.^((data.Sv_mean(k) - -108.3)/10); % from Brandyn's work
+        data.Biomass(k) = data.Abundance(k) * 269.66e-6; % average Calanus sp. IDW
     elseif data.Species(k) == "Small Copepod" && data.Frequency(k) == 455
-        data.Abundance(k) = 10.^((data.Sv_mean(k) - -135.7)/10);
-        data.Biomass(k) = data.Abundance(k) * 5.55e-6;
+        data.Abundance(k) = 10.^((data.Sv_mean(k) - -122.7)/10); % from my model
+        data.Biomass(k) = data.Abundance(k) * 21.5e-6; % avg centropages/oithona sp. IDW
     else
         data.Abundance(k) = 0;
         data.Biomass(k) = 0;

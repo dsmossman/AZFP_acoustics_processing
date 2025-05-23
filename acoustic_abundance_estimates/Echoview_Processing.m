@@ -6,16 +6,18 @@
 clear variables; close all; clc;
 
 % Add paths to the Matlab processing scripts
-addpath(genpath('C:\Users\Delphine\Box\ACOUSTIC DATA PROCESSING PROTOCOLS\AZFP Processing\MATLAB processing'))
+addpath(genpath('C:\Users\Delphine\Box\messy_acoustics_processing\'))
 
 %% Initialization
 
 % Path to exported Echoview data
-dep_name = input("Enter the full name of the deployment: ","s");
-addpath(genpath(strcat('C:\Users\Delphine\Box\Glider Data\',dep_name,'\')));
+dep_name = uigetdir("C:\Users\Delphine\Box\Glider Data\", "Select the glider deployment folder.");
+addpath(genpath(dep_name));
+dep_name = char(extractBetween(dep_name,35,strlength(dep_name)));
 
-% Some formatting things
+% Some formatting things since 
 dep_year = char(extractBetween(dep_name,6,9));
+
 dep_start = input("Enter the numerical month the deployment started: ");
 dep_end = input("Enter the numerical month the deployment ended: ");
 
