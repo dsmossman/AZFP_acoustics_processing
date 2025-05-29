@@ -53,11 +53,13 @@ zoop_data_summer_2024$Season = "Summer"
 
 zoop_data_full = rbind(zoop_data_spring_2023,zoop_data_fall_2023,zoop_data_winter_2024,zoop_data_spring_2024,zoop_data_summer_2024) %>% 
   filter(Abundance > 0) %>%
-  arrange(Date)
+  arrange(Date) %>% st_drop_geometry()
 zoop_data_full$Season = factor(zoop_data_full$Season, levels = c("Spring","Summer","Fall","Winter"), ordered = T)
 
 fname = "H:/dm1679/Data/Glider Data/RMI_Zoop_Correlation_Data_Full.rda"
 save(zoop_data_full, file = fname)
+
+load("H:/dm1679/Data/Glider Data/RMI_Zoop_Correlation_Data_Full.rda")
 
 zoop_data_full_delta = zoop_data_full %>%
   mutate(Year = year(Date)) %>%
@@ -141,53 +143,58 @@ ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Depth_Type_Concentration
 
 #####
 
-ggplot() + 
-  geom_boxplot(data = zoop_data_full[zoop_data_full$Species == "Small Copepod" & !is.na(zoop_data_full$Shelf_Type),], 
-               aes(x = Season, color = Shelf_Type, y = Abundance),
-               linewidth = 0.75,
-               notch = F) +
-  scale_color_viridis_d(begin = 0.2) +
-  scale_y_continuous(trans="log10") +
+zoop_data_full$Shelf_Type[is.na(zoop_data_full$Shelf_Type)] = "Offshore"
+
+zoop_data_full[,5:6] = log10(zoop_data_full[,5:6])
+
+zoop_data_full = (complete(zoop_data_full, Season, Species, Shelf_Type, fill = list(Abundance = 0, Biomass = 0), explicit  = F))
+
+ggplot(data = zoop_data_full[zoop_data_full$Species == "Small Copepod",], 
+       aes(x = Season, color = Shelf_Type, y = Abundance)) + 
+  geom_boxplot(linewidth = 0.75,
+               notch = T) +
+  stat_summary(fun = mean, geom = "point", show.legend = F, position = position_dodge(0.75), shape=4, size=4, stroke = 1) +
+  scale_color_viridis_d(begin = 0, end = 0.8) +
+  scale_y_log10(limits = c(1,10000000), breaks = c(1, 100, 10000, 1000000)) +
   labs(y = "Log10 of Small Copepod\nConcentration (individuals/m^3)",
        color = "NOAA Strata\nAssignment") +
   theme_bw()
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Concentration_Small_Copepods_Boxplot.png", scale = 2)
 
-ggplot() + 
-  geom_boxplot(data = zoop_data_full[zoop_data_full$Species == "Small Copepod" & !is.na(zoop_data_full$Shelf_Type),], 
-               aes(x = Season, color = Shelf_Type, y = Biomass),
-               linewidth = 0.75,
-               notch = F) +
-  scale_color_viridis_d(begin = 0.2) +
-  scale_y_continuous(trans="log10") +
+ggplot(data = zoop_data_full[zoop_data_full$Species == "Small Copepod",], 
+       aes(x = Season, color = Shelf_Type, y = Biomass)) + 
+  geom_boxplot(linewidth = 0.75,
+               notch = T) +
+  stat_summary(fun = mean, geom = "point", show.legend = F, position = position_dodge(0.75), shape=4, size=4, stroke = 1) +
+  scale_color_viridis_d(begin = 0, end = 0.8) +
+  scale_y_log10(limits = c(0.0001,100), breaks = c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100)) +
   labs(y = "Log10 of Small Copepod\nBiomass (g/m^3)",
        color = "NOAA Strata\nAssignment") +
   theme_bw()
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Biomass_Small_Copepods_Boxplot.png", scale = 2)
 
-ggplot() + 
-  geom_boxplot(data = zoop_data_full[zoop_data_full$Species == "Large Copepod" & !is.na(zoop_data_full$Shelf_Type),], 
-               aes(x = Season, color = Shelf_Type, y = Abundance),
-               linewidth = 0.75,
-               notch = T,
-               varwidth = F) +
-  scale_color_viridis_d(begin = 0.2) +
-  scale_y_continuous(trans="log10") +
+ggplot(data = zoop_data_full[zoop_data_full$Species == "Large Copepod",], 
+       aes(x = Season, color = Shelf_Type, y = Abundance)) + 
+  geom_boxplot(linewidth = 0.75,
+               notch = T) +
+  scale_color_viridis_d(begin = 0, end=0.8) +
+  stat_summary(fun = mean, geom = "point", show.legend = F, position = position_dodge(0.75), shape=4, size=4, stroke = 1) +
+  scale_y_log10(limits = c(1,10000000), breaks = c(1, 100, 10000, 1000000)) +
   labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)",
        color = "NOAA Strata\nAssignment") +
   theme_bw()
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Concentration_Large_Copepods_Boxplot.png", scale = 2)
 
-ggplot() + 
-  geom_boxplot(data = zoop_data_full[zoop_data_full$Species == "Large Copepod" & !is.na(zoop_data_full$Shelf_Type),], 
-               aes(x = Season, color = Shelf_Type, y = Biomass),
-               linewidth = 0.75,
-               notch = F) +
-  scale_color_viridis_d(begin = 0.2) +
-  scale_y_continuous(trans="log10") +
+ggplot(data = zoop_data_full[zoop_data_full$Species == "Large Copepod",], 
+       aes(x = Season, color = Shelf_Type, y = Biomass)) + 
+  geom_boxplot(linewidth = 0.75,
+               notch = T) +
+  stat_summary(fun = mean, geom = "point", show.legend = F, position = position_dodge(0.75), shape=4, size=4, stroke = 1) +
+  scale_color_viridis_d(begin = 0, end = 0.8) +
+  scale_y_continuous(trans="log10", limits = c(0.0001,100), breaks = c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100)) +
   labs(y = "Log10 of Large Copepod\nBiomass (g/m^3)",
        color = "NOAA Strata\nAssignment") +
   theme_bw()

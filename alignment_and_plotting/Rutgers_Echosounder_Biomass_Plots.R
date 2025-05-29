@@ -37,181 +37,45 @@ load(paste0(data_dir, "Peripheral_Data.rda"))
 #####
 
 ## 3 frequency plots
-for (i in 1:length(data_ldf)) {
-  df = data_ldf[[i]]
-  if (nrow(df) == 0) {
-    next
-  } else {
-    # if (i < 7) {
-      df$Echo_Num = rep(1:(nrow(df) / 3), times = 3)
-    # } else {
-    #   df$Echo_Num = rep(1:(nrow(df) / 2), times = 2)
-    # }
-    
-    
-    df2 = df %>% group_by(Echo_Num) %>% reframe(
-      freq = as.factor(Frequency),
-      spec = Species,
-      scat_vol = Sv_mean,
-      freq_response = log10(10^(Sv_mean / 10) / 10^(Sv_mean[1] / 10))
-    )
-    
-    plot1 = ggplot(data = df2, aes(
-      x = freq,
-      y = scat_vol,
-      group = Echo_Num,
-      color = spec
-    )) +
-      geom_line() +
-      scale_x_discrete(expand = c(0, 0)) +
-      labs(x = "Frequency", y = "Mean Sv (dB)", color = "Species") +
-      theme_bw()
-    
-    fname = paste0(
-      figure_dir,
-      '/Sv By Frequency/',
-      str_sub(data_filenames[i], -30, -18),
-      "_Sv_By_Frequency_Curves.png"
-    )
-    
-    ggsave(plot1, filename = fname, scale = 2)
-    
-    plot2 = ggplot(data = df2,
-                   aes(
-                     x = freq,
-                     y = freq_response,
-                     group = Echo_Num,
-                     color = spec
-                   )) +
-      geom_line() +
-      scale_x_discrete(expand = c(0, 0)) +
-      labs(x = "Frequency", y = "log10 of r(f)", color = "Species") +
-      theme_bw()
-    
-    fname = paste0(
-      figure_dir,
-      '/Frequency Response/',
-      str_sub(data_filenames[i], -30, -18),
-      "_Frequency_Response_Curves.png"
-    )
-    
-    ggsave(plot2, filename = fname, scale = 2)
-    
-    # if (i < 7) {
-      df3 = df %>% group_by(Echo_Num) %>% reframe(
-        Sv_38 = Sv_mean[1],
-        Sv_125 = Sv_mean[2],
-        Sv_200 = Sv_mean[3],
-        spec = Species
-      )
-    # } else {
-    #   df3 = df %>% group_by(Echo_Num) %>% reframe(Sv_38 = Sv_mean[1],
-    #                                               Sv_125 = Sv_mean[2],
-    #                                               spec = Species)
-    # }
-    
-    plot3 = ggplot(data = df3, aes(
-      x = Sv_38,
-      y = Sv_125,
-      group = spec,
-      color = spec
-    )) +
-      geom_point() +
-      labs(x = "Sv (38 kHz)", y = "Sv (125 kHz)", color = "Species") +
-      xlim(-115, -10) + ylim(-115, -10) +
-      theme_bw()
-    
-    fname = paste0(
-      figure_dir,
-      '/Sv Scatterplots/',
-      str_sub(data_filenames[i], -30, -18),
-      "_38_125_Sv_Scatter.png"
-    )
-    
-    ggsave(plot3, filename = fname, scale = 2)
-    
-    # if (i < 7) {
-      plot4 = ggplot(data = df3, aes(
-        x = Sv_125,
-        y = Sv_200,
-        group = spec,
-        color = spec
-      )) +
-        geom_point() +
-        labs(x = "Sv (125 kHz)", y = "Sv (200 kHz)", color = "Species") +
-        xlim(-115, -10) + ylim(-115, -10) +
-        theme_bw()
-      
-      fname = paste0(
-        figure_dir,
-        '/Sv Scatterplots/',
-        str_sub(data_filenames[i], -30, -18),
-        "_125_200_Sv_Scatter.png"
-      )
-      
-      ggsave(plot4, filename = fname, scale = 2)
-      
-      plot5 = ggplot(data = df3, aes(
-        x = Sv_38,
-        y = Sv_200,
-        group = spec,
-        color = spec
-      )) +
-        geom_point() +
-        labs(x = "Sv (38 kHz)", y = "Sv (200 kHz)", color = "Species") +
-        xlim(-115, -10) + ylim(-115, -10) +
-        theme_bw()
-      
-      fname = paste0(
-        figure_dir,
-        '/Sv Scatterplots/',
-        str_sub(data_filenames[i], -30, -18),
-        "_38_200_Sv_Scatter.png"
-      )
-      
-      ggsave(plot5, filename = fname, scale = 2)
-    # }
-  }
-}
-
-## 4 frequency plots
 # for (i in 1:length(data_ldf)) {
 #   df = data_ldf[[i]]
-#   if (nrow(df) == 0)
+#   if (nrow(df) == 0) {
 #     next
-#   else {
-#     df$Echo_Num = rep(1:(nrow(df) / 4), times = 4)
-#
-#
+#   } else {
+#     # if (i < 7) {
+#       df$Echo_Num = rep(1:(nrow(df) / 3), times = 3)
+#     # } else {
+#     #   df$Echo_Num = rep(1:(nrow(df) / 2), times = 2)
+#     # }
+#     
+#     
 #     df2 = df %>% group_by(Echo_Num) %>% reframe(
 #       freq = as.factor(Frequency),
 #       spec = Species,
 #       scat_vol = Sv_mean,
-#       freq_response = log10(10 ^
-#                               (Sv_mean / 10) / 10 ^ (Sv_mean[1] / 10))
+#       freq_response = log10(10^(Sv_mean / 10) / 10^(Sv_mean[1] / 10))
 #     )
-#
-#     plot1 = ggplot(data = df2,
-#                    aes(
-#                      x = freq,
-#                      y = scat_vol,
-#                      group = Echo_Num,
-#                      color = spec
-#                    )) +
+#     
+#     plot1 = ggplot(data = df2, aes(
+#       x = freq,
+#       y = scat_vol,
+#       group = Echo_Num,
+#       color = spec
+#     )) +
 #       geom_line() +
 #       scale_x_discrete(expand = c(0, 0)) +
 #       labs(x = "Frequency", y = "Mean Sv (dB)", color = "Species") +
 #       theme_bw()
-#
+#     
 #     fname = paste0(
 #       figure_dir,
 #       '/Sv By Frequency/',
-#       str_sub(data_filenames[i],-30,-18),
+#       str_sub(data_filenames[i], -30, -18),
 #       "_Sv_By_Frequency_Curves.png"
 #     )
-#
-#     ggsave(filename = fname, scale = 2)
-#
+#     
+#     ggsave(plot1, filename = fname, scale = 2)
+#     
 #     plot2 = ggplot(data = df2,
 #                    aes(
 #                      x = freq,
@@ -223,85 +87,221 @@ for (i in 1:length(data_ldf)) {
 #       scale_x_discrete(expand = c(0, 0)) +
 #       labs(x = "Frequency", y = "log10 of r(f)", color = "Species") +
 #       theme_bw()
-#
+#     
 #     fname = paste0(
 #       figure_dir,
 #       '/Frequency Response/',
-#       str_sub(data_filenames[i],-30,-18),
+#       str_sub(data_filenames[i], -30, -18),
 #       "_Frequency_Response_Curves.png"
 #     )
-#
-#     ggsave(filename = fname, scale = 2)
-#
-#     df3 = df %>% group_by(Echo_Num) %>% reframe(
-#       Sv_120 = Sv_mean[1],
-#       Sv_200 = Sv_mean[2],
-#       Sv_455 = Sv_mean[3],
-#       Sv_769 = Sv_mean[4],
-#       spec = Species
-#     )
-#
+#     
+#     ggsave(plot2, filename = fname, scale = 2)
+#     
+#     # if (i < 7) {
+#       df3 = df %>% group_by(Echo_Num) %>% reframe(
+#         Sv_38 = Sv_mean[1],
+#         Sv_125 = Sv_mean[2],
+#         Sv_200 = Sv_mean[3],
+#         spec = Species
+#       )
+#     # } else {
+#     #   df3 = df %>% group_by(Echo_Num) %>% reframe(Sv_38 = Sv_mean[1],
+#     #                                               Sv_125 = Sv_mean[2],
+#     #                                               spec = Species)
+#     # }
+#     
 #     plot3 = ggplot(data = df3, aes(
-#       x = Sv_120,
-#       y = Sv_200,
+#       x = Sv_38,
+#       y = Sv_125,
 #       group = spec,
 #       color = spec
 #     )) +
 #       geom_point() +
-#       labs(x = "Sv (120 kHz)", y = "Sv (200 kHz)", color = "Species") +
-#       xlim(-115, -20) + ylim(-115, -20) +
+#       labs(x = "Sv (38 kHz)", y = "Sv (125 kHz)", color = "Species") +
+#       xlim(-115, -10) + ylim(-115, -10) +
 #       theme_bw()
-#
+#     
 #     fname = paste0(
 #       figure_dir,
 #       '/Sv Scatterplots/',
 #       str_sub(data_filenames[i], -30, -18),
-#       "_120_200_Sv_Scatter.png"
+#       "_38_125_Sv_Scatter.png"
 #     )
-#
-#     ggsave(filename = fname, scale = 2)
-#
-#     plot4 = ggplot(data = df3, aes(
-#       x = Sv_200,
-#       y = Sv_455,
-#       group = spec,
-#       color = spec
-#     )) +
-#       geom_point() +
-#       labs(x = "Sv (200 kHz)", y = "Sv (455 kHz)", color = "Species") +
-#       xlim(-115, -20) + ylim(-115, -20) +
-#       theme_bw()
-#
-#     fname = paste0(
-#       figure_dir,
-#       '/Sv Scatterplots/',
-#       str_sub(data_filenames[i], -30, -18),
-#       "_200_455_Sv_Scatter.png"
-#     )
-#
-#     ggsave(filename = fname, scale = 2)
-#
-#     plot5 = ggplot(data = df3, aes(
-#       x = Sv_455,
-#       y = Sv_769,
-#       group = spec,
-#       color = spec
-#     )) +
-#       geom_point() +
-#       labs(x = "Sv (455 kHz)", y = "Sv (769 kHz)", color = "Species") +
-#       xlim(-115, -20) + ylim(-115, -20) +
-#       theme_bw()
-#
-#     fname = paste0(
-#       figure_dir,
-#       '/Sv Scatterplots/',
-#       str_sub(data_filenames[i], -30, -18),
-#       "_455_769_Sv_Scatter.png"
-#     )
-#
-#     ggsave(filename = fname, scale = 2)
+#     
+#     ggsave(plot3, filename = fname, scale = 2)
+#     
+#     # if (i < 7) {
+#       plot4 = ggplot(data = df3, aes(
+#         x = Sv_125,
+#         y = Sv_200,
+#         group = spec,
+#         color = spec
+#       )) +
+#         geom_point() +
+#         labs(x = "Sv (125 kHz)", y = "Sv (200 kHz)", color = "Species") +
+#         xlim(-115, -10) + ylim(-115, -10) +
+#         theme_bw()
+#       
+#       fname = paste0(
+#         figure_dir,
+#         '/Sv Scatterplots/',
+#         str_sub(data_filenames[i], -30, -18),
+#         "_125_200_Sv_Scatter.png"
+#       )
+#       
+#       ggsave(plot4, filename = fname, scale = 2)
+#       
+#       plot5 = ggplot(data = df3, aes(
+#         x = Sv_38,
+#         y = Sv_200,
+#         group = spec,
+#         color = spec
+#       )) +
+#         geom_point() +
+#         labs(x = "Sv (38 kHz)", y = "Sv (200 kHz)", color = "Species") +
+#         xlim(-115, -10) + ylim(-115, -10) +
+#         theme_bw()
+#       
+#       fname = paste0(
+#         figure_dir,
+#         '/Sv Scatterplots/',
+#         str_sub(data_filenames[i], -30, -18),
+#         "_38_200_Sv_Scatter.png"
+#       )
+#       
+#       ggsave(plot5, filename = fname, scale = 2)
+#     # }
 #   }
 # }
+
+## 4 frequency plots
+for (i in 1:length(data_ldf)) {
+  df = data_ldf[[i]]
+  if (nrow(df) == 0)
+    next
+  else {
+    df$Echo_Num = rep(1:(nrow(df) / 4), times = 4)
+
+
+    df2 = df %>% group_by(Echo_Num) %>% reframe(
+      freq = as.factor(Frequency),
+      spec = Species,
+      scat_vol = Sv_mean,
+      freq_response = log10(10 ^
+                              (Sv_mean / 10) / 10 ^ (Sv_mean[1] / 10))
+    )
+
+    plot1 = ggplot(data = df2,
+                   aes(
+                     x = freq,
+                     y = scat_vol,
+                     group = Echo_Num,
+                     color = spec
+                   )) +
+      geom_line() +
+      scale_x_discrete(expand = c(0, 0)) +
+      labs(x = "Frequency", y = "Mean Sv (dB)", color = "Species") +
+      theme_bw()
+
+    fname = paste0(
+      figure_dir,
+      '/Sv By Frequency/',
+      str_sub(data_filenames[i],-30,-18),
+      "_Sv_By_Frequency_Curves.png"
+    )
+
+    ggsave(filename = fname, scale = 2)
+
+    plot2 = ggplot(data = df2,
+                   aes(
+                     x = freq,
+                     y = freq_response,
+                     group = Echo_Num,
+                     color = spec
+                   )) +
+      geom_line() +
+      scale_x_discrete(expand = c(0, 0)) +
+      labs(x = "Frequency", y = "log10 of r(f)", color = "Species") +
+      theme_bw()
+
+    fname = paste0(
+      figure_dir,
+      '/Frequency Response/',
+      str_sub(data_filenames[i],-30,-18),
+      "_Frequency_Response_Curves.png"
+    )
+
+    ggsave(filename = fname, scale = 2)
+
+    df3 = df %>% group_by(Echo_Num) %>% reframe(
+      Sv_120 = Sv_mean[1],
+      Sv_200 = Sv_mean[2],
+      Sv_455 = Sv_mean[3],
+      Sv_769 = Sv_mean[4],
+      spec = Species
+    )
+
+    plot3 = ggplot(data = df3, aes(
+      x = Sv_120,
+      y = Sv_200,
+      group = spec,
+      color = spec
+    )) +
+      geom_point() +
+      labs(x = "Sv (120 kHz)", y = "Sv (200 kHz)", color = "Species") +
+      xlim(-135, -55) + ylim(-135, -55) +
+      theme_bw()
+
+    fname = paste0(
+      figure_dir,
+      '/Sv Scatterplots/',
+      str_sub(data_filenames[i], -30, -18),
+      "_120_200_Sv_Scatter.png"
+    )
+
+    ggsave(filename = fname, scale = 2)
+
+    plot4 = ggplot(data = df3, aes(
+      x = Sv_200,
+      y = Sv_455,
+      group = spec,
+      color = spec
+    )) +
+      geom_point() +
+      labs(x = "Sv (200 kHz)", y = "Sv (455 kHz)", color = "Species") +
+      xlim(-135, -55) + ylim(-135, -55) +
+      theme_bw()
+
+    fname = paste0(
+      figure_dir,
+      '/Sv Scatterplots/',
+      str_sub(data_filenames[i], -30, -18),
+      "_200_455_Sv_Scatter.png"
+    )
+
+    ggsave(filename = fname, scale = 2)
+
+    plot5 = ggplot(data = df3, aes(
+      x = Sv_455,
+      y = Sv_769,
+      group = spec,
+      color = spec
+    )) +
+      geom_point() +
+      labs(x = "Sv (455 kHz)", y = "Sv (769 kHz)", color = "Species") +
+      xlim(-135, -55) + ylim(-135, -55) +
+      theme_bw()
+
+    fname = paste0(
+      figure_dir,
+      '/Sv Scatterplots/',
+      str_sub(data_filenames[i], -30, -18),
+      "_455_769_Sv_Scatter.png"
+    )
+
+    ggsave(filename = fname, scale = 2)
+  }
+}
 
 #####
 # manova_data = data %>%
@@ -421,7 +421,7 @@ Presence_Absence_Bubble_Time = ggplot() +
     labels = c("Day", "Outside", "Night", "Inside")
   ) +
   geom_point(
-    data = data3,
+    data = data3[data3$Species != "Empty Cell",],
     inherit.aes = F,
     aes(x = Date, y = Depth, color = Species),
     alpha = 0.7,
@@ -483,12 +483,12 @@ Biomass_Bubble_Time = ggplot() +
     labels = c("Day", "Outside", "Night", "Inside")
   ) +
   geom_point(
-    data = data3[data3$Species != "Gelatinous Zooplankton",],
+    data = data3[!(data3$Species %in% c("Empty Cell", "Gelatinous Zooplankton")),],
     inherit.aes = F,
     aes(
       x = Date,
       y = Depth,
-      size = log10(Biomass),
+      size = Biomass,
       color = Species
     ),
     alpha = 0.7
@@ -496,7 +496,11 @@ Biomass_Bubble_Time = ggplot() +
   # geom_point(data = data3[data3$Species %in% c("Menhaden","Unknown (potentially copepods)"),], inherit.aes=F, aes(x=Date,y=Depth,size=log10(Biomass),color=Species),alpha = 0.7) +
   # geom_point(data = data3[data3$Species == "Gelatinous Zooplankton",], inherit.aes = F, aes(x=Date, y=Depth, color=Species),alpha = 0.7,size=2.5) +
   scale_y_reverse() +
-  # scale_radius(breaks = c(-2,-1,0,1,2)) +
+  scale_size_binned(
+    range = c(1, 10),
+    limits = c(0, 40),
+    breaks = seq(0, 40, 5)
+  ) +
   scale_color_viridis_d(begin = 0.2, end = 0.9) +
   # scale_color_manual(values=c("#BCDF2A","#424242")) +
   geom_vline(
@@ -515,7 +519,7 @@ Biomass_Bubble_Time = ggplot() +
     se = F
   ) +
   theme_bw() +
-  labs(size = expression(paste("Log10 of Biomass (g/m"^"3" * ")")),
+  labs(size = expression(paste("Biomass (g/m"^"3" * ")")),
        y = "Depth",
        fill = "Time of Day") +
   coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0)) +
@@ -551,7 +555,7 @@ Concentration_Bubble_Time = ggplot() +
     labels = c("Day", "Outside", "Night", "Inside")
   ) +
   geom_point(
-    data = data3[data3$Species != "Gelatinous Zooplankton",],
+    data = data3[!(data3$Species %in% c("Empty Cell", "Gelatinous Zooplankton")),],
     inherit.aes = F,
     aes(
       x = Date,
@@ -603,7 +607,7 @@ Concentration_Bubble_Time = ggplot() +
   ) +
   theme(text = element_text(size = 16))
 
-fname = paste0(figure_dir, "Concentration_Bubble_Plot_Zoomed.png")
+fname = paste0(figure_dir, "Concentration_Bubble_Plot.png")
 
 ggsave(Concentration_Bubble_Time,
        filename = fname,
@@ -668,14 +672,14 @@ Biomass_Bubble_Map = ggplot() +
   # annotate("text", x=-72.365866666667, y = 40.471816666667, label = "NYB50", vjust=2.5, hjust=1.25, color="purple", size=3, fontface="bold") +
   geom_sf(data = g_coords) +
   # geom_sf(data = g_SA_intersect,size=0.5,color="blue") +
-  geom_sf(data = data4[data4$Species != "Gelatinous Zooplankton",],
+  geom_sf(data = data4[!(data4$Species %in% c("Empty Cell", "Gelatinous Zooplankton")),],
           aes(size = D_Int_Biomass, color = Species),
           alpha = 0.6) +
   scale_color_viridis_d(begin = 0.2, end = 0.9) +
   scale_size_binned(
     range = c(1, 10),
-    limits = c(0, 10),
-    breaks = seq(1, 8, 1)
+    limits = c(0, 40),
+    breaks = seq(0, 40, 5)
   ) +
   # annotate("point", x = -73.48, y = 39.45, color="green", shape=15, size=2) + # 35 m isobath buoy
   # annotate("point", x = -73.24, y = 39.47, color="green", shape=15, size=2) + # 50 m isobath buoy
@@ -711,7 +715,7 @@ Concentration_Bubble_Map = ggplot() +
   ) +
   geom_sf(data = g_coords, size = 0.5) +
   # geom_sf(data = g_SA_intersect,size=0.5,color="blue") +
-  geom_sf(data = data4[data4$Species != "Gelatinous Zooplankton",],
+  geom_sf(data = data4[!(data4$Species %in% c("Empty Cell", "Gelatinous Zooplankton")),],
           aes(size = log10(D_Int_Abundance), color = Species),
           alpha = 0.6) +
   scale_color_viridis_d(begin = 0.2, end = 0.9, ) +
@@ -767,7 +771,7 @@ Biomass_Bubble_Map_Whales = Biomass_Bubble_Map +
   labs(color = "Whale Detection") +
   guides(color = guide_legend(order = 1)) +
   theme(text = element_text(size = 16)) +
-  guides(colour = guide_legend(override.aes = list(size = 3)))
+  guides(colour = guide_legend(override.aes = list(size = 3), position = "top"))
 fname = paste0(figure_dir, 'Glider_Path_Biomass_Whales_Map.png')
 ggsave(file = fname, scale = 2)
 

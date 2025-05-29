@@ -33,6 +33,7 @@ DWBAapp() # launches the ZooScatR shiny app
 # Brandyn used g = 1.017 +/- 0.015 and h = 1.023 +/- 0.009
 
 # Kitamura et al., 2017, copepod material properties
+# collected in the Bering Sea; is that significant?
 g = 1.005 # density contrast
 h = 1.007 # sound speed contrast
 

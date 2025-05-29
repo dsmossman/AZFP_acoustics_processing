@@ -37,12 +37,17 @@ ylim = c(38.5, 41.5)
 
 ggplot() + 
   geom_sf(data = world, fill = "gray15") +
-  geom_sf(data = NOAA_inshore, fill = "red") +
-  geom_sf(data = NOAA_midshelf, fill = "blue") +
-  geom_sf(data = NOAA_offshore, fill = "yellow") +
+  geom_sf(data = NOAA_inshore, aes(fill = "Inshore")) +
+  geom_sf(data = NOAA_midshelf, aes(fill = "Midshelf")) +
+  geom_sf(data = NOAA_offshore, aes(fill = "Offshore")) +
+  scale_fill_viridis_d(begin = 0, end=0.8) +
   coord_sf(xlim = xlim,
            ylim = ylim,
-           crs = st_crs(world))
+           crs = st_crs(world)) +
+  theme_bw() + 
+  theme(panel.grid = element_blank()) +
+  labs(fill = "NOAA Strata\nAssignment")
+ggsave(filename = "H:/dm1679/Data/Shapefiles/NOAA_NJ_LI_Strata_Map.png", scale = 1.5)
 
 NOAA_NJ_LI_Strata = data.frame(Shelf_Type = c("Inshore","Midshelf","Offshore"),
                                rbind(NOAA_inshore, NOAA_midshelf, NOAA_offshore))

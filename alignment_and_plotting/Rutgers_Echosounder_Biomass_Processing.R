@@ -33,7 +33,7 @@ world = world[world$geounit == "United States of America",]
 
 load(paste0(data_dir, "Glider_Data.rda"))
 load(paste0(data_dir, "Peripheral_Data.rda"))
-load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
+# load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
 
 #####
 

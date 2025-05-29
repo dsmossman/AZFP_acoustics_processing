@@ -15,7 +15,7 @@ dep_name = uigetdir("C:\Users\Delphine\Box\Glider Data\", "Select the glider dep
 addpath(genpath(dep_name));
 dep_name = char(extractBetween(dep_name,35,strlength(dep_name)));
 
-% Some formatting things since 
+% Some formatting things
 dep_year = char(extractBetween(dep_name,6,9));
 
 dep_start = input("Enter the numerical month the deployment started: ");
