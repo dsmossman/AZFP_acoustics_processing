@@ -7,6 +7,8 @@ library(readxl)
 library(sf)
 library(R.utils)
 library(tcltk)
+library(sf)
+library(rnaturalearth)
 
 sourceDirectory(
   "H:/dm1679/Code/R_Functions",
@@ -67,7 +69,7 @@ ECOMON_data = read_xlsx("C:/Users/Delphine/Box/Zooplankton Protocols and Data/NO
   select(-c(8:11)) %>%
   # Reformat dates to datetime object
   mutate(Date_Time = paste0(date,' ',time)) %>%
-  mutate(Date_Time = as.POSIXlt(Date_Time, format = "%d-%b-%y %H:%M", tz = "UTC")) %>%
+  mutate(Date_Time = as.Date(Date_Time, format = "%d-%b-%y %H:%M", tz = "UTC")) %>%
   # Arrange by date and time
   arrange(Date_Time) %>%
   # Add seasons column based on month tow was performed
@@ -124,6 +126,17 @@ for(i in 1:length(species)) {
   ECOMON_data_expanded$Species[ECOMON_data_expanded$Species == species[i]] = species_names$V2[species_names$V1 == species[i]]
 }
 
+load("H:/dm1679/Data/Shapefiles/NOAA_NJ_LI_Strata.rda")
+
+temp = st_intersects(ECOMON_data_expanded$geometry, NOAA_NJ_LI_Strata$geometry)
+temp[lengths(temp) == 0] = NA
+ECOMON_data_expanded$Shelf_Type = temp %>% unlist()
+rm(temp)
+
+for(k in 1:nrow(ECOMON_data_expanded)) {
+  ECOMON_data_expanded$Shelf_Type[k] = NOAA_NJ_LI_Strata$Shelf_Type[as.numeric(ECOMON_data_expanded$Shelf_Type[k])]
+}
+
 ECOMON_data_mean = ECOMON_data_expanded %>%
   st_drop_geometry() %>%
   group_by(Species, Season) %>%
@@ -153,6 +166,109 @@ Concentrations_By_Species_Season = ggplot() +
   theme_bw()
 
 ggsave(Concentrations_By_Species_Season, file = paste0(figure_dir,"Concentrations_By_Species_Season.png"), scale = 2)
+
+## Inshore ECOMON tows only
+
+ECOMON_data_mean_inshore = ECOMON_data_expanded %>%
+  st_drop_geometry() %>%
+  filter(Shelf_Type == "Inshore") %>%
+  group_by(Species, Season) %>%
+  summarize(Mean_Concentration = mean(Concentrations))
+
+Concentrations_By_Season_Species_Inshore = ggplot() +
+  geom_col(data = ECOMON_data_mean_inshore, aes(x = Species, y = Mean_Concentration, group=Season, fill=Season), position = "dodge") +
+  scale_fill_viridis_d() +
+  theme_bw() +
+  theme(axis.text.x = element_text(
+    angle = 60,
+    hjust = 1,
+    vjust = 1
+  ))
+
+ggsave(Concentrations_By_Season_Species_Inshore, file = paste0(figure_dir,"Concentrations_By_Season_Species_Inshore.png"), scale = 2)
+
+Concentrations_By_Species_Season_Inshore = ggplot() +
+  geom_col(data = ECOMON_data_mean_inshore, aes(x = Season, y = Mean_Concentration, group=Species, fill=Species), position = "stack") +
+  scale_fill_viridis_d() +
+  theme_bw()
+
+ggsave(Concentrations_By_Species_Season_Inshore, file = paste0(figure_dir,"Concentrations_By_Species_Season_Inshore.png"), scale = 2)
+
+## Inshore + just for 2011-2021
+
+ECOMON_data_mean_inshore_recent = ECOMON_data_expanded %>%
+  st_drop_geometry() %>%
+  filter(Shelf_Type == "Inshore" & year(Date_Time) > 2010) %>%
+  group_by(Species, Season) %>%
+  summarize(Mean_Concentration = mean(Concentrations))
+
+Concentrations_By_Season_Species_Inshore_Recent = ggplot() +
+  geom_col(data = ECOMON_data_mean_inshore_recent, aes(x = Species, y = Mean_Concentration, group=Season, fill=Season), position = "dodge") +
+  scale_fill_viridis_d() +
+  theme_bw() +
+  theme(axis.text.x = element_text(
+    angle = 60,
+    hjust = 1,
+    vjust = 1
+  ))
+
+ggsave(Concentrations_By_Season_Species_Inshore_Recent, file = paste0(figure_dir,"Concentrations_By_Season_Species_Inshore_Recent.png"), scale = 2)
+
+Concentrations_By_Species_Season_Inshore_Recent = ggplot() +
+  geom_col(data = ECOMON_data_mean_inshore_recent, aes(x = Season, y = Mean_Concentration, group=Species, fill=Species), position = "stack") +
+  scale_fill_viridis_d() +
+  theme_bw()
+
+ggsave(Concentrations_By_Species_Season_Inshore_Recent, file = paste0(figure_dir,"Concentrations_By_Species_Season_Inshore_Recent.png"), scale = 2)
+
+## Split by year
+
+ECOMON_data_mean_inshore_by_year = ECOMON_data_expanded %>%
+  st_drop_geometry() %>%
+  filter(Shelf_Type == "Inshore" & year(Date_Time) > 2010) %>%
+  group_by(Species, Season, year(Date_Time)) %>%
+  summarize(Mean_Concentration = mean(Concentrations))
+
+Concentrations_By_Species_Season_Inshore_By_Year = ggplot(data = ECOMON_data_mean_inshore_by_year) +
+  geom_col(aes(x = Season, y = Mean_Concentration, group=Species, fill=Species), position = "stack") +
+  scale_fill_viridis_d() +
+  theme_bw() +
+  facet_wrap(~`year(Date_Time)`)
+
+ggsave(Concentrations_By_Species_Season_Inshore_By_Year, file = paste0(figure_dir,"Concentrations_By_Species_Season_Inshore_By_Year.png"), scale = 2)
+
+
+#####
+## Maps of our net tows and ECOMON tows
+
+net_data_mapping = net_data_full %>% 
+  mutate(decimal_lat = lat_degrees_start + lat_mins_start/60, decimal_lon = -(abs(lon_degrees_start) + lon_mins_start/60)) %>%
+  group_by(glider_trajectory, deployment_recovery, tow_number) %>%
+  select(c(glider_trajectory:time_utc_end, decimal_lat:decimal_lon)) %>%
+  distinct(decimal_lat, decimal_lon, .keep_all = T) %>%
+  st_as_sf(coords = c("decimal_lon","decimal_lat"), crs = 4326)
+
+ECOMON_data_mapping = ECOMON_data_expanded %>%
+  group_by(cruise_name, station) %>%
+  distinct(geometry)
+
+world = ne_countries(scale = "large")
+world = world[world$geounit == "United States of America", ]
+
+xlim = c(-75, -72.5)
+ylim = c(38.5, 41.5)
+
+ggplot() +
+  geom_sf(data = world, fill = "gray15") +
+  geom_sf(data = ECOMON_data_mapping, color = "red", alpha = 0.8, shape = 4) +
+  geom_sf(data = net_data_mapping, aes(color = glider_trajectory, shape = deployment_recovery), size = 4) +
+  coord_sf(xlim = xlim, ylim = ylim) +
+  scale_color_viridis_d() +
+  theme_bw() +
+  theme(panel.grid = element_blank()) +
+  labs(color = "Glider Trajectory ID", shape = "Deployment or Recovery")
+
+ggsave(scale = 2, filename = paste0(figure_dir, "Net_And_ECOMON_Tow_Map.png"))  
 
 #####
 ## Comparisons between net tows/glider data
