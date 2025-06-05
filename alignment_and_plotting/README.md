@@ -15,4 +15,4 @@ These files take estimated concentration/abundance data derived from the acousti
 
 # Other Files
 
-Zooplankton_Abundance_Modeling.R is for statistical investigations into correlating zooplankton abundance and other oceanographic variables. Zooplankton_Abundance_Plots.R does boxplots of abundance (both concentration and biomass) by season and shelf strata. choose_directory.R is a helper function for picking the folder with your data in it.
+Zooplankton_Abundance_Modeling.R is for statistical investigations into correlating zooplankton abundance and other oceanographic variables. Zooplankton_Abundance_Plots.R does boxplots of abundance (both concentration and biomass) by season and shelf strata. Zooplankton_Tows_Figures.R is for comparing the acoustic estimates to EcoMon and deployment/recovery zooplankton tows. choose_directory.R is a helper function for picking the folder with your data in it.
