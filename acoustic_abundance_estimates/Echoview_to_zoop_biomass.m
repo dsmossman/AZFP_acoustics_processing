@@ -105,11 +105,11 @@ for i=1:num_cells % for each triplet of pings
         data.Species(i+2*num_cells) = "Large Copepod";
         data.Species(i+3*num_cells) = "Large Copepod";
     
-    elseif ((data.Difference(i+num_cells*2)) > 10.1) && ((data.Difference(i+num_cells*2)) < 13.8)
-        data.Species(i) = "Small Copepod";
-        data.Species(i+num_cells) = "Small Copepod";
-        data.Species(i+2*num_cells) = "Small Copepod";
-        data.Species(i+3*num_cells) = "Small Copepod";      
+    % elseif ((data.Difference(i+num_cells*2)) > 10.1) && ((data.Difference(i+num_cells*2)) < 13.8)
+    %     data.Species(i) = "Small Copepod";
+    %     data.Species(i+num_cells) = "Small Copepod";
+    %     data.Species(i+2*num_cells) = "Small Copepod";
+    %     data.Species(i+3*num_cells) = "Small Copepod";      
     end
 end
 
@@ -125,9 +125,9 @@ for k = 1:height(data)
     if data.Species(k) == "Large Copepod" && data.Frequency(k) == 455
         data.Abundance(k) = 10.^((data.Sv_mean(k) - -108.3)/10); % from Brandyn's work
         data.Biomass(k) = data.Abundance(k) * 269.66e-6; % average Calanus sp. IDW
-    elseif data.Species(k) == "Small Copepod" && data.Frequency(k) == 455
-        data.Abundance(k) = 10.^((data.Sv_mean(k) - -122.7)/10); % from my model
-        data.Biomass(k) = data.Abundance(k) * 21.5e-6; % avg centropages/oithona sp. IDW
+    % elseif data.Species(k) == "Small Copepod" && data.Frequency(k) == 455
+    %     data.Abundance(k) = 10.^((data.Sv_mean(k) - -122.7)/10); % from my model
+    %     data.Biomass(k) = data.Abundance(k) * 21.5e-6; % avg centropages/oithona sp. IDW
     else
         data.Abundance(k) = 0;
         data.Biomass(k) = 0;
