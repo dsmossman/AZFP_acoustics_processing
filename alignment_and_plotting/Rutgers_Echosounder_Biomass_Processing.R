@@ -53,7 +53,7 @@ for(j in 1:length(data_ldf)) {
     data = rbind(data,data_ldf[[j]])
 }
 
-# Reformatting timestamps and converting to eastern time zone
+# Assigning echo number
 if(glider_dep == "ru39-20230817T1520") {
   data = data %>% arrange(Frequency) %>% filter(Exclude_below_line_depth_mean >=0)
   data$Echo_Num = NA
@@ -66,10 +66,11 @@ if(glider_dep == "ru39-20230817T1520") {
   
   data = data %>% arrange(Frequency) %>% filter(Exclude_below_line_depth_mean >=0)
   
-  data$Echo_Num = rep(1:(nrow(data)/4),times=4)
-  # data$Echo_Num = rep(1:(nrow(data)/3),times=3)
+  # data$Echo_Num = rep(1:(nrow(data)/4),times=4)
+  data$Echo_Num = rep(1:(nrow(data)/3),times=3)
 }
 
+# Reformatting timestamps and converting to eastern time zone
 data$Time_M = paste0(data$Date_M,' ',data$Time_M)
 data$Time_M = as.POSIXct(data$Time_M, format = "%d-%b-%Y %H:%M:%S", tz = "UTC")
 data$Time_M = as.POSIXct(format(data$Time_M, tz="America/Detroit", usetz=T))
@@ -320,11 +321,11 @@ data4 = data3 %>%
     D_Int_Abundance = sum(Abundance),
     D_Int_Biomass = sum(Biomass),
     Seafloor_Depth = mean(Seafloor_Depth),
-    Date = mean(Date),
-    pH = mean(pH),
-    salinity = mean(salinity),
-    chlorophyll_a = mean(chlorophyll_a),
-    temperature = mean(temperature)
+    Date = mean(Date)#,
+    #pH = mean(pH),
+    #salinity = mean(salinity),
+    #chlorophyll_a = mean(chlorophyll_a),
+    #temperature = mean(temperature)
   ) %>%
   st_as_sf(coords = c("Long", "Lat"), crs = 4326) %>%
   arrange(Date) %>%

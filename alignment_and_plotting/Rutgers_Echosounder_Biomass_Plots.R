@@ -427,7 +427,7 @@ Presence_Absence_Bubble_Time = ggplot() +
     alpha = 0.7,
     size = 2.5
   ) +
-  scale_color_viridis_d(begin = 0.2, end = 0.9) +
+  scale_color_viridis_d(begin = 0.2, end = 0.9, direction = -1) +
   # scale_color_manual(values=c("#BCDF2A","#424242")) +
   scale_y_reverse() +
   # geom_vline(
@@ -498,10 +498,10 @@ Biomass_Bubble_Time = ggplot() +
   scale_y_reverse() +
   scale_size_binned(
     range = c(1, 10),
-    limits = c(0, 40),
-    breaks = seq(0, 40, 5)
+    limits = c(0, 5),
+    breaks = seq(0, 5, 0.5)
   ) +
-  scale_color_viridis_d(begin = 0.2, end = 0.9) +
+  scale_color_viridis_d(begin = 0.2, end = 0.9, guide = "none") +
   # scale_color_manual(values=c("#BCDF2A","#424242")) +
   geom_vline(
     xintercept = ISOdatetime(2023, 8, 22, 20, 0, 0),
@@ -519,7 +519,7 @@ Biomass_Bubble_Time = ggplot() +
     se = F
   ) +
   theme_bw() +
-  labs(size = expression(paste("Biomass (g/m"^"3" * ")")),
+  labs(size = expression("Large"~"Copepod"~"Biomass"~"(g/m"^"3"*")"),
        y = "Depth",
        fill = "Time of Day") +
   coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0)) +
@@ -571,7 +571,7 @@ Concentration_Bubble_Time = ggplot() +
   scale_y_reverse() +
   # scale_radius(breaks=c(-2,-1,0,1,2)) +
   # scale_color_manual(values=c("#BCDF2A","#424242")) +
-  scale_color_viridis_d(begin = 0.2, end = 0.9) +
+  scale_color_viridis_d(begin = 0.2, end = 0.9, guide="none") +
   geom_vline(
     xintercept = ISOdatetime(2023, 8, 22, 20, 0, 0),
     show.legend = F,
@@ -591,7 +591,7 @@ Concentration_Bubble_Time = ggplot() +
   theme_bw() +
   labs(
     size = expression(paste(
-      "log10 of\nConcentration (individuals/m"^"3" * ")"
+      "log10 of Large Copepod \nConcentration (individuals/m"^"3" * ")"
     )),
     y = "Depth",
     # x = "March 1st, 2024",
@@ -670,16 +670,16 @@ Biomass_Bubble_Map = ggplot() +
   # annotate("text", x=-72.68182, y = 40.610171666667, label = "NYB35", vjust=-1.6, hjust=0.5, color="blue", size=3, fontface="bold") +
   # annotate("point", x=-72.6365866666667, y = 40.471816666667, shape = 8, color="purple") +
   # annotate("text", x=-72.365866666667, y = 40.471816666667, label = "NYB50", vjust=2.5, hjust=1.25, color="purple", size=3, fontface="bold") +
-  geom_sf(data = g_coords) +
+  geom_sf(data = g_coords, size = 0.4) +
   # geom_sf(data = g_SA_intersect,size=0.5,color="blue") +
   geom_sf(data = data4[!(data4$Species %in% c("Empty Cell", "Gelatinous Zooplankton")),],
           aes(size = D_Int_Biomass, color = Species),
           alpha = 0.6) +
-  scale_color_viridis_d(begin = 0.2, end = 0.9) +
+  scale_color_viridis_d(begin = 0.2, end = 0.9, guide="none") +
   scale_size_binned(
     range = c(1, 10),
-    limits = c(0, 40),
-    breaks = seq(0, 40, 5)
+    limits = c(0, 2),
+    breaks = seq(0, 2, 0.25)
   ) +
   # annotate("point", x = -73.48, y = 39.45, color="green", shape=15, size=2) + # 35 m isobath buoy
   # annotate("point", x = -73.24, y = 39.47, color="green", shape=15, size=2) + # 50 m isobath buoy
@@ -688,7 +688,7 @@ Biomass_Bubble_Map = ggplot() +
            xlim = xlim,
            ylim = ylim) +
   labs(x = "Longitude", y = "Latitude", size = bquote(atop(
-    Depth - Integrated ~ phantom(), Biomass ~ (g / m^2)
+    Depth - Integrated ~ Large ~ phantom(), Copepod ~ Biomass ~ (g / m^2)
   ))) +
   theme(text = element_text(size = 16), legend.title = element_text(hjust = 0))
 
@@ -713,15 +713,15 @@ Concentration_Bubble_Map = ggplot() +
     fill = "red",
     alpha = 0.5
   ) +
-  geom_sf(data = g_coords, size = 0.5) +
+  geom_sf(data = g_coords, size = 0.4) +
   # geom_sf(data = g_SA_intersect,size=0.5,color="blue") +
   geom_sf(data = data4[!(data4$Species %in% c("Empty Cell", "Gelatinous Zooplankton")),],
           aes(size = log10(D_Int_Abundance), color = Species),
           alpha = 0.6) +
-  scale_color_viridis_d(begin = 0.2, end = 0.9, ) +
+  scale_color_viridis_d(begin = 0.2, end = 0.9, guide="none") +
   scale_size_binned(
-    limits = c(2, 5),
-    breaks = seq(2, 5, 0.5),
+    limits = c(0.5, 4),
+    breaks = seq(0.5, 4, 0.5),
     range = c(0, 8)
   ) +
   theme_bw() +
@@ -732,7 +732,7 @@ Concentration_Bubble_Map = ggplot() +
        y = "Latitude",
        size = expression(
          paste(
-           "Log10 Depth-Integrated\nConcentration (individuals/m"^"2" * ")"
+           "Log10 Depth-Integrated Large\nCopepod Concentration (individuals/m"^"2" * ")"
          )
        ))
 
@@ -742,19 +742,18 @@ ggsave(Concentration_Bubble_Map, file = fname, scale = 2)
 #####
 
 # Depth-integrated plots along the glider track with marine mammal detections
-
+if(exists("marine_mammal_detections")) {
 marine_mammal_detections = marine_mammal_detections %>%
   filter(between(datetime_utc, day_data$Date[1], day_data$Date[nrow(day_data)])) # %>%
 # filter(Whale_Species %in% c("Sei","North Atlantic Right"))
 
 # whale_colors = setNames(c("#18D6CB","#E1DD37","#C42503"),c("Fin","Humpback","North Atlantic Right"))
 whale_colors = setNames(
-  c("#CC4678", "#7E03A8", "#F89441", "#18D6CB"),
+  c("#FC14AC", "#BD00FD", "#F89441", "#18D6CB"),
   c("Fin", "Humpback", "North Atlantic Right", "Sei")
 )
 
 Biomass_Bubble_Map_Whales = Biomass_Bubble_Map +
-  guides(color = guide_legend(order = 2)) +
   new_scale_color() +
   geom_sf(
     inherit.aes = F,
@@ -776,7 +775,6 @@ fname = paste0(figure_dir, 'Glider_Path_Biomass_Whales_Map.png')
 ggsave(file = fname, scale = 2)
 
 Concentration_Bubble_Map_Whales = Concentration_Bubble_Map +
-  guides(color = guide_legend(order = 2)) +
   new_scale_color() +
   geom_sf(
     inherit.aes = F,
@@ -795,7 +793,7 @@ Concentration_Bubble_Map_Whales = Concentration_Bubble_Map +
   guides(colour = guide_legend(override.aes = list(size = 3)))
 fname = paste0(figure_dir, 'Glider_Path_Concentration_Whales_Map.png')
 ggsave(file = fname, scale = 2)
-
+}
 #####
 
 # Code to make presence/absence plot with wind farm map inset
