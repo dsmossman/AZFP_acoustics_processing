@@ -1,3 +1,12 @@
+# Author: Delphine Mossman
+# Date Created: 24 Mar 2025
+# Date Last Modified: 23 June 2025
+
+# 1. Import and plot data from Rutgers zooplankton tows
+# 2. Import and plot data from ECOMON tows
+# 3. Perform some comparisons between the two
+
+#####
 ## Setup and path assignment
 
 rm(list = ls())

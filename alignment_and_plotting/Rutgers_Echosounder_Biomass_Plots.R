@@ -1,3 +1,13 @@
+# Author: Delphine Mossman
+# Date Created: 19 Sept 2024
+# Date Last Modified: 23 June 2025
+
+# 1. Load in the data created by the processing script
+# 2. Plot total concentration/biomass by day
+# 3. Plot concentration/biomass by time and depth
+# 4. Plot depth-integrated concentration/biomass by lat/long over the glider track
+# 5. Create a plot with an inset of the wind farm lease areas and glider track
+
 #####
 
 rm(list = ls())

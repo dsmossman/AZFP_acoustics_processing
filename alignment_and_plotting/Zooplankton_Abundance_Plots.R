@@ -1,3 +1,15 @@
+# Author: Delphine Mossman
+# Date Created: 22 May 2025
+# Date Last Modified: 23 June 2025
+
+# 1. Load in the zooplankton data from every deployment so far and combine them into one big dataframe
+# 2. Create boxplots of concentration/biomass by season, shelf type, and depth type
+# 3. Create boxplots of concentration/biomass by shelf type and season
+# 4. Create a bar graph of change in concentration/biomass over the seasons
+# 5. Repeat for depth-integrated concentration/biomass values
+
+
+#####
 rm(list = ls())
 
 library(tidyverse)
@@ -21,9 +33,6 @@ home_dir = "C:/Users/Delphine/Box/"
 #####
 
 ## Delta concentration/biomass figures
-
-# This file is made by Zooplankton_Abundance_Modeling.R
-# load("H:/dm1679/Data/Glider Data/RMI_Zoop_FTLE_Correlation_Data_Full.rda")
 
 load(paste0(home_dir,"Glider Data/ru39-20230420T1636/Derived Biomass Data/Processed_Abundance_Biomass_Data.rda"))
 assign("zoop_data_spring_2023", data3)
@@ -59,6 +68,7 @@ zoop_data_full$Season = factor(zoop_data_full$Season, levels = c("Spring","Summe
 fname = "H:/dm1679/Data/Glider Data/RMI_Zoop_Correlation_Data_Full.rda"
 save(zoop_data_full, file = fname)
 
+#####
 load("H:/dm1679/Data/Glider Data/RMI_Zoop_Correlation_Data_Full.rda")
 
 zoop_data_full_delta = zoop_data_full %>%
@@ -79,7 +89,8 @@ zoop_data_full_delta$Delta_A[1:2] = 0
 
 #####
 
-zoop_data_full$Shelf_Type[is.na(zoop_data_full$Shelf_Type)] = "Offshore"
+# Just in caseies
+# zoop_data_full$Shelf_Type[is.na(zoop_data_full$Shelf_Type)] = "Offshore"
 
 ggplot() + 
   geom_boxplot(data = zoop_data_full, aes(y = Abundance)) + 
@@ -121,7 +132,7 @@ ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Depth_Type_Concentration
 
 zoop_data_full[,c("Abundance","Biomass")] = log10(zoop_data_full[,c("Abundance","Biomass")])
 
-zoop_data_full = (complete(zoop_data_full, Season, Species, Shelf_Type, fill = list(Abundance = 0, Biomass = 0), explicit  = F))
+zoop_data_full = (complete(zoop_data_full, Season, Species, Shelf_Type, fill = list(Abundance = -999, Biomass = -999), explicit  = F))
 
 sample_sizes = zoop_data_full %>% group_by(Season, Shelf_Type) %>% summarize(num = n())
 sample_sizes[10,3] = 0

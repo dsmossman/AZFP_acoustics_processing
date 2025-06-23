@@ -1,3 +1,10 @@
+# Author: Delphine Mossman
+# Date Created: 22 May 2025
+# Date Last Modified: 23 June 2025
+
+# !!!!!!!!!!!!!!! EXTREMELY WORK IN PROGRESS !!!!!!!!!!!!!!!
+
+#####
 ## Initialization/Setup
 
 rm(list = ls())
