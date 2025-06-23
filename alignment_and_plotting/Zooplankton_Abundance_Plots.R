@@ -79,6 +79,8 @@ zoop_data_full_delta$Delta_A[1:2] = 0
 
 #####
 
+zoop_data_full$Shelf_Type[is.na(zoop_data_full$Shelf_Type)] = "Offshore"
+
 ggplot() + 
   geom_boxplot(data = zoop_data_full, aes(y = Abundance)) + 
   scale_fill_viridis_d(guide = NULL, begin = 0.2) +
@@ -92,7 +94,7 @@ ggplot() +
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Seasonal_Concentration_Boxplot.png", scale = 2)
 
 ggplot() + 
-  geom_boxplot(data = zoop_data_full[!is.na(zoop_data_full$Shelf_Type),], aes(y = Abundance)) + 
+  geom_boxplot(data = zoop_data_full, aes(y = Abundance)) + 
   scale_fill_viridis_d(guide = NULL, begin = 0.2) +
   scale_y_continuous(trans="log10") +
   labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)") +
@@ -104,7 +106,7 @@ ggplot() +
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Concentration_Boxplot.png", scale = 2)
 
 ggplot() + 
-  geom_boxplot(data = zoop_data_full[!is.na(zoop_data_full$Depth_Type),], aes(y = Abundance)) + 
+  geom_boxplot(data = zoop_data_full, aes(y = Abundance)) + 
   scale_fill_viridis_d(guide = NULL, begin = 0.2) +
   scale_y_continuous(trans="log10") +
   labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)") +
@@ -116,8 +118,6 @@ ggplot() +
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Depth_Type_Concentration_Boxplot.png", scale = 2)
 
 #####
-
-zoop_data_full$Shelf_Type[is.na(zoop_data_full$Shelf_Type)] = "Offshore"
 
 zoop_data_full[,c("Abundance","Biomass")] = log10(zoop_data_full[,c("Abundance","Biomass")])
 
