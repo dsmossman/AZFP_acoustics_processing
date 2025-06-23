@@ -8,9 +8,6 @@
 % 3. Perform broad classification (swimbladder-bearing vs swimbladderless
 % fish and weak vs strong echoes)
 % 4. If applicable, perform species classification
-% 5. Calculate obs and use that to calculate concentration/biomass
-% 6. Export CSV file with abundance data
-
 function Echoview_to_fish_biomass(yr, mo, da, input_dir, output_dir)
 
 % preallocate data
@@ -34,8 +31,6 @@ data.Date_M = datetime(data.Date_M,'ConvertFrom','yyyymmdd');
 
 % Sort matrix
 data = sortrows(data, {'Interval','Layer','Frequency'});
-
-%% Get rid of empty rows and cells that don't have a response in all three frequencies
 
 data(data.Sv_mean == -999,:) = [];
 data(data.Sv_mean == 9999,:) = [];

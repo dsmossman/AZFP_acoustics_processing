@@ -1,7 +1,11 @@
-% PURPOSE: utilize zoop/fish processing functions to generate excel files
-% that can be imported/graphed in R
-% This is a separate file so that the function can be put into a loop and
-% iterated over months/days
+%% Utilize zoop/fish processing functions to generate excel files that can be imported/graphed in R
+% This is a separate file so that the function can be put into a loop and iterated over months/days
+% Author: Delphine Mossman
+% Date Created: 12 Oct 2023
+% Date Last Modified: 23 June 2025
+% 1. Get the directory of exported Echoview data
+% 2. For each file, run either the fish or zooplankton function
+
 
 clear variables; close all; clc;
 
@@ -37,6 +41,8 @@ for i = dep_start:dep_end
         mo = i;
         da = days(j).name(12:13);
         
+        % Needs to be manually changed depending on whether the AZFP is
+        % zoop or fish configured
         Echoview_to_zoop_biomass(yr,mo,da,input_dir,output_dir)
         % Echoview_to_fish_biomass(yr,mo,da,input_dir,output_dir)
 

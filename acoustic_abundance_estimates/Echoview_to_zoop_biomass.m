@@ -1,12 +1,15 @@
+%% PURPOSE: convert Echoview integrated output to target species biomass per glider downcast depth bin
+% This is specific to converting to zooplankton abundance
+% Author: Delphine Mossman
+% Date Created: 14 Mar 2023
+% Date Last Modified: 23 June 2025
+% 1. Load echo integration CSV files
+% 2. Remove rows without data in all four frequencies
+% 3. Perform broad classification (large vs small copepods)
+% 4. Calculate obs and use that to calculate concentration/biomass
+% 5. Export CSV file with abundance data
+
 function Echoview_to_zoop_biomass(yr, mo, da, input_dir, output_dir)
-% PURPOSE: convert Echoview integrated output to target species biomass per
-% glider downcast depth bin
-% This is specific to converting to zooplankton biomass
-
-% Delphine Mossman, delphine.mossman@marine.rutgers.edu
-% Last updated June 2024
-
-% Current parameters: 1m depth, 0.1 nmi GPS distance
 
 %% Load echo integration .csv files of interest
 
