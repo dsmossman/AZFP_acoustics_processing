@@ -1,3 +1,13 @@
+# Reorganize the file structure of AZFP files from a glider from monthly folders to daily folders
+
+# Author: Delphine Mossman
+# Date Created: 27 Jan 2023
+# Date Last Modified: 23 June 2025
+
+# 1. Locate the directory of AZFP files organized by month
+# 2. Create a folder for each day of each month
+# 3. Move the AZFP and log files into each daily folder
+# 4. Copy the cfg file into each daily folder
 
 # Required libraries
 import os

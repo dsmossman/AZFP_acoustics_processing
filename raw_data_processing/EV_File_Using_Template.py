@@ -10,22 +10,29 @@
 
 ###############################################################################
 
-# Adapted January 27th 2023 by Delphine Mossman
-
 # The goal of this script is to automate the creation and import of new Echoview files for each day of AZFP data
-# %%
+# Each template includes the removal of the seafloor/near-field data, background noise, and impulse noise
+
+# Author: Delphine Mossman
+# Date Created: 27 Jan 2023
+# Date Last Modified: 23 June 2025
+
+# 1. Locate the EV template file and the directory of AZFP files
+# 2. For each day of AZFP data, create a new EV file from template and import the data as well as the pitch/roll data from the glider
+# 3. Create a new line for depth and overwrite it with the depth data from the glider
+# 4. Save the EV file
 
 # Required libraries
 import win32com.client
 import os
 import re
 
-# %%
 # Define some variables
 
 homedir = "H:/dm1679/Data/Glider Data/"
 dep_name = input('Enter the full name of the deployment: ')
 
+# Needs to be manually changed depending on whether the AZFP is zoop or fish configured
 template = os.path.join(homedir,'AZFP_Fish_Template_2023.EV')
 # template = os.path.join(homedir,'AZFP_Zooplankton_Template_2023.EV')
 
@@ -182,5 +189,3 @@ for folder in next(os.walk(basedir))[1]:
 
 # Once you are all done, quit out of Echoview entirely
 EvApp.Quit()
-
-# %%

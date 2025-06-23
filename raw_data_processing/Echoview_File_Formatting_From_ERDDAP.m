@@ -1,3 +1,14 @@
+%% Create Echoview-readable files of glider GPS data (including date, time, latitude, and longitude), pitch, roll, and depth from an ERDDAP glider CSV
+% Author: Delphine Mossman
+% Date Created: 14 Feb 2024
+% Date Last Updated: 23 June 2025
+% 1. Fetch the glider CSV file (needs to be manually downloaded from
+% ERDDAP)
+% 2. Pull out and format time data
+% 3. Write GPS, pitch, and roll data to csv files
+% 4. Write depth data to special .evl file
+
+
 clear variables
 close all
 clc
