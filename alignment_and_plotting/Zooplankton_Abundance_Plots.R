@@ -32,7 +32,7 @@ home_dir = "C:/Users/Delphine/Box/"
 
 #####
 
-## Delta concentration/biomass figures
+## Initial dataframe creation
 
 load(paste0(home_dir,"Glider Data/ru39-20230420T1636/Derived Biomass Data/Processed_Abundance_Biomass_Data.rda"))
 assign("zoop_data_spring_2023", data3)
@@ -71,19 +71,21 @@ save(zoop_data_full, file = fname)
 #####
 load("H:/dm1679/Data/Glider Data/RMI_Zoop_Correlation_Data_Full.rda")
 
+# Making a dataframe of the change in abundance
+
 zoop_data_full_delta = zoop_data_full %>%
   filter(Abundance > 0) %>%
   mutate(Year = year(Date)) %>%
   group_by(Year, Season, Species) %>%
   reframe(Avg_Abundance = mean(Abundance)) %>%
-  slice(1:4,9,10,5:8) %>%
+  slice(1:2,5,3:4) %>%
   group_by(Species) %>%
   mutate(Delta_A = ifelse(row_number() == 1,
                           0,
                           Avg_Abundance - lag(Avg_Abundance, 1))) %>%
-  mutate(Delta_A = ifelse(Delta_A > 0,
-                          log10(Delta_A),
-                          -1 * log10(abs(Delta_A))),
+  mutate(# Delta_A = ifelse(Delta_A > 0,
+  #                         log10(Delta_A),
+  #                         -1 * log10(abs(Delta_A))),
          YearSeason = paste0(Year, " ", Season)) %>%
   mutate(YearSeason = factor(YearSeason, levels = YearSeason, ordered = T)) %>%
   mutate(Delta_A = replace(Delta_A, Delta_A == Inf, 0))
@@ -93,14 +95,21 @@ zoop_data_full_delta = zoop_data_full %>%
 # Just in caseies
 # zoop_data_full$Shelf_Type[is.na(zoop_data_full$Shelf_Type)] = "Offshore"
 
+# Plots of abundance by season, shelf type, and depth type
+
+zoop_data_full[,c("Abundance","Biomass")] = log10(zoop_data_full[,c("Abundance","Biomass")])
+
+zoop_data_full = (complete(zoop_data_full, Season, Species, Shelf_Type, fill = list(Abundance = -999, Biomass = -999), explicit  = F))
+zoop_data_full[zoop_data_full$Abundance == -Inf, c("Abundance", "Biomass")] = -999
+
 ggplot() + 
   geom_boxplot(data = zoop_data_full[zoop_data_full$Abundance > 0, ], aes(y = Abundance)) + 
   scale_fill_viridis_d(guide = NULL, begin = 0.2) +
-  scale_y_continuous(trans="log10") +
   labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)") +
   theme_bw() +
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank()) +
+  coord_cartesian(ylim = c(0,5), clip = 'off') +
   facet_grid(~Season)
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Seasonal_Concentration_Boxplot.png", scale = 2)
@@ -108,11 +117,11 @@ ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Seasonal_Concentration_B
 ggplot() + 
   geom_boxplot(data = zoop_data_full[zoop_data_full$Abundance > 0, ], aes(y = Abundance)) + 
   scale_fill_viridis_d(guide = NULL, begin = 0.2) +
-  scale_y_continuous(trans="log10") +
   labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)") +
   theme_bw() +
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank()) +
+  coord_cartesian(ylim = c(0,5), clip = 'off') +
   facet_grid(Season~Shelf_Type)
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Concentration_Boxplot.png", scale = 2)
@@ -120,25 +129,23 @@ ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Concentration
 ggplot() + 
   geom_boxplot(data = zoop_data_full[zoop_data_full$Abundance > 0, ], aes(y = Abundance)) + 
   scale_fill_viridis_d(guide = NULL, begin = 0.2) +
-  scale_y_continuous(trans="log10") +
   labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)") +
   theme_bw() +
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank()) +
+  coord_cartesian(ylim = c(0,5), clip = 'off') +
   facet_grid(Season~Depth_Type)
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Depth_Type_Concentration_Boxplot.png", scale = 2)
 
 #####
 
-zoop_data_full[,c("Abundance","Biomass")] = log10(zoop_data_full[,c("Abundance","Biomass")])
-
-zoop_data_full = (complete(zoop_data_full, Season, Species, Shelf_Type, fill = list(Abundance = -999, Biomass = -999), explicit  = F))
+# Getting the total sample sizes
 
 sample_sizes = zoop_data_full %>% group_by(Season, Shelf_Type) %>% summarize(num = n())
-# sample_sizes[10,3] = 0
+sample_sizes_species = zoop_data_full %>% group_by(Season, Shelf_Type) %>% count(Species)
 
-ggplot(data = zoop_data_full, 
+ggplot(data = zoop_data_full[zoop_data_full$Abundance > 0, ], 
        aes(x = Season, color = Shelf_Type, y = Abundance)) + 
   geom_boxplot(linewidth = 0.75,
                notch = T) +
@@ -151,7 +158,7 @@ ggplot(data = zoop_data_full,
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Concentration_Large_Copepods_Boxplot.png", scale = 2)
 
-ggplot(data = zoop_data_full, 
+ggplot(data = zoop_data_full[zoop_data_full$Abundance > 0, ], 
        aes(x = Season, color = Shelf_Type, y = Biomass)) + 
   geom_boxplot(linewidth = 0.75,
                notch = T) +
@@ -166,13 +173,15 @@ ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Biomass_Large
 
 #####
 
+# Change in average concentration plot
+
 ggplot() + 
   geom_col(dat = zoop_data_full_delta, position = position_dodge(), aes(x = Species, y = Delta_A, group = YearSeason, fill = YearSeason)) +
   scale_fill_viridis_d(
     breaks = c("2023 Spring", "2023 Fall", "2024 Winter", "2024 Spring", "2024 Summer")
   ) +
   labs(x = "Species",
-       y = "log10 of Change in Average Concentration",
+       y = "Change in Average Concentration",
        fill = "Year and Season")
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Avg_Concentration_Change_Plot.png", scale = 2)
 
