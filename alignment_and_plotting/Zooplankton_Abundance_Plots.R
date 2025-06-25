@@ -61,7 +61,7 @@ zoop_data_spring_2024$Season = "Spring"
 zoop_data_summer_2024$Season = "Summer"
 
 zoop_data_full = rbind(zoop_data_spring_2023,zoop_data_fall_2023,zoop_data_winter_2024,zoop_data_spring_2024,zoop_data_summer_2024) %>% 
-  filter(Abundance > 0) %>%
+  # filter(Abundance > 0) %>%
   arrange(Date) %>% st_drop_geometry()
 zoop_data_full$Season = factor(zoop_data_full$Season, levels = c("Spring","Summer","Fall","Winter"), ordered = T)
 
@@ -72,6 +72,7 @@ save(zoop_data_full, file = fname)
 load("H:/dm1679/Data/Glider Data/RMI_Zoop_Correlation_Data_Full.rda")
 
 zoop_data_full_delta = zoop_data_full %>%
+  filter(Abundance > 0) %>%
   mutate(Year = year(Date)) %>%
   group_by(Year, Season, Species) %>%
   reframe(Avg_Abundance = mean(Abundance)) %>%
@@ -84,8 +85,8 @@ zoop_data_full_delta = zoop_data_full %>%
                           log10(Delta_A),
                           -1 * log10(abs(Delta_A))),
          YearSeason = paste0(Year, " ", Season)) %>%
-  mutate(YearSeason = factor(YearSeason, levels = YearSeason, ordered = T))
-zoop_data_full_delta$Delta_A[1:2] = 0
+  mutate(YearSeason = factor(YearSeason, levels = YearSeason, ordered = T)) %>%
+  mutate(Delta_A = replace(Delta_A, Delta_A == Inf, 0))
 
 #####
 
@@ -93,7 +94,7 @@ zoop_data_full_delta$Delta_A[1:2] = 0
 # zoop_data_full$Shelf_Type[is.na(zoop_data_full$Shelf_Type)] = "Offshore"
 
 ggplot() + 
-  geom_boxplot(data = zoop_data_full, aes(y = Abundance)) + 
+  geom_boxplot(data = zoop_data_full[zoop_data_full$Abundance > 0, ], aes(y = Abundance)) + 
   scale_fill_viridis_d(guide = NULL, begin = 0.2) +
   scale_y_continuous(trans="log10") +
   labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)") +
@@ -105,7 +106,7 @@ ggplot() +
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Seasonal_Concentration_Boxplot.png", scale = 2)
 
 ggplot() + 
-  geom_boxplot(data = zoop_data_full, aes(y = Abundance)) + 
+  geom_boxplot(data = zoop_data_full[zoop_data_full$Abundance > 0, ], aes(y = Abundance)) + 
   scale_fill_viridis_d(guide = NULL, begin = 0.2) +
   scale_y_continuous(trans="log10") +
   labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)") +
@@ -117,7 +118,7 @@ ggplot() +
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Concentration_Boxplot.png", scale = 2)
 
 ggplot() + 
-  geom_boxplot(data = zoop_data_full, aes(y = Abundance)) + 
+  geom_boxplot(data = zoop_data_full[zoop_data_full$Abundance > 0, ], aes(y = Abundance)) + 
   scale_fill_viridis_d(guide = NULL, begin = 0.2) +
   scale_y_continuous(trans="log10") +
   labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)") +
@@ -135,7 +136,7 @@ zoop_data_full[,c("Abundance","Biomass")] = log10(zoop_data_full[,c("Abundance",
 zoop_data_full = (complete(zoop_data_full, Season, Species, Shelf_Type, fill = list(Abundance = -999, Biomass = -999), explicit  = F))
 
 sample_sizes = zoop_data_full %>% group_by(Season, Shelf_Type) %>% summarize(num = n())
-sample_sizes[10,3] = 0
+# sample_sizes[10,3] = 0
 
 ggplot(data = zoop_data_full, 
        aes(x = Season, color = Shelf_Type, y = Abundance)) + 
@@ -145,11 +146,12 @@ ggplot(data = zoop_data_full,
   stat_summary(fun = mean, geom = "point", show.legend = F, position = position_dodge(0.75), shape=4, size=4, stroke = 1) +
   labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)",
        color = "NOAA Strata\nAssignment") +
+  coord_cartesian(ylim = c(-4, 5), clip = 'off') +
   theme_bw()
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Concentration_Large_Copepods_Boxplot.png", scale = 2)
 
-ggplot(data = zoop_data_full[zoop_data_full$Species == "Large Copepod",], 
+ggplot(data = zoop_data_full, 
        aes(x = Season, color = Shelf_Type, y = Biomass)) + 
   geom_boxplot(linewidth = 0.75,
                notch = T) +
@@ -157,6 +159,7 @@ ggplot(data = zoop_data_full[zoop_data_full$Species == "Large Copepod",],
   scale_color_viridis_d(begin = 0, end = 0.8) +
   labs(y = "Log10 of Large Copepod\nBiomass (g/m^3)",
        color = "NOAA Strata\nAssignment") +
+  coord_cartesian(ylim = c(-4, 5), clip = 'off') +
   theme_bw()
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Biomass_Large_Copepods_Boxplot.png", scale = 2)

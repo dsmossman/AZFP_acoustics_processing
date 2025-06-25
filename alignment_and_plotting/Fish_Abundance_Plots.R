@@ -80,8 +80,33 @@ fish_data_full_delta = fish_data_full %>%
                           log10(Delta_A),
                           -1 * log10(abs(Delta_A)))) %>%
   mutate(YearSeason = paste0(Year, " ", Season)) %>%
-  mutate(YearSeason = factor(YearSeason, levels = YearSeason, ordered = T))
-fish_data_full_delta$Delta_A[fish_data_full_delta$Delta_A == Inf] = 0
+  mutate(YearSeason = factor(YearSeason, levels = YearSeason, ordered = T)) %>%
+  mutate(Delta_A = replace(Delta_A, Delta_A == Inf, 0))
+
+ggplot() + 
+  geom_boxplot(data = fish_data_full, aes(y = Abundance, x = Species, fill = Species)) + 
+  scale_fill_viridis_d(option = "G") +
+  scale_y_continuous(trans="log10") +
+  labs(y = "Log10 of Concentration\n(individuals/m^3)") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  facet_grid(~Season)
+
+ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Seasonal_Fish_Concentration_Boxplot.png", scale = 2)
+
+# fish_data_full$Shelf_Type[is.na(fish_data_full$Shelf_Type)] = "Offshore"
+
+ggplot() + 
+  geom_boxplot(data = fish_data_full, aes(y = Abundance, x = Species, fill = Species)) + 
+  scale_fill_viridis_d(option = "G") +
+  scale_y_continuous(trans="log10") +
+  labs(y = "Log10 of Concentration\n(individuals/m^3)") +
+  theme_bw() +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  facet_grid(Season~Shelf_Type)
+
+ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Fish_Concentration_Boxplot.png", scale = 2)
 
 ggplot() + 
   geom_boxplot(data = fish_data_full, aes(y = Abundance, x = Species, fill = Species)) + 
@@ -89,33 +114,42 @@ ggplot() +
   scale_y_continuous(trans="log10") +
   labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)") +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  facet_grid(~Season)
-
-ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Seasonal_Fish_Concentration_Boxplot.png", scale = 2)
-
-fish_data_full$Shelf_Type[is.na(fish_data_full$Shelf_Type)] = "Offshore"
-
-ggplot() + 
-  geom_boxplot(data = zoop_data_full[!is.na(zoop_data_full$Shelf_Type),], aes(y = Abundance)) + 
-  scale_fill_viridis_d(guide = NULL, begin = 0.2) +
-  scale_y_continuous(trans="log10") +
-  labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)") +
-  theme_bw() +
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank()) +
-  facet_grid(Season~Shelf_Type)
-
-ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Concentration_Boxplot.png", scale = 2)
-
-ggplot() + 
-  geom_boxplot(data = zoop_data_full[!is.na(zoop_data_full$Depth_Type),], aes(y = Abundance)) + 
-  scale_fill_viridis_d(guide = NULL, begin = 0.2) +
-  scale_y_continuous(trans="log10") +
-  labs(y = "Log10 of Large Copepod\nConcentration (individuals/m^3)") +
-  theme_bw() +
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank()) +
   facet_grid(Season~Depth_Type)
 
-ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Depth_Type_Concentration_Boxplot.png", scale = 2)
+ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Depth_Type_Fish_Concentration_Boxplot.png", scale = 2)
+
+#####
+
+fish_data_full[,c("Abundance","Biomass")] = log10(fish_data_full[,c("Abundance","Biomass")])
+
+fish_data_full = complete(fish_data_full, Season, Species, Shelf_Type, fill = list(Abundance = -999, Biomass = -999), explicit  = F)
+
+ggplot(data = fish_data_full, 
+       aes(x = Season, color = Shelf_Type, y = Abundance)) + 
+  geom_boxplot(linewidth = 0.75,
+               notch = T) +
+  scale_color_viridis_d(option = "G") +
+  stat_summary(fun = mean, geom = "point", show.legend = F, position = position_dodge(0.75), shape=4, size=4, stroke = 1) +
+  labs(y = "Log10 of Concentration\n(individuals/m^3)",
+       color = "NOAA Strata\nAssignment") +
+  theme_bw() +
+  coord_cartesian(ylim = c(-8,NA), clip = 'off') +
+  facet_wrap(~Species)
+
+ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Concentration_Fish_Boxplot.png", scale = 2)
+
+ggplot(data = fish_data_full, 
+       aes(x = Season, color = Shelf_Type, y = Biomass)) + 
+  geom_boxplot(linewidth = 0.75,
+               notch = T) +
+  scale_color_viridis_d(option = "G") +
+  stat_summary(fun = mean, geom = "point", show.legend = F, position = position_dodge(0.75), shape=4, size=4, stroke = 1) +
+  labs(y = "Log10 of Biomass\n(individuals/m^3)",
+       color = "NOAA Strata\nAssignment") +
+  theme_bw() +
+  coord_cartesian(ylim = c(-6,NA), clip = 'off') +
+  facet_wrap(~Species)
+
+ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Biomass_Fish_Boxplot.png", scale = 2)
