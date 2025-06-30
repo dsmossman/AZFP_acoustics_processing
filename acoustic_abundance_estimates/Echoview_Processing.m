@@ -43,8 +43,8 @@ for i = dep_start:dep_end
         
         % Needs to be manually changed depending on whether the AZFP is
         % zoop or fish configured
-        Echoview_to_zoop_biomass(yr,mo,da,input_dir,output_dir)
-        % Echoview_to_fish_biomass(yr,mo,da,input_dir,output_dir)
+        % Echoview_to_zoop_biomass(yr,mo,da,input_dir,output_dir)
+        Echoview_to_fish_biomass(yr,mo,da,input_dir,output_dir)
 
     end
 end

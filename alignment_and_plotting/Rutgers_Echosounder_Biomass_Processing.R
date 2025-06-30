@@ -53,7 +53,7 @@ load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
 ## Acoustic estimates data
 
 # Read in all the data and make a big dataframe
-data_filenames = list.files(data_dir, pattern = "*_Biomass_Data.csv$",full.names = T)
+data_filenames = list.files(data_dir, pattern = "(^RMI) *", full.names = T)
 
 data_ldf = lapply(data_filenames, function(x) read_csv(x, show_col_types = F))
 
@@ -317,6 +317,9 @@ for (i in 1:nrow(data3)) {
   data3$chlorophyll_a[i] = gdata$chlorophyll_a[idx]
   data3$temperature[i] = gdata$temperature[idx]
   
+  if(i %% 5000 == 0) {
+    print(i)
+  }
 }
 
 ## Depth-integrated abundance and biomass over glider track
@@ -340,10 +343,10 @@ data4 = data3 %>%
     D_Int_Biomass = sum(Biomass),
     Seafloor_Depth = mean(Seafloor_Depth),
     Date = mean(Date),
-    pH = mean(pH),
-    salinity = mean(salinity),
-    chlorophyll_a = mean(chlorophyll_a),
-    temperature = mean(temperature)
+    #pH = mean(pH),
+    #salinity = mean(salinity),
+    #chlorophyll_a = mean(chlorophyll_a),
+    #temperature = mean(temperature)
   ) %>%
   st_as_sf(coords = c("Long", "Lat"), crs = 4326) %>%
   arrange(Date) %>%
