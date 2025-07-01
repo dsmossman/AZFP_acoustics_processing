@@ -214,7 +214,7 @@ m = 20; % slope for most calculations
 % from Wigley 2003
 
 squid_L = 6.2; % squid mean mantlelength in cm
-squid_b = 79.90; % squid intercept at freq = 125kHz and slope = 20
+squid_b = 79.90; % squid intercept at freq = 120kHz and slope = 20
 squid_W = exp(-1.04605 + 2.05558 * log(squid_L)); % squid mean weight in g based on L
 
 squid_TS = m * log10(squid_L) - squid_b;
@@ -250,11 +250,11 @@ ale_obs = 10^(ale_TS/10);
 ale_herr_L = (ale_L + herr_L)/2; % length between alewife and herring in cm
 ale_herr_W = exp(-12.5923 + 3.3515 * log(ale_herr_L)) * 1000; % averaged weight equation from herring/alewife
 
-% derived from Lucca and Warren 2019
+% all values/equations derived from Lucca and Warren 2019
 menh_L = 25.5; % menhaden mean total length in cm
 menh_W = exp(-11.396 +3.08 * log(menh_L)); % menhaden mean weight in g based on TL
-menh_m = 20.4; % menhaden slope at 125 kHz
-menh_b = 68.88; % menhaden intercept at 125 kHz
+menh_m = 20.4; % menhaden slope at 120 kHz
+menh_b = 68.88; % menhaden intercept at 120 kHz
 
 menh_TS = menh_m * log10(menh_L) - menh_b; % generalized menhaden TS equation
 menh_obs = 10^(menh_TS/10);

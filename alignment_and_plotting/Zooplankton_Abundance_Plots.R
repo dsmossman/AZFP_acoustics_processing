@@ -113,6 +113,17 @@ zoop_data_full_delta = zoop_data_full %>%
   mutate(YearSeason = factor(YearSeason, levels = YearSeason, ordered = T)) %>%
   mutate(Delta_A = replace(Delta_A, Delta_A == Inf, 0))
 
+# Getting the total sample sizes
+
+sample_sizes = zoop_data_full %>% 
+  group_by(Season, Shelf_Type) %>% 
+  summarize(num = n())
+sample_sizes_species = zoop_data_full %>% 
+  group_by(Season, Shelf_Type) %>% 
+  count(Species) %>%
+  ungroup() %>%
+  complete(., Season, Shelf_Type, Species, fill = list(n = 0))
+
 #####
 
 # Plots of abundance by season, shelf type, and depth type
@@ -159,16 +170,6 @@ ggplot() +
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Depth_Type_Concentration_Boxplot.png", scale = 2)
 
 #####
-
-# Getting the total sample sizes
-
-sample_sizes = zoop_data_full %>% 
-  filter(Abundance != -999) %>%
-  group_by(Season, Shelf_Type) %>% 
-  summarize(num = n())
-sample_sizes_species = zoop_data_full %>% 
-  group_by(Season, Shelf_Type) %>% 
-  count(Species)
 
 # Boxplots of concentration/biomass separated by shelf strata and season
 

@@ -315,6 +315,8 @@ for (i in 1:length(data_ldf)) {
 # }
 
 #####
+## Some testing for the summer 2023 deployment with the busted 200 kHz channel
+
 # manova_data = data %>%
 #   filter(month(data$Time_M) == 8 & day(data$Time_M) < 23) %>%
 #   group_by(Echo_Num) %>%
@@ -432,13 +434,13 @@ Presence_Absence_Bubble_Time = ggplot() +
     labels = c("Day", "Outside", "Night", "Inside")
   ) +
   geom_point(
-    data = data3[data3$Species != "Empty Cell",],
+    data = data3[data3$Species != "Unidentified",],
     inherit.aes = F,
     aes(x = Date, y = Depth, color = Species),
     alpha = 0.7,
     size = 2.5
   ) +
-  scale_color_viridis_d(begin = 0.2, end = 0.9, direction = -1) +
+  scale_color_viridis_d(begin = 0.3, option = "A") +
   # scale_color_manual(values=c("#BCDF2A","#424242")) +
   scale_y_reverse() +
   geom_vline(
@@ -459,8 +461,6 @@ Presence_Absence_Bubble_Time = ggplot() +
   theme_bw() +
   labs(y = "Depth", fill = "Time of Day") +
   coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0))
-# xlim=c(as.POSIXct("2024-03-01 02:00:00", tz="EST"),
-#        as.POSIXct("2024-03-01 04:30:00", tz="EST")))
 
 fname = paste0(figure_dir, "Presence_Absence_Bubble_Plot.png")
 
@@ -494,7 +494,7 @@ Biomass_Bubble_Time = ggplot() +
     labels = c("Day", "Outside", "Night", "Inside")
   ) +
   geom_point(
-    data = data3[!(data3$Species %in% c("Empty Cell", "Gelatinous Zooplankton")),],
+    data = data3[!(data3$Species %in% c("Unidentified", "Gelatinous Zooplankton")),],
     inherit.aes = F,
     aes(
       x = Date,
@@ -512,7 +512,7 @@ Biomass_Bubble_Time = ggplot() +
     limits = c(0, 5),
     breaks = seq(0, 5, 0.5)
   ) +
-  scale_color_viridis_d(begin = 0.2, end = 0.9, guide = "none") +
+  scale_color_viridis_d(begin = 0.3, option="A") +
   # scale_color_manual(values=c("#BCDF2A","#424242")) +
   geom_vline(
     xintercept = ISOdatetime(2023, 8, 22, 20, 0, 0),
@@ -530,7 +530,7 @@ Biomass_Bubble_Time = ggplot() +
     se = F
   ) +
   theme_bw() +
-  labs(size = expression("Large"~"Copepod"~"Biomass"~"(g/m"^"3"*")"),
+  labs(size = expression("Biomass"~"(g/m"^"3"*")"),
        y = "Depth",
        fill = "Time of Day") +
   coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0)) +
@@ -566,7 +566,7 @@ Concentration_Bubble_Time = ggplot() +
     labels = c("Day", "Outside", "Night", "Inside")
   ) +
   geom_point(
-    data = data3[!(data3$Species %in% c("Empty Cell", "Gelatinous Zooplankton")),],
+    data = data3[!(data3$Species %in% c("Unidentified", "Gelatinous Zooplankton")),],
     inherit.aes = F,
     aes(
       x = Date,
@@ -582,7 +582,7 @@ Concentration_Bubble_Time = ggplot() +
   scale_y_reverse() +
   # scale_radius(breaks=c(-2,-1,0,1,2)) +
   # scale_color_manual(values=c("#BCDF2A","#424242")) +
-  scale_color_viridis_d(begin = 0.2, end = 0.9, guide="none") +
+  scale_color_viridis_d(begin = 0.3, option = "A") +
   geom_vline(
     xintercept = ISOdatetime(2023, 8, 22, 20, 0, 0),
     show.legend = F,
@@ -602,7 +602,7 @@ Concentration_Bubble_Time = ggplot() +
   theme_bw() +
   labs(
     size = expression(paste(
-      "log10 of Large Copepod \nConcentration (individuals/m"^"3" * ")"
+      "log10 of \nConcentration (individuals/m"^"3" * ")"
     )),
     y = "Depth",
     # x = "March 1st, 2024",
@@ -683,10 +683,10 @@ Biomass_Bubble_Map = ggplot() +
   # annotate("text", x=-72.365866666667, y = 40.471816666667, label = "NYB50", vjust=2.5, hjust=1.25, color="purple", size=3, fontface="bold") +
   geom_sf(data = g_coords, size = 0.4) +
   # geom_sf(data = g_SA_intersect,size=0.5,color="blue") +
-  geom_sf(data = data4[!(data4$Species %in% c("Empty Cell", "Gelatinous Zooplankton")),],
+  geom_sf(data = data4[!(data4$Species %in% c("Unidentified", "Gelatinous Zooplankton")),],
           aes(size = D_Int_Biomass, color = Species),
           alpha = 0.6) +
-  scale_color_viridis_d(begin = 0.2, end = 0.9, guide="none") +
+  scale_color_viridis_d(begin = 0.3, option = "A") +
   scale_size_binned(
     range = c(1, 10),
     limits = c(0, 2),
@@ -726,10 +726,10 @@ Concentration_Bubble_Map = ggplot() +
   ) +
   geom_sf(data = g_coords, size = 0.4) +
   # geom_sf(data = g_SA_intersect,size=0.5,color="blue") +
-  geom_sf(data = data4[!(data4$Species %in% c("Empty Cell", "Gelatinous Zooplankton")),],
+  geom_sf(data = data4[!(data4$Species %in% c("Unidentified", "Gelatinous Zooplankton")),],
           aes(size = log10(D_Int_Abundance), color = Species),
           alpha = 0.6) +
-  scale_color_viridis_d(begin = 0.2, end = 0.9, guide="none") +
+  scale_color_viridis_d(begin = 0.3, option="A") +
   scale_size_binned(
     limits = c(0.5, 4),
     breaks = seq(0.5, 4, 0.5),

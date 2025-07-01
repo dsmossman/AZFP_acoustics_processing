@@ -90,13 +90,14 @@ load(paste0(home_dir,"Glider Data/ru43-20240904T1539/Derived Biomass Data/Glider
 assign("summer_2024_gdata", gdata[,1:3])
 rm(g_coords, g_SA_intersect, gdata, closest)
 
-spring_2023_gdata$Deployment = "ru39-20230420T1636"
-fall_2023_gdata$Deployment = "ru39-20231103T1413"
-winter_2024_gdata$Deployment = "ru39-20240215T1646"
-spring_2024_gdata$Deployment = "ru39-20240429T1522"
-summer_2024_gdata$Deployment = "ru43-20240904T1539"
+spring_2023_gdata$Deployment = "Spring 2023"
+fall_2023_gdata$Deployment = "Late Fall 2023"
+winter_2024_gdata$Deployment = "Winter 2024"
+spring_2024_gdata$Deployment = "Spring 2024"
+summer_2024_gdata$Deployment = "Early Fall 2024"
 
 gdata_full = rbind(spring_2023_gdata, fall_2023_gdata, winter_2024_gdata, spring_2024_gdata, summer_2024_gdata)
+gdata_full$Deployment = factor(gdata_full$Deployment, levels = c("Spring 2023", "Late Fall 2023", "Winter 2024", "Spring 2024", "Early Fall 2024"), ordered = T)
 
 ggplot() + 
   geom_sf(data = world, fill = "gray15") +

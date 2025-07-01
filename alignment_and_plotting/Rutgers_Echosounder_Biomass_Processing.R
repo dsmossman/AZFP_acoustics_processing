@@ -91,6 +91,40 @@ data$Time_M = as.POSIXct(format(data$Time_M, tz="America/Detroit", usetz=T))
 data = data %>% arrange(Time_M, Echo_Num)
 
 #####
+## For summer fish, assuming all swimbladder echoes are menhaden and all swimbladderless
+# echoes are longfin squid
+
+squid_L = 6.2 #mean mantle length in cm, from Loranger et al. 2022
+squid_W = exp(-1.04605 + 2.05558 * log(squid_L)) #squid mean weight in g based on L, from Wigley 2003
+
+squid_TS = 20 * log10(squid_L) - 58.6 #intercept from the fisheries acoustics textbook, 120 kHz
+squid_obs = 10^(squid_TS/10)
+
+# all values/equations derived from Lucca and Warren 2019
+menh_L = 25.5 #menhaden mean total length in cm
+menh_W = exp(-11.396 +3.08 * log(menh_L)) #menhaden mean weight in g based on TL
+
+menh_TS = 20.4 * log10(menh_L) - 68.88 #120 kHz
+menh_obs = 10^(menh_TS/10)
+
+data = data %>%
+  mutate(Species = case_when(
+    Species == "Swimbladder fish" ~ "Menhaden",
+    Species == "Swimbladderless fish" ~ "Longfin squid",
+    .default = Species
+  ))
+
+for(i in 1:nrow(data)) {
+  if(data$Species[i] == "Menhaden" && data$Frequency[i] == 125) {
+    data$Abundance[i] = data$ABC[i]/menh_obs
+    data$Biomass[i] = data$Abundance[i] * menh_W
+  } else if (data$Species[i] == "Longfin squid" && data$Frequency[i] == 125) {
+    data$Abundance[i] = data$ABC[i]/squid_obs
+    data$Biomass[i] = data$Abundance[i] * squid_W
+  }
+}
+
+#####
 ## Day, bathymetry, study area shapefiles, marine mammal detections import/formatting
 
 start_date = as.POSIXlt(paste0(data$Date_M[1], ' ', "00:00:00"),
@@ -435,7 +469,7 @@ for(k in 1:nrow(data4)) {
 ## Save the abundance/biomass data
 fname = paste0(data_dir, "Processed_Abundance_Biomass_Data.rda")
 save(list=c("data_ldf", "data_filenames","data","data2","data3","data4"), file = fname)
-
+bb
 #####
 ## Some misc tests
 # data4 %>% reframe(Abundance = D_Int_Abundance,
