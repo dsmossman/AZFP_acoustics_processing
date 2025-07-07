@@ -41,22 +41,22 @@ data(data.Sv_mean == -999,:) = [];
 data(data.Sv_mean == 9999,:) = [];
 
 data_38 = data(data.Frequency == 38,:);
-data_125 = data(data.Frequency == 125,:);
+data_120 = data(data.Frequency == 120,:);
 data_200 = data(data.Frequency == 200,:);
 
 % FOR RU39-20230817T1520, 200 kHz data looks weird after August 23rd, so
 % exclude that from the analysis?
 
 if (yr == "2023" && (mo == 8 && str2double(da) >= 23) || mo == 9)
-    if height(data_38) ~= 0 && height(data_125) ~= 0
+    if height(data_38) ~= 0 && height(data_120) ~= 0
 
         data2_38 = data_38(ismember(data_38(:,{'Interval','Layer'}),...
-            intersectm(data_38(:,{'Interval','Layer'}),data_125(:,{'Interval','Layer'}),'rows'),'rows'),:);
+            intersectm(data_38(:,{'Interval','Layer'}),data_120(:,{'Interval','Layer'}),'rows'),'rows'),:);
 
-        data2_125 = data_125(ismember(data_125(:,{'Interval','Layer'}),...
-            intersectm(data_38(:,{'Interval','Layer'}),data_125(:,{'Interval','Layer'}),'rows'),'rows'),:);
+        data2_120 = data_120(ismember(data_120(:,{'Interval','Layer'}),...
+            intersectm(data_38(:,{'Interval','Layer'}),data_120(:,{'Interval','Layer'}),'rows'),'rows'),:);
 
-        data = [data2_38;data2_125];
+        data = [data2_38;data2_120];
 
     else
         headers = data.Properties.VariableNames;
@@ -66,18 +66,18 @@ if (yr == "2023" && (mo == 8 && str2double(da) >= 23) || mo == 9)
         clear headers
     end
 else
-    if height(data_38) ~= 0 && height(data_125) ~= 0 && height(data_200) ~= 0
+    if height(data_38) ~= 0 && height(data_120) ~= 0 && height(data_200) ~= 0
 
         data2_38 = data_38(ismember(data_38(:,{'Interval','Layer'}),...
-            intersectm(data_38(:,{'Interval','Layer'}),data_125(:,{'Interval','Layer'}),data_200(:,{'Interval','Layer'}),'rows'),'rows'),:);
+            intersectm(data_38(:,{'Interval','Layer'}),data_120(:,{'Interval','Layer'}),data_200(:,{'Interval','Layer'}),'rows'),'rows'),:);
 
-        data2_125 = data_125(ismember(data_125(:,{'Interval','Layer'}),...
-            intersectm(data_38(:,{'Interval','Layer'}),data_125(:,{'Interval','Layer'}),data_200(:,{'Interval','Layer'}),'rows'),'rows'),:);
+        data2_120 = data_120(ismember(data_120(:,{'Interval','Layer'}),...
+            intersectm(data_38(:,{'Interval','Layer'}),data_120(:,{'Interval','Layer'}),data_200(:,{'Interval','Layer'}),'rows'),'rows'),:);
 
         data2_200 = data_200(ismember(data_200(:,{'Interval','Layer'}),...
-            intersectm(data_38(:,{'Interval','Layer'}),data_125(:,{'Interval','Layer'}),data_200(:,{'Interval','Layer'}),'rows'),'rows'),:);
+            intersectm(data_38(:,{'Interval','Layer'}),data_120(:,{'Interval','Layer'}),data_200(:,{'Interval','Layer'}),'rows'),'rows'),:);
 
-        data = [data2_38;data2_125;data2_200];
+        data = [data2_38;data2_120;data2_200];
     else
         headers = data.Properties.VariableNames;
         data = cell(0,33);
@@ -91,9 +91,9 @@ end
 
 data.Difference = zeros(height(data),1) * NaN;
 
-data.Difference(data.Frequency == 125) = data2_125.Sv_mean - data2_38.Sv_mean;
+data.Difference(data.Frequency == 120) = data2_120.Sv_mean - data2_38.Sv_mean;
 if exist('data2_200','var')
-    data.Difference(data.Frequency == 200) = data2_200.Sv_mean - data2_125.Sv_mean;
+    data.Difference(data.Frequency == 200) = data2_200.Sv_mean - data2_120.Sv_mean;
 end
 %% Do some broad ID/separation
 
@@ -120,82 +120,80 @@ end
 for i=1:num_cells % for each triplet/pair of pings
     % pull out the volume backscattering coefficient/strength values for each frequency
     Sv_38 = data.Sv_mean(i);
-    Sv_125 = data.Sv_mean(i+num_cells);
+    Sv_120 = data.Sv_mean(i+num_cells);
 
     sv_38 = 10^(Sv_38/10);
-    sv_125 = 10^(Sv_125/10);
+    sv_120 = 10^(Sv_120/10);
 
-    Diff_125_38 = data.Difference(i+num_cells);
+    Diff_120_38 = data.Difference(i+num_cells);
 
     if exist('data2_200','var')
         Sv_200 = data.Sv_mean(i+2*num_cells);
         sv_200 = 10^(Sv_200/10);
-        Diff_200_125 = data.Difference(i+2*num_cells);
+        Diff_200_120 = data.Difference(i+2*num_cells);
     end
 
-    % disp([sv_38, sv_125, sv_200])
+    % disp([sv_38, sv_120, sv_200])
 
 
     % possibly need to play with these values/conditions
 
     if exist('Sv_200','var')
-        % if Sv_38 >= -70 && Sv_125 >= -80 && Sv_200 >= -80 % probably a fish
-        % Korneliussen, 2010
-        % if sv_200/sv_38 >= 2.9 && sv_200/sv_38 <= 4.3 &&...
-        %         sv_125/sv_38 >= 1.2 && sv_125/sv_38 <= 1.8
-        if Diff_125_38 > 0 && Diff_200_125 > 0
-            if sv_200/sv_38 > 3 && sv_200/sv_38 < 6 && sv_125/sv_38 > 1.5 && sv_125/sv_38 < 4
+        if Diff_120_38 > 0 && Diff_200_120 > 0
+            if sv_200/sv_38 > 3 && sv_200/sv_38 < 6 && sv_120/sv_38 > 1.5 && sv_120/sv_38 < 4
                 % swimbladderless
                 data.Species([i i+num_cells i+2*num_cells]) = "Swimbladderless fish";
-            else
-                salp_depth = data.Depth_mean(i);
-
-                if salp_depth <=10
-                    min_diff = -0.2;
-                    max_diff = 1.5;
-                else
-                    min_diff = 4.2;
-                    max_diff = 5.1;
-                end
-
-                if Diff_125_38 > min_diff && Diff_125_38 < max_diff
-                    data.Species([i i+num_cells i+2*num_cells]) = "Gelatinous Zooplankton";
-                end
             end
+        elseif sv_120/sv_38 < 1 && sv_200/sv_38 < 1 ...
+                && Sv_38 > -60 && Sv_120 > -70 && Sv_200 > -70
             % swimbladder, most likely herring or alewife, maybe menhaden?
-            % Gorska et al., 2004
-        elseif sv_125/sv_38 < 1 && sv_200/sv_38 < 1
+            % Gorska et al., 2004 and Lucca and Warren, 2019
             data.Species([i i+num_cells i+2*num_cells]) = "Swimbladder fish";
+        else
+
+            salp_depth = data.Depth_mean(i);
+
+            if salp_depth <=10
+                min_diff = -0.2;
+                max_diff = 1.5;
+            else
+                min_diff = 4.2;
+                max_diff = 5.1;
+            end
+
+            if Diff_120_38 > min_diff && Diff_120_38 < max_diff
+                data.Species([i i+num_cells i+2*num_cells]) = "Gelatinous Zooplankton";
+            end
         end
     else
-        if Diff_125_38 > 0
-            if sv_125/sv_38 > 1.5 && sv_125/sv_38 < 4
+        if Diff_120_38 > 0
+            if sv_120/sv_38 > 1.5 && sv_120/sv_38 < 4
                 % swimbladderless, weak echoes are likely sand lance,
                 % strong echoes are... not that
                 data.Species([i i+num_cells]) = "Swimbladderless fish";
-            else
-                salp_depth = data.Depth_mean(i);
-
-                if salp_depth <=10
-                    min_diff = -0.2;
-                    max_diff = 1.5;
-                else
-                    min_diff = 4.2;
-                    max_diff = 5.1;
-                end
-
-                if Diff_125_38 > min_diff && Diff_125_38 < max_diff
-                    data.Species([i i+num_cells]) = "Gelatinous Zooplankton";
-                end
             end
+        elseif sv_120/sv_38 < 1 && ...
+               Sv_38 > -60 && Sv_120 > -70
             % swimbladder, most likely menhaden
-            % Gorska et al., 2004
-        elseif sv_125/sv_38 < 1
+            % Gorska et al., 2004 and Lucca and Warren, 2019
             data.Species([i i+num_cells]) = "Swimbladder fish";
+        else
+            salp_depth = data.Depth_mean(i);
+
+            if salp_depth <=10
+                min_diff = -0.2;
+                max_diff = 1.5;
+            else
+                min_diff = 4.2;
+                max_diff = 5.1;
+            end
+
+            if Diff_120_38 > min_diff && Diff_120_38 < max_diff
+                data.Species([i i+num_cells]) = "Gelatinous Zooplankton";
+            end
         end
     end
 end
-
 % Label non-identified rows
 data.Species(data.Species == "0") = "Unidentified";
 
@@ -232,16 +230,16 @@ herr_L = 19.7; % herring mean length in cm
 herr_W = exp(-11.7972 + 3.0314 * log(herr_L)) * 1000; % herring mean weight in g based on L
 
 bass_L = 58; % striped bass mean length in cm
-bass_b = 56.26; % striped bass intercept at freq = 125 kHz
-bass_m = 15.37; % striped bass slope at freq = 125 kHz
+bass_b = 56.26; % striped bass intercept at freq = 120 kHz
+bass_m = 15.37; % striped bass slope at freq = 120 kHz
 bass_W = exp(-11.7959 + 3.1383 * log(bass_L)) * 1000; % striped bass mean weight in g based on L
 
 bass_TS = bass_m * log10(bass_L) - bass_b;
 bass_obs = 10^(bass_TS/10);
 
 ale_L = 18.5; % alewife mean length in cm
-ale_m = 52.6; % alewife slope at 125 kHz
-ale_b = 100.2; % alewife intercept at 125 kHz
+ale_m = 52.6; % alewife slope at 120 kHz
+ale_b = 100.2; % alewife intercept at 120 kHz
 ale_W = exp(-13.3875 + 3.6716 * log(ale_L)) * 1000; % alewife mean weight in g based on L
 
 ale_TS = ale_m * log10(ale_L)- ale_b; % at 38 kHz, generalized clupeoid equation
@@ -292,7 +290,7 @@ swim_yes_obs = 10^(swim_yes_TS/10);
 swim_no_L = mean([squid_L, mack_L, bttr_L]);
 swim_no_W = mean([squid_W, mack_W, bttr_W]);
 
-swim_no_TS = m * log10(swim_no_L) - squid_b; % using the squid TS calc for now since it's valid for 125 kHz
+swim_no_TS = m * log10(swim_no_L) - squid_b; % using the squid TS calc for now since it's valid for 120 kHz
 swim_no_obs = 10^(swim_no_TS/10);
 
 %% Calculate Abundance/Biomass
@@ -314,7 +312,7 @@ swim_no_obs = 10^(swim_no_TS/10);
 % a per-species basis
 
 for k = 1:height(data)
-    if data.Species(k) == "Squid" && (data.Frequency(k) == 125 || data.Frequency(k) == 125)
+    if data.Species(k) == "Squid" && (data.Frequency(k) == 120 || data.Frequency(k) == 125)
         data.Abundance(k) = data.ABC(k)/squid_obs;
         data.Biomass(k) = data.Abundance(k) * squid_W;
     elseif data.Species(k) == "Mackerel"
@@ -346,7 +344,7 @@ for k = 1:height(data)
     elseif data.Species(k) == "Bluefish" && data.Frequency(k) == 38
         data.Abundance(k) = data.ABC(k)/blue_obs;
         data.Biomass(k) = data.Abundance(k) * blue_W;
-    elseif data.Species(k) == "Menhaden" && (data.Frequency(k) == 125 || data.Frequency(k) == 125)
+    elseif data.Species(k) == "Menhaden" && (data.Frequency(k) == 120 || data.Frequency(k) == 125)
         data.Abundance(k) = data.ABC(k)/menh_obs;
         data.Biomass(k) = data.Abundance(k) * menh_W;
     elseif data.Frequency(k) == 38 && data.Species(k) == "Sand lance"
@@ -355,7 +353,7 @@ for k = 1:height(data)
     elseif data.Frequency(k) == 38 && (data.Species(k) == "Swimbladderless fish (strong)" || data.Species(k) == "Swimbladderless fish (weak)")
         data.Abundance(k) = data.ABC(k)/swim_no_obs;
         data.Biomass(k) = data.Abundance(k) * swim_no_W;
-    elseif (data.Frequency(k) == 125 || data.Frequency(k) == 125) && (data.Species(k) == "Swimbladder fish (strong)" || data.Species(k) == "Swimbladder fish (weak)")
+    elseif (data.Frequency(k) == 120 || data.Frequency(k) == 125) && (data.Species(k) == "Swimbladder fish (strong)" || data.Species(k) == "Swimbladder fish (weak)")
         data.Abundance(k) = data.ABC(k)/swim_yes_obs;
         data.Biomass(k) = data.Abundance(k) * swim_yes_W;
     else

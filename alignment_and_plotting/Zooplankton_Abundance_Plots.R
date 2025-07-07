@@ -115,14 +115,17 @@ zoop_data_full_delta = zoop_data_full %>%
 
 # Getting the total sample sizes
 
-sample_sizes = zoop_data_full %>% 
-  group_by(Season, Shelf_Type) %>% 
-  summarize(num = n())
 sample_sizes_species = zoop_data_full %>% 
-  group_by(Season, Shelf_Type) %>% 
-  count(Species) %>%
+  group_by(Season, Shelf_Type, Species) %>%
+  summarise(Percentage = n()) %>%
+  group_by(Species) %>%
+  mutate(Percentage=Percentage/sum(Percentage)*100) %>%
   ungroup() %>%
-  complete(., Season, Shelf_Type, Species, fill = list(n = 0))
+  complete(., Season, Shelf_Type, Species, fill = list(Percentage = 0))
+
+sample_sizes = zoop_data_full %>%
+  group_by(Season, Shelf_Type) %>%
+  summarise(num =n())
 
 #####
 
@@ -302,6 +305,9 @@ ggplot(data = zoop_data_surface_bottom, aes(x = Surface_Bottom, y = Int_Abundanc
   scale_color_viridis_d(begin = 0, end = 0.8) +
   stat_summary(fun = mean, geom = "point", show.legend = F, position = position_dodge(0.75), shape=4, size=4, stroke = 1) +
   coord_cartesian(clip = 'off', ylim = c(1,6)) +
+  labs(y = "Log10 of Depth-Integrated Large\nCopepod Concentration (individuals/m^2)",
+       color = "NOAA Strata\nAssignment",
+       x = "Surface or Bottom") +
   facet_wrap(~Season)
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Surface_Bottom_Concentration_Large_Copepods_Boxplot.png", scale = 2)

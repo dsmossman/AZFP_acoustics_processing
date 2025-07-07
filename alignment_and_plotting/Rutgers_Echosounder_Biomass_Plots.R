@@ -79,7 +79,7 @@ for (i in 1:length(data_ldf)) {
 
     fname = paste0(
       figure_dir,
-      '/Sv By Frequency/',
+      'Sv By Frequency/',
       str_sub(data_filenames[i], -30, -18),
       "_Sv_By_Frequency_Curves.png"
     )
@@ -101,7 +101,7 @@ for (i in 1:length(data_ldf)) {
 
     fname = paste0(
       figure_dir,
-      '/Frequency Response/',
+      'Frequency Response/',
       str_sub(data_filenames[i], -30, -18),
       "_Frequency_Response_Curves.png"
     )
@@ -111,53 +111,53 @@ for (i in 1:length(data_ldf)) {
     if (i < 7) {
       df3 = df %>% group_by(Echo_Num) %>% reframe(
         Sv_38 = Sv_mean[1],
-        Sv_125 = Sv_mean[2],
+        Sv_120 = Sv_mean[2],
         Sv_200 = Sv_mean[3],
         spec = Species
       )
     } else {
       df3 = df %>% group_by(Echo_Num) %>% reframe(Sv_38 = Sv_mean[1],
-                                                  Sv_125 = Sv_mean[2],
+                                                  Sv_120 = Sv_mean[2],
                                                   spec = Species)
     }
 
     plot3 = ggplot(data = df3, aes(
       x = Sv_38,
-      y = Sv_125,
+      y = Sv_120,
       group = spec,
       color = spec
     )) +
       geom_point() +
-      labs(x = "Sv (38 kHz)", y = "Sv (125 kHz)", color = "Species") +
-      xlim(-115, -10) + ylim(-115, -10) +
+      labs(x = "Sv (38 kHz)", y = "Sv (120 kHz)", color = "Species") +
+      xlim(-116, -10) + ylim(-116, -10) +
       theme_bw()
 
     fname = paste0(
       figure_dir,
-      '/Sv Scatterplots/',
+      'Sv Scatterplots/',
       str_sub(data_filenames[i], -30, -18),
-      "_38_125_Sv_Scatter.png"
+      "_38_120_Sv_Scatter.png"
     )
 
     ggsave(plot3, filename = fname, scale = 2)
 
     if (i < 7) {
       plot4 = ggplot(data = df3, aes(
-        x = Sv_125,
+        x = Sv_120,
         y = Sv_200,
         group = spec,
         color = spec
       )) +
         geom_point() +
-        labs(x = "Sv (125 kHz)", y = "Sv (200 kHz)", color = "Species") +
-        xlim(-115, -10) + ylim(-115, -10) +
+        labs(x = "Sv (120 kHz)", y = "Sv (200 kHz)", color = "Species") +
+        xlim(-116, -10) + ylim(-116, -10) +
         theme_bw()
 
       fname = paste0(
         figure_dir,
         '/Sv Scatterplots/',
         str_sub(data_filenames[i], -30, -18),
-        "_125_200_Sv_Scatter.png"
+        "_120_200_Sv_Scatter.png"
       )
 
       ggsave(plot4, filename = fname, scale = 2)
@@ -170,7 +170,7 @@ for (i in 1:length(data_ldf)) {
       )) +
         geom_point() +
         labs(x = "Sv (38 kHz)", y = "Sv (200 kHz)", color = "Species") +
-        xlim(-115, -10) + ylim(-115, -10) +
+        xlim(-116, -10) + ylim(-116, -10) +
         theme_bw()
 
       fname = paste0(
@@ -434,13 +434,13 @@ Presence_Absence_Bubble_Time = ggplot() +
     labels = c("Day", "Outside", "Night", "Inside")
   ) +
   geom_point(
-    data = data3[data3$Species != "Unidentified",],
+    data = data3[!(data3$Species %in% c("Unidentified", "Empty Cell")),],
     inherit.aes = F,
     aes(x = Date, y = Depth, color = Species),
     alpha = 0.7,
     size = 2.5
   ) +
-  scale_color_viridis_d(begin = 0.3, option = "A") +
+  scale_color_viridis_d(begin = 0, end = 0.8, option = "H", direction = -1) +
   # scale_color_manual(values=c("#BCDF2A","#424242")) +
   scale_y_reverse() +
   geom_vline(
@@ -499,21 +499,18 @@ Biomass_Bubble_Time = ggplot() +
     aes(
       x = Date,
       y = Depth,
-      size = Biomass,
+      size = log10(Biomass),
       color = Species
     ),
     alpha = 0.7
   ) +
-  # geom_point(data = data3[data3$Species %in% c("Menhaden","Unknown (potentially copepods)"),], inherit.aes=F, aes(x=Date,y=Depth,size=log10(Biomass),color=Species),alpha = 0.7) +
-  # geom_point(data = data3[data3$Species == "Gelatinous Zooplankton",], inherit.aes = F, aes(x=Date, y=Depth, color=Species),alpha = 0.7,size=2.5) +
   scale_y_reverse() +
   scale_size_binned(
-    range = c(1, 10),
-    limits = c(0, 5),
-    breaks = seq(0, 5, 0.5)
+    range = c(-2, 5),
+    limits = c(-6, 4),
+    breaks = seq(-6, 4, 2)
   ) +
-  scale_color_viridis_d(begin = 0.3, option="A") +
-  # scale_color_manual(values=c("#BCDF2A","#424242")) +
+  scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = -1) +
   geom_vline(
     xintercept = ISOdatetime(2023, 8, 22, 20, 0, 0),
     show.legend = F,
@@ -530,7 +527,7 @@ Biomass_Bubble_Time = ggplot() +
     se = F
   ) +
   theme_bw() +
-  labs(size = expression("Biomass"~"(g/m"^"3"*")"),
+  labs(size = expression("Log10 of Biomass"~"(g/m"^"3"*")"),
        y = "Depth",
        fill = "Time of Day") +
   coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0)) +
@@ -576,13 +573,13 @@ Concentration_Bubble_Time = ggplot() +
     ),
     alpha = 0.7
   ) +
-  # scale_size_continuous(limits = c(-1, 6), breaks = seq(0, 5, 1)) +
-  # geom_point(data = data3[data3$Species %in% c("Menhaden","Unknown (potentially copepods)"),], inherit.aes=F, aes(x=Date,y=Depth,size=log10(Abundance),color=Species),alpha = 0.7) +
-  # geom_point(data = data3[data3$Species == "Gelatinous Zooplankton",], inherit.aes=F, aes(x=Date,y=Depth,color=Species),alpha = 0.7,size=2.5) +
   scale_y_reverse() +
-  # scale_radius(breaks=c(-2,-1,0,1,2)) +
-  # scale_color_manual(values=c("#BCDF2A","#424242")) +
-  scale_color_viridis_d(begin = 0.3, option = "A") +
+  scale_size_binned(
+    range = c(-2, 5),
+    limits = c(-7, 1),
+    breaks = seq(-7, 1, 2)
+  ) +
+  scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = -1) +
   geom_vline(
     xintercept = ISOdatetime(2023, 8, 22, 20, 0, 0),
     show.legend = F,
@@ -590,7 +587,6 @@ Concentration_Bubble_Time = ggplot() +
     linetype = 2,
     linewidth = 1
   ) +
-  # geom_smooth(data = data3, aes(x = Date, y = Seafloor_Depth),method="loess",span=0.15,color="black",se=F) +
   geom_smooth(
     data = closest,
     aes(x = Time, y = Depth),
@@ -605,17 +601,11 @@ Concentration_Bubble_Time = ggplot() +
       "log10 of \nConcentration (individuals/m"^"3" * ")"
     )),
     y = "Depth",
-    # x = "March 1st, 2024",
     fill = "Time of Day"
   ) +
   coord_cartesian(
     expand = FALSE,
-    ylim = c(max(data3$Depth + 5), 0)
-    # xlim = c(
-    #   as.POSIXct("2024-03-02 23:00:00", tz = "EST"),
-    #   as.POSIXct("2024-03-02 23:30:00", tz = "EST")
-    # )
-  ) +
+    ylim = c(max(data3$Depth + 5), 0)) +
   theme(text = element_text(size = 16))
 
 fname = paste0(figure_dir, "Concentration_Bubble_Plot.png")
@@ -630,30 +620,6 @@ ggsave(Concentration_Bubble_Time,
 
 xlim = c(-75, -72.5)
 ylim = c(38.5, 41.5)
-
-## Isobath lines for RMI project proposal
-#bathy_35m = bathy %>% filter(y < 41) %>% filter(z < 36 & z > 34)
-#bathy_50m = bathy %>% filter(z < 51 & z > 49)
-
-# bathy_35m_line = bathy2 %>% filter(z < 36 & z > 34)  %>%
-#   summarize() %>%
-#   st_cast("LINESTRING")
-# bathy_50m_line = bathy2 %>% filter(z < 51 & z > 49) %>%
-#   summarize() %>%
-#   st_cast("LINESTRING")
-#
-# g_coords_line = g_coords  %>%
-#   summarize() %>%
-#   st_cast("LINESTRING")
-#
-# Intersection_35m = st_intersection(bathy_35m_line,g_coords_line) %>%
-#   st_cast("POINT") %>%
-#   sf_to_df() %>%
-#   filter(x > -73.6 & x < -73.4 & y > 39.45 & y < 39.55)
-# Intersection_50m = st_intersection(bathy_50m_line,g_coords_line) %>%
-#   st_cast("POINT") %>%
-#   sf_to_df() %>%
-#   filter(x > -73.5 & x < -73.0 & y > 39 & y < 39.5)
 
 Biomass_Bubble_Map = ggplot() +
   geom_contour_filled(
@@ -673,33 +639,22 @@ Biomass_Bubble_Map = ggplot() +
     fill = "red",
     alpha = 0.5
   ) +
-  # geom_path(data=bathy_35m, aes(x = x, y = y, linetype = "35m Isobath"),linewidth = 0.5) +
-  # geom_path(data=bathy_50m, aes(x = x, y = y, linetype = "50m Isobath"),linewidth = 0.5) +
-  # scale_linetype_manual("Isobath Lines",breaks=c("35m Isobath","50m Isobath"),
-  #                       values = c(2, 3)) +
-  # annotate("point", x=-72.68182, y = 40.610171666667, shape = 8, color="blue") +
-  # annotate("text", x=-72.68182, y = 40.610171666667, label = "NYB35", vjust=-1.6, hjust=0.5, color="blue", size=3, fontface="bold") +
-  # annotate("point", x=-72.6365866666667, y = 40.471816666667, shape = 8, color="purple") +
-  # annotate("text", x=-72.365866666667, y = 40.471816666667, label = "NYB50", vjust=2.5, hjust=1.25, color="purple", size=3, fontface="bold") +
   geom_sf(data = g_coords, size = 0.4) +
-  # geom_sf(data = g_SA_intersect,size=0.5,color="blue") +
   geom_sf(data = data4[!(data4$Species %in% c("Unidentified", "Gelatinous Zooplankton")),],
-          aes(size = D_Int_Biomass, color = Species),
+          aes(size = log10(D_Int_Biomass), color = Species),
           alpha = 0.6) +
-  scale_color_viridis_d(begin = 0.3, option = "A") +
+  scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = -1) +
   scale_size_binned(
-    range = c(1, 10),
-    limits = c(0, 2),
-    breaks = seq(0, 2, 0.25)
+    range = c(-2, 6),
+    limits = c(-8, 2),
+    breaks = seq(-8, 2, 2)
   ) +
-  # annotate("point", x = -73.48, y = 39.45, color="green", shape=15, size=2) + # 35 m isobath buoy
-  # annotate("point", x = -73.24, y = 39.47, color="green", shape=15, size=2) + # 50 m isobath buoy
   theme_bw() +
   coord_sf(crs = st_crs(g_coords),
            xlim = xlim,
            ylim = ylim) +
   labs(x = "Longitude", y = "Latitude", size = bquote(atop(
-    Depth - Integrated ~ Large ~ phantom(), Copepod ~ Biomass ~ (g / m^2)
+    Log10 ~ Depth - Integrated ~ phantom(), Biomass ~ (g / m^2)
   ))) +
   theme(text = element_text(size = 16), legend.title = element_text(hjust = 0))
 
@@ -725,15 +680,14 @@ Concentration_Bubble_Map = ggplot() +
     alpha = 0.5
   ) +
   geom_sf(data = g_coords, size = 0.4) +
-  # geom_sf(data = g_SA_intersect,size=0.5,color="blue") +
   geom_sf(data = data4[!(data4$Species %in% c("Unidentified", "Gelatinous Zooplankton")),],
           aes(size = log10(D_Int_Abundance), color = Species),
           alpha = 0.6) +
-  scale_color_viridis_d(begin = 0.3, option="A") +
+  scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = -1) +
   scale_size_binned(
-    limits = c(0.5, 4),
-    breaks = seq(0.5, 4, 0.5),
-    range = c(0, 8)
+    range = c(-2, 6),
+    limits = c(-8, 0),
+    breaks = seq(-8, 0, 2)
   ) +
   theme_bw() +
   coord_sf(crs = st_crs(g_coords),
@@ -743,7 +697,7 @@ Concentration_Bubble_Map = ggplot() +
        y = "Latitude",
        size = expression(
          paste(
-           "Log10 Depth-Integrated Large\nCopepod Concentration (individuals/m"^"2" * ")"
+           "Log10 Depth-Integrated\nConcentration (individuals/m"^"2" * ")"
          )
        ))
 
@@ -801,7 +755,7 @@ Concentration_Bubble_Map_Whales = Concentration_Bubble_Map +
            ylim = ylim) +
   labs(color = "Whale Detection") +
   guides(color = guide_legend(order = 1)) +
-  guides(colour = guide_legend(override.aes = list(size = 3)))
+  guides(colour = guide_legend(override.aes = list(size = 3), position = "top"))
 fname = paste0(figure_dir, 'Glider_Path_Concentration_Whales_Map.png')
 ggsave(file = fname, scale = 2)
 }

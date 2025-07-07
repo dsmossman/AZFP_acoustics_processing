@@ -65,7 +65,7 @@ st_write(NOAA_NJ_LI_Strata,
 save(NOAA_NJ_LI_Strata, file = "H:/dm1679/Data/Shapefiles/NOAA_NJ_LI_Strata.rda")
 
 #####
-## Plotting with glider tracks
+## Plotting with zooplankton glider tracks
 
 # home_dir = "H:/dm1679/Data/"
 home_dir = "C:/Users/Delphine/Box/"
@@ -113,4 +113,55 @@ ggplot() +
   theme_bw() + 
   theme(panel.grid = element_blank()) +
   labs(fill = "NOAA Strata\nAssignment")
-ggsave(filename = "H:/dm1679/Data/Shapefiles/NOAA_NJ_LI_Strata_Map.png", scale = 1.5)
+ggsave(filename = "H:/dm1679/Data/Shapefiles/NOAA_NJ_LI_Strata_Map_Zooplankton.png", scale = 1.5)
+
+#####
+## Plotting with fish glider tracks
+
+# home_dir = "H:/dm1679/Data/"
+home_dir = "C:/Users/Delphine/Box/"
+
+load(paste0(home_dir,"Glider Data/ru39-20230817T1520/Derived Biomass Data/Glider_Data.rda"))
+assign("summer_2023_gdata", gdata[,1:3])
+rm(gdata)
+
+load(paste0(home_dir,"Glider Data/ru39-20240723T1442/Derived Biomass Data/Glider_Data.rda"))
+assign("summer_2024_gdata", gdata[,1:3])
+rm(gdata)
+
+load(paste0(home_dir,"Glider Data/ru39-20241021T1717/Derived Biomass Data/Glider_Data.rda"))
+assign("fall_2024_gdata", gdata[,1:3])
+rm(gdata)
+
+load(paste0(home_dir,"Glider Data/ru39-20250226T1700/Derived Biomass Data/Glider_Data.rda"))
+assign("winter_2025_gdata", gdata[,1:3])
+rm(gdata)
+
+# load(paste0(home_dir,"Glider Data/ru43-20250423T1535/Derived Biomass Data/Glider_Data.rda"))
+# assign("spring_2025_gdata", gdata[,1:3])
+rm(g_coords, g_SA_intersect, gdata, closest)
+
+summer_2023_gdata$Deployment = "Summer 2023"
+summer_2024_gdata$Deployment = "Summer 2024"
+fall_2024_gdata$Deployment = "Fall 2024"
+winter_2025_gdata$Deployment = "Winter 2025"
+# spring_2025_gdata$Deployment = "Spring 2025"
+
+gdata_full = rbind(summer_2023_gdata, summer_2024_gdata, fall_2024_gdata, winter_2025_gdata)
+gdata_full$Deployment = factor(gdata_full$Deployment, levels = c("Summer 2023", "Summer 2024", "Fall 2024", "Winter 2025"), ordered = T)
+
+ggplot() + 
+  geom_sf(data = world, fill = "gray15") +
+  geom_sf(data = NOAA_inshore, aes(fill = "Inshore")) +
+  geom_sf(data = NOAA_midshelf, aes(fill = "Midshelf")) +
+  geom_sf(data = NOAA_offshore, aes(fill = "Offshore")) +
+  scale_fill_viridis_d(begin = 0, end=0.8) +
+  geom_path(data = gdata_full, aes(x = longitude, y = latitude, linetype = Deployment, color = Deployment), linewidth = 1) +
+  scale_color_viridis_d(option = "F", begin = 0.1) +
+  coord_sf(xlim = xlim,
+           ylim = ylim,
+           crs = st_crs(world)) +
+  theme_bw() + 
+  theme(panel.grid = element_blank()) +
+  labs(fill = "NOAA Strata\nAssignment")
+ggsave(filename = "H:/dm1679/Data/Shapefiles/NOAA_NJ_LI_Strata_Map_Fish.png", scale = 1.5)

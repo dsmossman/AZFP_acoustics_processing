@@ -79,8 +79,8 @@ if(glider_dep == "ru39-20230817T1520") {
   
   data = data %>% arrange(Frequency) %>% filter(Exclude_below_line_depth_mean >=0)
   
-  data$Echo_Num = rep(1:(nrow(data)/4),times=4)
-  # data$Echo_Num = rep(1:(nrow(data)/3),times=3)
+  # data$Echo_Num = rep(1:(nrow(data)/4),times=4)
+  data$Echo_Num = rep(1:(nrow(data)/3),times=3)
 }
 
 # Reformatting timestamps and converting to eastern time zone
@@ -91,39 +91,83 @@ data$Time_M = as.POSIXct(format(data$Time_M, tz="America/Detroit", usetz=T))
 data = data %>% arrange(Time_M, Echo_Num)
 
 #####
-## For summer fish, assuming all swimbladder echoes are menhaden and all swimbladderless
-# echoes are longfin squid
+## For summer and fall fish, assuming all swimbladder echoes are menhaden and
+# all swimbladderless echoes are longfin squid
 
-squid_L = 6.2 #mean mantle length in cm, from Loranger et al. 2022
-squid_W = exp(-1.04605 + 2.05558 * log(squid_L)) #squid mean weight in g based on L, from Wigley 2003
-
-squid_TS = 20 * log10(squid_L) - 58.6 #intercept from the fisheries acoustics textbook, 120 kHz
-squid_obs = 10^(squid_TS/10)
-
-# all values/equations derived from Lucca and Warren 2019
-menh_L = 25.5 #menhaden mean total length in cm
-menh_W = exp(-11.396 +3.08 * log(menh_L)) #menhaden mean weight in g based on TL
-
-menh_TS = 20.4 * log10(menh_L) - 68.88 #120 kHz
-menh_obs = 10^(menh_TS/10)
-
-data = data %>%
-  mutate(Species = case_when(
-    Species == "Swimbladder fish" ~ "Menhaden",
-    Species == "Swimbladderless fish" ~ "Longfin squid",
-    .default = Species
-  ))
-
-for(i in 1:nrow(data)) {
-  if(data$Species[i] == "Menhaden" && data$Frequency[i] == 125) {
-    data$Abundance[i] = data$ABC[i]/menh_obs
-    data$Biomass[i] = data$Abundance[i] * menh_W
-  } else if (data$Species[i] == "Longfin squid" && data$Frequency[i] == 125) {
-    data$Abundance[i] = data$ABC[i]/squid_obs
-    data$Biomass[i] = data$Abundance[i] * squid_W
+if (month(data$Time_M[1]) %in% c(7, 8, 9, 10)) {
+  squid_L = 6.2 #mean mantle length in cm, from Loranger et al. 2022
+  squid_W = exp(-1.04605 + 2.05558 * log(squid_L)) #squid mean weight in g based on L, from Wigley 2003
+  
+  squid_TS = 20 * log10(squid_L) - 58.6 #intercept from the fisheries acoustics textbook, 120 kHz
+  squid_obs = 10^(squid_TS / 10)
+  
+  # all values/equations derived from Lucca and Warren 2019
+  menh_L = 25.5 #menhaden mean total length in cm
+  menh_W = exp(-11.396 + 3.08 * log(menh_L)) #menhaden mean weight in g based on TL
+  
+  menh_TS = 20.4 * log10(menh_L) - 68.88 #120 kHz
+  menh_obs = 10^(menh_TS / 10)
+  
+  data = data %>%
+    mutate(
+      Species = case_when(
+        Species == "Swimbladder fish" ~ "Menhaden",
+        Species == "Swimbladderless fish" ~ "Longfin squid",
+        .default = Species
+      )
+    )
+  
+  for (i in 1:nrow(data)) {
+    if (data$Species[i] == "Menhaden" && data$Frequency[i] == 120) {
+      data$Abundance[i] = data$ABC[i] / menh_obs
+      data$Biomass[i] = data$Abundance[i] * menh_W
+    } else if (data$Species[i] == "Longfin squid" &&
+               data$Frequency[i] == 120) {
+      data$Abundance[i] = data$ABC[i] / squid_obs
+      data$Biomass[i] = data$Abundance[i] * squid_W
+    }
+  }
+  
+} else if (month(data3$Date[1]) %in% c(1, 2, 3)) {
+  ## For winter fish, assuming all swimbladder echoes are herring and all
+  #  swimbladderless echoes are mackerel
+  
+  herr_L = 19.7 # herring mean length in cm
+  herr_W = exp(-11.7972 + 3.0314 * log(herr_L)) * 1000 # herring mean weight in g based on L
+  
+  # Depth-dependent herring TS and obs function
+  herr_obs = function(herr_z) {
+    herr_TS = 20 * log10(herr_L) - 2.3 * log10(1 + herr_z / 10) - 65.4
+    herr_obs = 10^(herr_TS / 10)
+    return(herr_obs)
+  }
+  
+  mack_L = 22.8 # mean length of mackerel in cm
+  mack_W = exp(-12.6713 + 3.3119 * log(mack_L)) * 1000 # mean weight of mackerel in g based on L
+  
+  mack_TS = 20 * log10(mack_L) - 53.58
+  mack_obs = 10^(mack_TS / 10)
+  
+  data = data %>%
+    mutate(
+      Species = case_when(
+        Species == "Swimbladder fish" ~ "Atlantic herring",
+        Species == "Swimbladderless fish" ~ "Atlantic mackerel",
+        .default = Species
+      )
+    )
+  
+  for (i in 1:nrow(data)) {
+    if (data$Species[i] == "Atlantic herring" && data$Frequency[i] == 38) {
+      data$Abundance[i] = data$ABC[i] / herr_obs(data$Depth_mean[i])
+      data$Biomass[i] = data$Abundance[i] * herr_W
+    } else if (data$Species[i] == "Atlantic mackerel" &&
+               data$Frequency[i] == 200) {
+      data$Abundance[i] = data$ABC[i] / mack_obs
+      data$Biomass[i] = data$Abundance[i] * mack_W
+    }
   }
 }
-
 #####
 ## Day, bathymetry, study area shapefiles, marine mammal detections import/formatting
 
@@ -343,18 +387,18 @@ data3$pH = NA
 data3$salinity = NA
 data3$chlorophyll_a = NA
 data3$temperature = NA
-for (i in 1:nrow(data3)) {
-  idx = which.min(st_distance(data3$geometry[i], g_coords$geometry))
-  
-  data3$pH[i] = gdata$pH[idx]
-  data3$salinity[i] = gdata$salinity[idx]
-  data3$chlorophyll_a[i] = gdata$chlorophyll_a[idx]
-  data3$temperature[i] = gdata$temperature[idx]
-  
-  if(i %% 5000 == 0) {
-    print(i)
-  }
-}
+# for (i in 1:nrow(data3)) {
+#   idx = which.min(st_distance(data3$geometry[i], g_coords$geometry))
+#   
+#   data3$pH[i] = gdata$pH[idx]
+#   data3$salinity[i] = gdata$salinity[idx]
+#   data3$chlorophyll_a[i] = gdata$chlorophyll_a[idx]
+#   data3$temperature[i] = gdata$temperature[idx]
+#   
+#   if(i %% 5000 == 0) {
+#     print(i)
+#   }
+# }
 
 ## Depth-integrated abundance and biomass over glider track
 
@@ -377,10 +421,10 @@ data4 = data3 %>%
     D_Int_Biomass = sum(Biomass),
     Seafloor_Depth = mean(Seafloor_Depth),
     Date = mean(Date),
-    #pH = mean(pH),
-    #salinity = mean(salinity),
-    #chlorophyll_a = mean(chlorophyll_a),
-    #temperature = mean(temperature)
+    pH = mean(pH),
+    salinity = mean(salinity),
+    chlorophyll_a = mean(chlorophyll_a),
+    temperature = mean(temperature)
   ) %>%
   st_as_sf(coords = c("Long", "Lat"), crs = 4326) %>%
   arrange(Date) %>%
@@ -469,7 +513,6 @@ for(k in 1:nrow(data4)) {
 ## Save the abundance/biomass data
 fname = paste0(data_dir, "Processed_Abundance_Biomass_Data.rda")
 save(list=c("data_ldf", "data_filenames","data","data2","data3","data4"), file = fname)
-bb
 #####
 ## Some misc tests
 # data4 %>% reframe(Abundance = D_Int_Abundance,
