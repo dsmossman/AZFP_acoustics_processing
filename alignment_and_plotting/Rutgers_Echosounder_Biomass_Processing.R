@@ -1,6 +1,6 @@
 # Author: Delphine Mossman
 # Date Created: 17 July 2023
-# Date Last Modified: 23 June 2025
+# Date Last Modified: 8 July 2025
 
 # 1. Load libraries and assign some initial variables
 # 2. Read in the acoustically-derived abundance data into a single dataframe and do some reformatting
@@ -370,12 +370,12 @@ data3 = data %>%
   reframe(
     Abundance = sum(Abundance),
     Biomass = sum(Biomass),
-    NASC = mean(NASC),
-    Ping = mean(c(Ping_S, Ping_E)),
+    NASC = mean(NASC, na.rm = T),
+    Ping = mean(c(Ping_S, Ping_E), na.rm = T),
     Depth = mean(Depth_mean, na.rm = T),
-    Date = mean(c(Time_M)),
-    Lat = mean(c(Lat_M)),
-    Long = mean(c(Lon_M)),
+    Date = mean(c(Time_M), na.rm = T),
+    Lat = mean(c(Lat_M), na.rm = T),
+    Long = mean(c(Lon_M), na.rm = T),
     Seafloor_Depth = mean(c(Exclude_below_line_depth_mean + 1),
                           na.rm = T)
   ) %>%
@@ -387,18 +387,18 @@ data3$pH = NA
 data3$salinity = NA
 data3$chlorophyll_a = NA
 data3$temperature = NA
-# for (i in 1:nrow(data3)) {
-#   idx = which.min(st_distance(data3$geometry[i], g_coords$geometry))
-#   
-#   data3$pH[i] = gdata$pH[idx]
-#   data3$salinity[i] = gdata$salinity[idx]
-#   data3$chlorophyll_a[i] = gdata$chlorophyll_a[idx]
-#   data3$temperature[i] = gdata$temperature[idx]
-#   
-#   if(i %% 5000 == 0) {
-#     print(i)
-#   }
-# }
+for (i in 22737:nrow(data3)) {
+  idx = which.min(st_distance(data3$geometry[i], g_coords$geometry))
+
+  data3$pH[i] = gdata$pH[idx]
+  data3$salinity[i] = gdata$salinity[idx]
+  data3$chlorophyll_a[i] = gdata$chlorophyll_a[idx]
+  data3$temperature[i] = gdata$temperature[idx]
+
+  if(i %% 5000 == 0) {
+    print(i)
+  }
+}
 
 ## Depth-integrated abundance and biomass over glider track
 
@@ -419,12 +419,12 @@ data4 = data3 %>%
   reframe(
     D_Int_Abundance = sum(Abundance),
     D_Int_Biomass = sum(Biomass),
-    Seafloor_Depth = mean(Seafloor_Depth),
-    Date = mean(Date),
-    pH = mean(pH),
-    salinity = mean(salinity),
-    chlorophyll_a = mean(chlorophyll_a),
-    temperature = mean(temperature)
+    Seafloor_Depth = mean(Seafloor_Depth, na.rm = T),
+    Date = mean(Date, na.rm = T),
+    pH = mean(pH, na.rm = T),
+    salinity = mean(salinity, na.rm = T),
+    chlorophyll_a = mean(chlorophyll_a, na.rm = T),
+    temperature = mean(temperature, na.rm = T)
   ) %>%
   st_as_sf(coords = c("Long", "Lat"), crs = 4326) %>%
   arrange(Date) %>%
