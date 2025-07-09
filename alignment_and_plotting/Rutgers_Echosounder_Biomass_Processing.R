@@ -387,7 +387,7 @@ data3$pH = NA
 data3$salinity = NA
 data3$chlorophyll_a = NA
 data3$temperature = NA
-for (i in 22737:nrow(data3)) {
+for (i in 1:nrow(data3)) {
   idx = which.min(st_distance(data3$geometry[i], g_coords$geometry))
 
   data3$pH[i] = gdata$pH[idx]
