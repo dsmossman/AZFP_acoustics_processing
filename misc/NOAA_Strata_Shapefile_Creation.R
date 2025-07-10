@@ -165,3 +165,8 @@ ggplot() +
   theme(panel.grid = element_blank()) +
   labs(fill = "NOAA Strata\nAssignment")
 ggsave(filename = "H:/dm1679/Data/Shapefiles/NOAA_NJ_LI_Strata_Map_Fish.png", scale = 1.5)
+
+#####
+
+## Percentage overlap of wind farms and strata
+# https://gis.stackexchange.com/questions/362466/calculate-percentage-overlap-of-2-sets-of-polygons-in-r
