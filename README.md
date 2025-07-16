@@ -6,9 +6,7 @@ Author: Delphine Mossman
 
 ## Installation Instructions
 
-man hell if i know, just download the thing, it's all independent code files
-
-i lied actually there is a python environment that needs installing, i'll figure that out
+Most of these files are standalone code files, with the exception of the Python files in raw_data_processing. In that folder you will find an environment file that should give you the necessary packages for a local conda environment.
 
 ## Processing Instructions
 
