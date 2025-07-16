@@ -10,7 +10,7 @@
 clear variables; close all; clc;
 
 % Add paths to the Matlab processing scripts
-addpath(genpath('C:\Users\Delphine\Box\messy_acoustics_processing\'))
+addpath(genpath('C:\Users\Delphine\Box\AZFP_acoustics_processing\'))
 
 %% Initialization
 
