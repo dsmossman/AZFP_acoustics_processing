@@ -52,11 +52,12 @@ for (i in 1:length(data_ldf)) {
   if (nrow(df) == 0) {
     next
   } else {
-    if (i < 7) {
+    # if (i < 7) {
       df$Echo_Num = rep(1:(nrow(df) / 3), times = 3)
-    } else {
-      df$Echo_Num = rep(1:(nrow(df) / 2), times = 2)
-    }
+    # } else {
+    #   df$Echo_Num = rep(1:(nrow(df) / 2), times = 2)
+    # }
+    # df$Echo_Num = rep(1:(nrow(df) / 4), times = 4)
 
 
     df2 = df %>% group_by(Echo_Num) %>% reframe(
@@ -108,18 +109,18 @@ for (i in 1:length(data_ldf)) {
 
     ggsave(plot2, filename = fname, scale = 2)
 
-    if (i < 7) {
+    #if (i < 7) {
       df3 = df %>% group_by(Echo_Num) %>% reframe(
         Sv_38 = Sv_mean[1],
         Sv_120 = Sv_mean[2],
         Sv_200 = Sv_mean[3],
         spec = Species
       )
-    } else {
-      df3 = df %>% group_by(Echo_Num) %>% reframe(Sv_38 = Sv_mean[1],
-                                                  Sv_120 = Sv_mean[2],
-                                                  spec = Species)
-    }
+    # } else {
+    #   df3 = df %>% group_by(Echo_Num) %>% reframe(Sv_38 = Sv_mean[1],
+    #                                               Sv_120 = Sv_mean[2],
+    #                                               spec = Species)
+    # }
 
     plot3 = ggplot(data = df3, aes(
       x = Sv_38,
@@ -129,7 +130,7 @@ for (i in 1:length(data_ldf)) {
     )) +
       geom_point() +
       labs(x = "Sv (38 kHz)", y = "Sv (120 kHz)", color = "Species") +
-      xlim(-116, -10) + ylim(-116, -10) +
+      xlim(-135, -10) + ylim(-135, -10) +
       theme_bw()
 
     fname = paste0(
@@ -141,7 +142,7 @@ for (i in 1:length(data_ldf)) {
 
     ggsave(plot3, filename = fname, scale = 2)
 
-    if (i < 7) {
+    # if (i < 7) {
       plot4 = ggplot(data = df3, aes(
         x = Sv_120,
         y = Sv_200,
@@ -150,7 +151,7 @@ for (i in 1:length(data_ldf)) {
       )) +
         geom_point() +
         labs(x = "Sv (120 kHz)", y = "Sv (200 kHz)", color = "Species") +
-        xlim(-116, -10) + ylim(-116, -10) +
+        xlim(-135, -10) + ylim(-135, -10) +
         theme_bw()
 
       fname = paste0(
@@ -170,7 +171,7 @@ for (i in 1:length(data_ldf)) {
       )) +
         geom_point() +
         labs(x = "Sv (38 kHz)", y = "Sv (200 kHz)", color = "Species") +
-        xlim(-116, -10) + ylim(-116, -10) +
+        xlim(-135, -10) + ylim(-135, -10) +
         theme_bw()
 
       fname = paste0(
@@ -181,7 +182,7 @@ for (i in 1:length(data_ldf)) {
       )
 
       ggsave(plot5, filename = fname, scale = 2)
-    }
+    # }
   }
 }
 
@@ -441,8 +442,8 @@ Presence_Absence_Bubble_Time = ggplot() +
     size = 2.5
   ) +
   
-  # scale_color_viridis_d(begin = 0, end = 0.8, option = "H", direction = -1) +
-  scale_color_viridis_d(begin = 0.2, end = 0.9, direction = -1) +
+  scale_color_viridis_d(begin = 0, end = 0.8, option = "H", direction = 1) +
+  # scale_color_viridis_d(begin = 0.2, end = 0.9, direction = 1) +
   scale_y_reverse() +
   geom_vline(
     xintercept = ISOdatetime(2023, 8, 22, 20, 0, 0),
