@@ -29,7 +29,7 @@ import re
 
 # Define some variables
 
-homedir = "H:/dm1679/Data/Glider Data/"
+homedir = "C:/Users/Delphine/Box/Glider Data/"
 dep_name = input('Enter the full name of the deployment: ')
 
 # Needs to be manually changed depending on whether the AZFP is zoop or fish configured

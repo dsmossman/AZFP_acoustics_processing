@@ -305,3 +305,33 @@ ggplot(data = fish_data_surface_bottom, aes(x = Surface_Bottom, y = Int_Abundanc
   facet_grid(Season~Species)
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Surface_Bottom_Concentration_Fish_Boxplot.png", scale = 2)
+
+#####
+# Load up a clean version of fish_data_full
+
+load("H:/dm1679/Data/Glider Data/RMI_Fish_Correlation_Data_Full.rda")
+
+# Vertical bar plot profiles
+
+fish_data_vertical = fish_data_full %>%
+  mutate(Depth = floor(Depth)) %>%
+  group_by(Season, Depth) %>%
+  reframe(Abundance = mean(Abundance), Species = "Fish")
+
+ggplot() +
+  geom_col(data = fish_data_vertical, aes(y = Abundance, x = Depth, fill = Species)) +
+  scale_x_reverse() +
+  scale_fill_viridis_d(option = "H") + guides(fill = "none") +
+  coord_flip() +
+  theme_bw() +
+  theme(panel.grid = element_blank()) +
+  labs(y = expression("Fish Concentration (ind/m"^3*")"),
+       x = "Depth (m)") +
+  facet_wrap(~Season, scales = "free_x")
+
+ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Fish_Vertical_Profile_Mean.png", scale = 2)
+
+fish_data_full %>%
+  group_by(Season, Shelf_Type) %>%
+  summarize(mean(Abundance))
+  

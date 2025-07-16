@@ -16,7 +16,7 @@ import os
 # %%
 
 # Define some variables
-homedir = "H:/dm1679/Data/Glider Data/"
+homedir = "C:/Users/Delphine/Box/Glider Data/"
 dep_name = input('Enter the full name of the deployment: ')
 
 workdir = os.path.join(homedir,dep_name,'')

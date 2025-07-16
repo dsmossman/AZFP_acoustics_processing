@@ -44,9 +44,9 @@ world = world[world$geounit == "United States of America",]
 
 ## Load what you have already if you need it
 
-load(paste0(data_dir, "Glider_Data.rda"))
-load(paste0(data_dir, "Peripheral_Data.rda"))
-load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
+#load(paste0(data_dir, "Glider_Data.rda"))
+#load(paste0(data_dir, "Peripheral_Data.rda"))
+#load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
 
 #####
 
@@ -94,7 +94,7 @@ data = data %>% arrange(Time_M, Echo_Num)
 ## For summer and fall fish, assuming all swimbladder echoes are menhaden and
 # all swimbladderless echoes are longfin squid
 
-if (month(data$Time_M[1]) %in% c(7, 8, 9, 10)) {
+if (month(data$Time_M[1]) %in% c(6, 7, 8, 9, 10, 11)) {
   squid_L = 6.2 #mean mantle length in cm, from Loranger et al. 2022
   squid_W = exp(-1.04605 + 2.05558 * log(squid_L)) #squid mean weight in g based on L, from Wigley 2003
   
@@ -128,8 +128,8 @@ if (month(data$Time_M[1]) %in% c(7, 8, 9, 10)) {
     }
   }
   
-} else if (month(data3$Date[1]) %in% c(1, 2, 3)) {
-  ## For winter fish, assuming all swimbladder echoes are herring and all
+} else if (month(data$Time_M[1]) %in% c(12, 1, 2, 3, 4, 5)) {
+  ## For spring and winter fish, assuming all swimbladder echoes are herring and all
   #  swimbladderless echoes are mackerel
   
   herr_L = 19.7 # herring mean length in cm
@@ -214,7 +214,7 @@ Study_Areas_2 = read_sf(
 Study_Area_Final = st_union(Study_Areas[[2]], st_union(Study_Areas_2[25:28,]))
 
 # Sometimes it's year-month, sometimes it's month-year...
-robots4whales_URL = paste0("http://dcs.whoi.edu/rutgers", substr(glider_dep,8,11), "/rutgers", substr(glider_dep,8,11), "_ru40_html/ptracks/manual_analysis.csv")
+robots4whales_URL = paste0("http://dcs.whoi.edu/rutgers", substr(glider_dep,8,11), "/rutgers", substr(glider_dep,8,11), "_ru43_html/ptracks/manual_analysis.csv")
 
 paired_detection = try(download.file(url = robots4whales_URL, destfile = paste0("C:/Users/Delphine/Box/Glider Data/DMON/ru40-", substr(glider_dep, 6, 13), "-dmon.csv"), quiet = T), silent = T)
 

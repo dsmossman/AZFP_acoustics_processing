@@ -55,7 +55,7 @@ assign("zoop_data_summer_2024", data3)
 rm(data, data2, data3, data4, data_filenames, data_ldf)
 
 zoop_data_spring_2023$Season = "Spring (2023)"
-zoop_data_fall_2023$Season = "Late Fall"
+zoop_data_fall_2023$Season = "Fall"
 zoop_data_winter_2024$Season = "Winter"
 zoop_data_spring_2024$Season = "Spring (2024)"
 zoop_data_summer_2024$Season = "Early Fall"
@@ -66,7 +66,7 @@ zoop_data_full = rbind(zoop_data_spring_2023,zoop_data_fall_2023,zoop_data_winte
     hour(Date) >= 7 & hour(Date) <= 19 ~ "Day",
     hour(Date) < 7 | hour(Date) > 19 ~ "Night"
   ))
-zoop_data_full$Season = factor(zoop_data_full$Season, levels = c("Spring (2023)","Late Fall","Winter", "Spring (2024)", "Early Fall"), ordered = T)
+zoop_data_full$Season = factor(zoop_data_full$Season, levels = c("Spring (2023)","Fall","Winter", "Spring (2024)", "Early Fall"), ordered = T)
 
 files = list.files(
   'C:/Users/Delphine/Box/ACOUSTIC DATA PROCESSING PROTOCOLS/AZFP Processing/Shapefiles/',
@@ -308,19 +308,47 @@ ggplot(data = zoop_data_surface_bottom, aes(x = Surface_Bottom, y = Int_Abundanc
   labs(y = "Log10 of Depth-Integrated Large\nCopepod Concentration (individuals/m^2)",
        color = "NOAA Strata\nAssignment",
        x = "Surface or Bottom") +
+  theme_bw() +
   facet_wrap(~Season)
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Shelf_Type_Surface_Bottom_Concentration_Large_Copepods_Boxplot.png", scale = 2)
 
 #####
+# Load up a clean version of zoop_data_full
 
+load("H:/dm1679/Data/Glider Data/RMI_Zoop_Correlation_Data_Full.rda")
+
+# Vertical bar plot profiles
+
+zoop_data_vertical = zoop_data_full %>%
+  group_by(Season, Depth) %>%
+  reframe(Abundance = sum(Abundance), Species = "Large Copepod")
+
+ggplot() +
+  geom_col(data = zoop_data_vertical, aes(y = Abundance, x = Depth, fill = Species)) +
+  scale_fill_viridis_d(begin = 0.2) + guides(fill = "none") +
+  scale_x_reverse() +
+  coord_flip() + 
+  labs(y = expression("Large Copepod Concentration (ind/m"^3*")"),
+       x = "Depth (m)") +
+  theme_bw() +
+  theme(panel.grid = element_blank()) +
+  facet_wrap(~Season)
+
+ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Large_Copepods_Vertical_Profile_Sum.png", scale = 2)
+
+zoop_data_full %>%
+  group_by(Season) %>%
+  summarize(mean(Abundance))
+
+#####
 # Change in average concentration plot
 
 ggplot() + 
   geom_col(dat = zoop_data_full_delta, position = position_dodge(), aes(x = Species, y = Delta_A, group = YearSeason, fill = YearSeason)) +
   scale_fill_viridis_d(
     breaks = zoop_data_full_delta$YearSeason,
-    labels = c("Spring 2023", "Late Fall 2023", "Winter 2024", "Spring 2024", "Early Fall 2024")
+    labels = c("Spring 2023", "Fall 2023", "Winter 2024", "Spring 2024", "Early Fall 2024")
   ) +
   labs(x = "Species",
        y = "Change in Average Concentration",
@@ -339,43 +367,68 @@ ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Avg_Concentration_Change
 
 #####
 
-load("H:/dm1679/Data/Glider Data/ru39-20230420T1636/Derived Biomass Data/Processed_Abundance_Biomass_Data.rda")
-#zoop_data_spring_2023_d_int = subset(data4, select=-c(pH, temperature, salinity, chlorophyll_a))
+load(paste0(home_dir,"Glider Data/ru39-20230420T1636/Derived Biomass Data/Processed_Abundance_Biomass_Data.rda"))
 assign("zoop_data_spring_2023_d_int", data4)
 rm(data4)
 
-load("H:/dm1679/Data/Glider Data/ru39-20231103T1413/Derived Biomass Data/Processed_Abundance_Biomass_Data.rda")
-#zoop_data_fall_2023_d_int = subset(data4, select=-c(pH, temperature, salinity, chlorophyll_a))
+load(paste0(home_dir,"Glider Data/ru39-20231103T1413/Derived Biomass Data/Processed_Abundance_Biomass_Data.rda"))
 assign("zoop_data_fall_2023_d_int", data4)
 rm(data4)
 
-load("H:/dm1679/Data/Glider Data/ru39-20240215T1646/Derived Biomass Data/Processed_Abundance_Biomass_Data.rda")
-#zoop_data_winter_2024_d_int = subset(data4, select=-c(pH, temperature, salinity, chlorophyll_a))
+load(paste0(home_dir,"Glider Data/ru39-20240215T1646/Derived Biomass Data/Processed_Abundance_Biomass_Data.rda"))
 assign("zoop_data_winter_2024_d_int", data4)
 rm(data4)
 
-load("H:/dm1679/Data/Glider Data/ru39-20240429T1522/Derived Biomass Data/Processed_Abundance_Biomass_Data.rda")
-#zoop_data_spring_2024_d_int = subset(data4, select=-c(pH, temperature, salinity, chlorophyll_a))
+load(paste0(home_dir,"Glider Data/ru39-20240429T1522/Derived Biomass Data/Processed_Abundance_Biomass_Data.rda"))
 assign("zoop_data_spring_2024_d_int", data4)
 rm(data4)
 
-load("H:/dm1679/Data/Glider Data/ru43-20240904T1539/Derived Biomass Data/Processed_Abundance_Biomass_Data.rda")
+load(paste0(home_dir,"Glider Data/ru43-20240904T1539/Derived Biomass Data/Processed_Abundance_Biomass_Data.rda"))
 assign("zoop_data_summer_2024_d_int", data4)
-rm(data4)
+rm(data, data2, data3, data4, data_filenames, data_ldf)
 
-rm(list=c("data_ldf", "data_filenames","data","data2","data3"))
-
-zoop_data_spring_2023_d_int$Season = "Spring"
+zoop_data_spring_2023_d_int$Season = "Spring (2023)"
 zoop_data_fall_2023_d_int$Season = "Fall"
 zoop_data_winter_2024_d_int$Season = "Winter"
-zoop_data_spring_2024_d_int$Season = "Spring"
-zoop_data_summer_2024_d_int$Season = "Summer"
+zoop_data_spring_2024_d_int$Season = "Spring (2024)"
+zoop_data_summer_2024_d_int$Season = "Early Fall"
 
-zoop_data_full_2 = rbind(zoop_data_spring_2023_d_int,zoop_data_fall_2023_d_int,zoop_data_winter_2024_d_int,zoop_data_spring_2024_d_int,zoop_data_summer_2024_d_int) %>% 
-  filter(D_Int_Abundance > 0) %>%
-  mutate(Shelf_Type = replace(Shelf_Type, is.na(Shelf_Type), "Offshore"))
+zoop_data_full_2 = rbind(zoop_data_spring_2023_d_int,zoop_data_fall_2023_d_int,
+                       zoop_data_winter_2024_d_int,zoop_data_spring_2024_d_int,
+                       zoop_data_summer_2024_d_int) %>% 
+  arrange(Date) %>% 
+  mutate(TOD = case_when(
+    hour(Date) >= 7 & hour(Date) <= 19 ~ "Day",
+    hour(Date) < 7 | hour(Date) > 19 ~ "Night"
+  ))
+zoop_data_full_2$Season = factor(zoop_data_full_2$Season, levels = c("Spring (2023)","Fall","Winter", "Spring (2024)", "Early Fall"), ordered = T)
 
-zoop_data_full_2$Season = factor(zoop_data_full_2$Season, levels = c("Spring","Summer","Fall","Winter"), ordered = T)
+files = list.files(
+  'C:/Users/Delphine/Box/ACOUSTIC DATA PROCESSING PROTOCOLS/AZFP Processing/Shapefiles/',
+  pattern = '*.shp$',
+  full.names = T
+)
+
+Study_Areas = lapply(files, function(x)
+  read_sf(x) %>% st_transform(crs = st_crs(4326)))
+
+Study_Areas_2 = read_sf(
+  "C:/Users/Delphine/Box/COOL/Offshore Wind/wind energy shapefiles/BOEM_shp_kmls/shapefiles/wind_leases/BOEM_Wind_Lease_Outlines_06_06_2024.shp"
+) %>%
+  st_transform(crs = st_crs(4326))
+
+Study_Area_Final = st_union(Study_Areas[[2]], st_union(Study_Areas_2[25:28,]))
+
+zoop_data_full_2$Wind_Farm = as.character(t(st_intersects(Study_Area_Final, zoop_data_full_2, sparse = FALSE)))
+
+zoop_data_full_2 = zoop_data_full_2 %>% st_drop_geometry()
+
+# Just in caseies
+zoop_data_full_2$Shelf_Type[is.na(zoop_data_full_2$Shelf_Type)] = "Offshore"
+zoop_data_full_2$Depth_Type[is.na(zoop_data_full_2$Depth_Type)] = "Deep"
+
+fname = "H:/dm1679/Data/Glider Data/RMI_Zoop_Correlation_D_Int_Data_Full.rda"
+save(zoop_data_full_2, file = fname)
 
 zoop_data_full_delta_2 = zoop_data_full_2 %>%
   mutate(Year = year(Date)) %>%
