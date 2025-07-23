@@ -103,8 +103,8 @@ winter_2024_gdata$Deployment = "Winter 2024"
 spring_2024_gdata$Deployment = "Spring 2024"
 summer_2024_gdata$Deployment = "Early Fall 2024"
 
-gdata_full = rbind(spring_2023_gdata, fall_2023_gdata, winter_2024_gdata, spring_2024_gdata, summer_2024_gdata)
-gdata_full$Deployment = factor(gdata_full$Deployment, levels = c("Spring 2023", "Fall 2023", "Winter 2024", "Spring 2024", "Early Fall 2024"), ordered = T)
+gdata_full_zoop = rbind(spring_2023_gdata, fall_2023_gdata, winter_2024_gdata, spring_2024_gdata, summer_2024_gdata)
+gdata_full_zoop$Deployment = factor(gdata_full_zoop$Deployment, levels = c("Spring 2023", "Fall 2023", "Winter 2024", "Spring 2024", "Early Fall 2024"), ordered = T)
 
 ggplot() + 
   geom_sf(data = world, fill = "gray15") +
@@ -112,15 +112,24 @@ ggplot() +
   geom_sf(data = NOAA_midshelf, aes(fill = "Midshelf")) +
   geom_sf(data = NOAA_offshore, aes(fill = "Offshore")) +
   scale_fill_viridis_d(begin = 0, end=0.8) +
-  geom_path(data = gdata_full, aes(x = longitude, y = latitude, linetype = Deployment, color = Deployment), linewidth = 1) +
+  geom_path(data = gdata_full_zoop, aes(x = longitude, y = latitude, linetype = Deployment, color = Deployment), linewidth = 1) +
   scale_color_viridis_d(option = "B", end = 0.8) +
   coord_sf(xlim = xlim,
            ylim = ylim,
            crs = st_crs(world)) +
   theme_bw() + 
-  theme(panel.grid = element_blank()) +
-  labs(fill = "NOAA Strata\nAssignment")
-ggsave(filename = "H:/dm1679/Data/Shapefiles/NOAA_NJ_LI_Strata_Map_Zooplankton.png", scale = 1.5)
+  theme(legend.text = element_text(size = 20, margin = margin(2, 2, 2, 2)),
+        legend.title = element_text(size = 26, margin = margin(20, 2, 20, 2)),
+        axis.text = element_text(size = 20),
+        axis.text.x = element_text(angle = 90),
+        axis.title = element_text(size = 26),
+        plot.margin = margin(1,1,1.5,1.2, "cm"),
+        panel.grid = element_blank()) +
+  labs(x = "Longitude",
+       y = "Latitude",
+    fill = "NOAA Strata\nAssignment") +
+  guides(color = guide_legend(order = 1), linetype = guide_legend(order = 1), fill = guide_legend(order = 2))
+ggsave(filename = "H:/dm1679/Data/Shapefiles/NOAA_NJ_LI_Strata_Map_Zooplankton.png", scale = 2)
 
 #####
 ## Plotting with fish glider tracks
@@ -156,8 +165,8 @@ fall_2024_gdata$Deployment = "Fall 2024"
 winter_2025_gdata$Deployment = "Winter 2025"
 # spring_2025_gdata$Deployment = "Spring 2025"
 
-gdata_full = rbind(summer_2023_gdata, summer_2024_gdata, fall_2024_gdata, winter_2025_gdata)
-gdata_full$Deployment = factor(gdata_full$Deployment, levels = c("Summer 2023", "Summer 2024", "Fall 2024", "Winter 2025"), ordered = T)
+gdata_full_fish = rbind(summer_2023_gdata, summer_2024_gdata, fall_2024_gdata, winter_2025_gdata)
+gdata_full_fish$Deployment = factor(gdata_full_fish$Deployment, levels = c("Summer 2023", "Summer 2024", "Fall 2024", "Winter 2025"), ordered = T)
 
 ggplot() + 
   geom_sf(data = world, fill = "gray15") +
@@ -165,15 +174,24 @@ ggplot() +
   geom_sf(data = NOAA_midshelf, aes(fill = "Midshelf")) +
   geom_sf(data = NOAA_offshore, aes(fill = "Offshore")) +
   scale_fill_viridis_d(begin = 0, end=0.8) +
-  geom_path(data = gdata_full, aes(x = longitude, y = latitude, linetype = Deployment, color = Deployment), linewidth = 1) +
+  geom_path(data = gdata_full_fish, aes(x = longitude, y = latitude, linetype = Deployment, color = Deployment), linewidth = 1) +
   scale_color_viridis_d(option = "F", begin = 0.1) +
   coord_sf(xlim = xlim,
            ylim = ylim,
            crs = st_crs(world)) +
   theme_bw() + 
-  theme(panel.grid = element_blank()) +
-  labs(fill = "NOAA Strata\nAssignment")
-ggsave(filename = "H:/dm1679/Data/Shapefiles/NOAA_NJ_LI_Strata_Map_Fish.png", scale = 1.5)
+  theme(legend.text = element_text(size = 20, margin = margin(2, 2, 2, 2)),
+        legend.title = element_text(size = 26, margin = margin(20, 2, 20, 2)),
+        axis.text = element_text(size = 20),
+        axis.text.x = element_text(angle = 90),
+        axis.title = element_text(size = 26),
+        plot.margin = margin(1,1,1.5,1.2, "cm"),
+        panel.grid = element_blank()) +
+  labs(x = "Longitude",
+       y = "Latitude",
+       fill = "NOAA Strata\nAssignment") +
+  guides(color = guide_legend(order = 1), linetype = guide_legend(order = 1), fill = guide_legend(order = 2))
+ggsave(filename = "H:/dm1679/Data/Shapefiles/NOAA_NJ_LI_Strata_Map_Fish.png", scale = 2)
 
 #####
 
@@ -208,11 +226,47 @@ ggplot() +
   theme_bw() + 
   theme(panel.grid = element_blank()) +
   labs(fill = "NOAA Strata\nAssignment")
-  
+ggsave(filename = "H:/dm1679/Data/Shapefiles/NOAA_NJ_LI_Strata_Map_Lease_Areas.png", scale = 2)
+
+
 Study_Area_Final = st_union(Atlantic_Shores_Study_Areas, BOEM_Study_Areas)
 
-intersection = rbind(st_intersection(BOEM_Study_Areas, NOAA_inshore),
-                          st_intersection(BOEM_Study_Areas, NOAA_midshelf),
-                          st_intersection(BOEM_Study_Areas, NOAA_offshore)) %>%
-  mutate(intersect_area = st_area(.),
-         percentage_overlap = intersect_area/st_area(BOEM_Study_Areas))
+gdata_full_fish = gdata_full_fish %>%
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+  
+temp = st_intersects(gdata_full_fish$geometry, NOAA_NJ_LI_Strata$geometry)
+temp[lengths(temp) == 0] = NA
+gdata_full_fish$Shelf_Type = temp %>% unlist()
+rm(temp)
+
+for(k in 1:nrow(gdata_full_fish)) {
+  gdata_full_fish$Shelf_Type[k] = NOAA_NJ_LI_Strata$Shelf_Type[as.numeric(gdata_full_fish$Shelf_Type[k])]
+}
+
+gdata_full_fish$Wind_Farm = as.character(t(st_intersects(Study_Area_Final, gdata_full_fish, sparse = FALSE)))
+
+
+gdata_full_zoop = gdata_full_zoop %>%
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+
+temp = st_intersects(gdata_full_zoop$geometry, NOAA_NJ_LI_Strata$geometry)
+temp[lengths(temp) == 0] = NA
+gdata_full_zoop$Shelf_Type = temp %>% unlist()
+rm(temp)
+
+for(k in 1:nrow(gdata_full_zoop)) {
+  gdata_full_zoop$Shelf_Type[k] = NOAA_NJ_LI_Strata$Shelf_Type[as.numeric(gdata_full_zoop$Shelf_Type[k])]
+}
+
+gdata_full_zoop$Wind_Farm = as.character(t(st_intersects(Study_Area_Final, gdata_full_zoop, sparse = FALSE)))
+
+gdata_full = rbind(gdata_full_fish, gdata_full_zoop)
+
+View(gdata_full %>%
+  group_by(Shelf_Type, Wind_Farm) %>%
+  summarise(do_union = F) %>%
+  st_cast("LINESTRING") %>%
+  ungroup() %>%
+  group_by(Shelf_Type, Wind_Farm) %>%
+  do(Length = st_length(.)))
+  

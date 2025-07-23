@@ -316,7 +316,7 @@ load("H:/dm1679/Data/Glider Data/RMI_Fish_Correlation_Data_Full.rda")
 fish_data_vertical = fish_data_full %>%
   mutate(Depth = floor(Depth)) %>%
   group_by(Season, Depth) %>%
-  reframe(Abundance = mean(Abundance), Species = "Fish")
+  reframe(Abundance = sum(Abundance), Species = "Fish")
 
 ggplot() +
   geom_col(data = fish_data_vertical, aes(y = Abundance, x = Depth, fill = Species)) +
@@ -324,14 +324,18 @@ ggplot() +
   scale_fill_viridis_d(option = "H") + guides(fill = "none") +
   coord_flip() +
   theme_bw() +
-  theme(panel.grid = element_blank()) +
+  theme(panel.grid = element_blank(),
+        strip.text = element_text(size = 18, margin = margin(2, 2, 2, 2)),
+        axis.text = element_text(size = 18),
+        axis.title = element_text(size = 22)) +
   labs(y = expression("Fish Concentration (ind/m"^3*")"),
        x = "Depth (m)") +
-  facet_wrap(~Season, scales = "free_x")
+  facet_wrap(~Season, labeller = labeller(Season = c("Fall" = "Fall 2024",
+                                                                        "Winter" = "Winter 2025")))
 
-ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Fish_Vertical_Profile_Mean.png", scale = 2)
+ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Fish_Vertical_Profile_Sum.png", scale = 2)
 
 fish_data_full %>%
-  group_by(Season, Shelf_Type) %>%
-  summarize(mean(Abundance))
+  group_by(Wind_Farm, Season) %>%
+  summarize(paste0(signif(mean(Abundance), digits = 2), " ± ", signif(sd(Abundance), digits = 2)))
   

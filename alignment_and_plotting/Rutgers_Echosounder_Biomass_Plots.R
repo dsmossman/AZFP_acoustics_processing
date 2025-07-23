@@ -517,7 +517,7 @@ Biomass_Bubble_Time = ggplot() +
     limits = c(-6, 4),
     breaks = seq(-6, 4, 2)
   ) +
-  scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = -1) +
+  scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = 1) +
   # scale_size_binned(
   #   range = c(-2, 5),
   #   limits = c(-4, 2),
@@ -597,7 +597,7 @@ Concentration_Bubble_Time = ggplot() +
     limits = c(-7, 1),
     breaks = seq(-7, 1, 2)
   ) +
-  scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = -1) +
+  scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = 1) +
   # scale_size_binned(
   #   range = c(-2, 5),
   #   limits = c(1, 4),
@@ -622,7 +622,7 @@ Concentration_Bubble_Time = ggplot() +
   theme_bw() +
   labs(
     size = expression(paste(
-      "log10 of Large Copepod\nConcentration (individuals/m"^"3" * ")"
+      "log10 of\nConcentration (individuals/m"^"3" * ")"
     )),
     y = "Depth",
     fill = "Time of Day"
@@ -671,7 +671,7 @@ Biomass_Bubble_Map = ggplot() +
   geom_sf(data = data4[!(data4$Species %in% c("Unidentified", "Gelatinous Zooplankton", "Empty Cell")),],
           aes(size = log10(D_Int_Biomass), color = Species),
           alpha = 0.6) +
-  scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = -1) +
+  scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = 1) +
   scale_size_binned(
     range = c(-2, 6),
     limits = c(-8, 2),
@@ -689,7 +689,7 @@ Biomass_Bubble_Map = ggplot() +
            xlim = xlim,
            ylim = ylim) +
   labs(x = "Longitude", y = "Latitude", size = bquote(atop(
-    Log10 ~ Depth - Integrated ~ Large ~ phantom(), Copepod ~ Biomass ~ (g / m^2)
+    Log10 ~ Depth - Integrated ~ phantom(), Biomass ~ (g / m^2)
   ))) +
   theme(legend.text = element_text(size = 20),
         legend.title = element_text(size = 26, hjust = 0),
@@ -723,7 +723,7 @@ Concentration_Bubble_Map = ggplot() +
   geom_sf(data = data4[!(data4$Species %in% c("Unidentified", "Gelatinous Zooplankton", "Empty Cell")),],
           aes(size = log10(D_Int_Abundance), color = Species),
           alpha = 0.6) +
-  scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = -1) +
+  scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = 1) +
   scale_size_binned(
     range = c(-2, 6),
     limits = c(-8, 0),
@@ -741,7 +741,7 @@ Concentration_Bubble_Map = ggplot() +
            ylim = ylim) +
   labs(x = "Longitude",
        y = "Latitude",
-       size = expression(atop(atop("Log 10 Depth-Integrated", "Large Copepod Concentration")~phantom(), "(ind/m"^"2"*")"~phantom()))) +
+       size = expression(atop("Log 10 Depth-Integrated"~phantom(), "Concentration (ind/m"^"2"*")"~phantom()))) +
   theme(legend.text = element_text(size = 20, margin = margin(2, 2, 2, 2)),
         legend.title = element_text(size = 26, margin = margin(20, 2, 20, 2)),
         axis.text = element_text(size = 20),
@@ -858,8 +858,8 @@ ggdraw() +
   draw_plot(Presence_Absence_Bubble_Time) +
   draw_plot(
     Wind_Farm_Map,
-    x = 0.65,
-    y = 0.08,
+    x = 0.53,
+    y = 0.18,
     width = 0.3,
     height = 0.3
   )

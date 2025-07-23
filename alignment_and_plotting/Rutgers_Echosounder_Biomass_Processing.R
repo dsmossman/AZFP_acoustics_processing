@@ -44,8 +44,8 @@ world = world[world$geounit == "United States of America",]
 
 ## Load what you have already if you need it
 
-#load(paste0(data_dir, "Glider_Data.rda"))
-#load(paste0(data_dir, "Peripheral_Data.rda"))
+load(paste0(data_dir, "Glider_Data.rda"))
+load(paste0(data_dir, "Peripheral_Data.rda"))
 #load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
 
 #####
@@ -176,7 +176,7 @@ start_date = as.POSIXlt(paste0(data$Date_M[1], ' ', "00:00:00"),
                         tz = "EST")
 end_date = as.POSIXlt(paste0(data$Date_M[nrow(data)], ' ', "00:00:00"),
                       format = "%d-%b-%Y %H:%M:%S",
-                      tz = "EST")
+                      tz = "EST") + days(1)
 
 day_data = data.frame(Date = seq.POSIXt(start_date, end_date, by = "min"))
 
@@ -216,7 +216,7 @@ Study_Area_Final = st_union(Study_Areas[[2]], st_union(Study_Areas_2[25:28,]))
 # Sometimes it's year-month, sometimes it's month-year...
 robots4whales_URL = paste0("http://dcs.whoi.edu/rutgers", substr(glider_dep,8,11), "/rutgers", substr(glider_dep,8,11), "_ru43_html/ptracks/manual_analysis.csv")
 
-paired_detection = try(download.file(url = robots4whales_URL, destfile = paste0("C:/Users/Delphine/Box/Glider Data/DMON/ru40-", substr(glider_dep, 6, 13), "-dmon.csv"), quiet = T), silent = T)
+paired_detection = try(download.file(url = robots4whales_URL, destfile = paste0("C:/Users/Delphine/Box/Glider Data/DMON/ru43-", substr(glider_dep, 6, 13), "-dmon.csv"), quiet = T), silent = T)
 
 robots4whales_URL = paste0("http://dcs.whoi.edu/rutgers", substr(glider_dep,10,11), substr(glider_dep,8,9), "/rutgers", substr(glider_dep,10,11), substr(glider_dep,8,9), "_ru40_html/ptracks/manual_analysis.csv")
 

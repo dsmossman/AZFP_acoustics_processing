@@ -321,25 +321,34 @@ load("H:/dm1679/Data/Glider Data/RMI_Zoop_Correlation_Data_Full.rda")
 # Vertical bar plot profiles
 
 zoop_data_vertical = zoop_data_full %>%
+  mutate(Depth = floor(Depth)) %>%
   group_by(Season, Depth) %>%
-  reframe(Abundance = sum(Abundance), Species = "Large Copepod")
+  reframe(Abundance = sum(Abundance), Species = "Large Copepod", TOD = TOD)
 
 ggplot() +
-  geom_col(data = zoop_data_vertical, aes(y = Abundance, x = Depth, fill = Species)) +
+  geom_col(data = zoop_data_vertical, aes(y = Abundance, x = Depth, fill = Species), position = position_dodge2() ) +
   scale_fill_viridis_d(begin = 0.2) + guides(fill = "none") +
   scale_x_reverse() +
   coord_flip() + 
   labs(y = expression("Large Copepod Concentration (ind/m"^3*")"),
        x = "Depth (m)") +
   theme_bw() +
-  theme(panel.grid = element_blank()) +
-  facet_wrap(~Season)
+  theme(panel.grid = element_blank(),
+        strip.text = element_text(size = 18, margin = margin(2, 2, 2, 2)),
+        axis.text.y = element_text(size = 18),
+        axis.text.x = element_text(size = 14, angle = 45, hjust = 1),
+        axis.title = element_text(size = 22)) +
+  facet_wrap(~Season, labeller = labeller(Season = c("Spring (2023)" = "Spring 2023",
+                                                     "Fall" = "Fall 2023",
+                                                     "Winter" = "Winter 2024",
+                                                     "Spring (2024)" = "Spring 2024",
+                                                     "Early Fall" = "Early Fall 2024")))
 
 ggsave("H:/dm1679/Data/Glider Data/Statistics Plots/RMI_Large_Copepods_Vertical_Profile_Sum.png", scale = 2)
 
 zoop_data_full %>%
-  group_by(Season) %>%
-  summarize(mean(Abundance))
+  group_by(Wind_Farm, Season) %>%
+  summarize(paste0(round(mean(Abundance), digits = 0), " ± ", round(sd(Abundance), digits = 0)))
 
 #####
 # Change in average concentration plot
