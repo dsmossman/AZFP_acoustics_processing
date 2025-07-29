@@ -33,8 +33,8 @@ homedir = "C:/Users/Delphine/Box/Glider Data/"
 dep_name = input('Enter the full name of the deployment: ')
 
 # Needs to be manually changed depending on whether the AZFP is zoop or fish configured
-template = os.path.join(homedir,'AZFP_Fish_Template_2023.EV')
-# template = os.path.join(homedir,'AZFP_Zooplankton_Template_2023.EV')
+# template = os.path.join(homedir,'AZFP_Fish_Template.EV')
+template = os.path.join(homedir,'AZFP_Zooplankton_Template_1x1_Grid.EV')
 
 workdir = os.path.join(homedir,dep_name,'')
 
@@ -62,6 +62,9 @@ for folder in next(os.walk(basedir))[1]:
         AZFPdir = os.path.join(daydir,day,'')
 
         CSVdir = os.path.join(workdir,'Echoview CSV Import Files','')
+
+        
+
         # Open a new EV file using the template
         EvFile = EvApp.NewFile(template)
 
@@ -150,7 +153,7 @@ for folder in next(os.walk(basedir))[1]:
         # EvFile.Lines.Delete(newline)
 
         # Create a folder for the month (if it does not already exist) and define the file name
-        folder_path = os.path.join(workdir,'Echoview Files',str(AZFPyear) + str(AZFPmonth.zfill(2)),'')
+        folder_path = os.path.join(workdir,'Echoview 1x1 Gridded Files',str(AZFPyear) + str(AZFPmonth.zfill(2)),'')
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 

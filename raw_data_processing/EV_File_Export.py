@@ -26,12 +26,12 @@ EvApp = win32com.client.Dispatch("EchoviewCom.EvApplication")
 
 # Define the year and month to work with, and where the day files are found
 AZFPyear = dep_name[5:9]
-basedir = os.path.join(workdir,'Echoview Files', '')
+basedir = os.path.join(workdir,'Echoview 1x1 Gridded Files', '')
 
 # for folder in ['202409']:
 for folder in next(os.walk(basedir))[1]:
     AZFPmonth = folder[-2:]
-    filedir = os.path.join(workdir,'Echoview Files', str(AZFPyear) + str(AZFPmonth))
+    filedir = os.path.join(workdir,'Echoview 1x1 Gridded Files', str(AZFPyear) + str(AZFPmonth))
 
     for file in os.listdir(filedir):
     # for file in ['ru39-20230817T1520_Echogram_12.EV']:
@@ -42,21 +42,20 @@ for folder in next(os.walk(basedir))[1]:
             day = file[-5:-3]
 
             # Needs to be manually changed depending on whether the AZFP is zoop or fish configured
-            varlist = ['Surface and Bottom Exclusion T1',
-                       'Surface and Bottom Exclusion T2',
-                       'Surface and Bottom Exclusion T3']
-
-            freqlist = ['38','120','200']
-
             # varlist = ['Surface and Bottom Exclusion T1',
             #            'Surface and Bottom Exclusion T2',
-            #            'Surface and Bottom Exclusion T3',
-            #            'Surface and Bottom Exclusion T4']
-            #
-            # freqlist = ['120', '200', '455', '769']
+            #            'Surface and Bottom Exclusion T3']
 
-            exportpath = os.path.join(workdir, 'Echoview CSV Export Files',
-                                      str(AZFPyear) + str(AZFPmonth.zfill(2)))
+            # freqlist = ['38','120','200']
+
+            varlist = ['Surface and Bottom Exclusion T1',
+                       'Surface and Bottom Exclusion T2',
+                       'Surface and Bottom Exclusion T3',
+                       'Surface and Bottom Exclusion T4']
+            
+            freqlist = ['120', '200', '455', '769']
+
+            exportpath = os.path.join(workdir, 'Echoview CSV Export Files 1x1 Grid', str(AZFPyear) + str(AZFPmonth.zfill(2)))
 
             if not os.path.exists(exportpath):
                 os.makedirs(exportpath)

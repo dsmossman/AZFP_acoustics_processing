@@ -30,7 +30,7 @@ dep_end = input("Enter the numerical month the deployment ended: ");
 for i = dep_start:dep_end
     yr=string(dep_year);
     % Directory with Echoview csv files
-    input_dir = strcat('C:\Users\Delphine\Box\Glider Data\',dep_name,'\Echoview CSV Export Files',...
+    input_dir = strcat('C:\Users\Delphine\Box\Glider Data\',dep_name,'\Echoview CSV Export Files 1x1 Grid',...
         '\',char(yr),sprintf('%02d',i),'\');
     % Directory to output formatted files
     output_dir = strcat('C:\Users\Delphine\Box\Glider Data\',dep_name,'\Derived Biomass Data\');
@@ -43,8 +43,8 @@ for i = dep_start:dep_end
         
         % Needs to be manually changed depending on whether the AZFP is
         % zoop or fish configured
-        % Echoview_to_zoop_biomass(yr,mo,da,input_dir,output_dir)
-        Echoview_to_fish_biomass(yr,mo,da,input_dir,output_dir)
+        Echoview_to_zoop_biomass(yr,mo,da,input_dir,output_dir)
+        % Echoview_to_fish_biomass(yr,mo,da,input_dir,output_dir)
 
     end
 end
