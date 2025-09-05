@@ -1,4 +1,4 @@
-# messy_acoustics_processing
+# AZFP_acoustics_processing
 
 A collection of tools to process raw AZFP data collected from glider deployments and calculate concentration/biomass estimates for zooplankton and fish from the results.
 
