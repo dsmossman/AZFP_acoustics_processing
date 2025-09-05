@@ -42,18 +42,18 @@ for folder in next(os.walk(basedir))[1]:
             day = file[-5:-3]
 
             # Needs to be manually changed depending on whether the AZFP is zoop or fish configured
-            # varlist = ['Surface and Bottom Exclusion T1',
-            #            'Surface and Bottom Exclusion T2',
-            #            'Surface and Bottom Exclusion T3']
-
-            # freqlist = ['38','120','200']
-
             varlist = ['Surface and Bottom Exclusion T1',
                        'Surface and Bottom Exclusion T2',
-                       'Surface and Bottom Exclusion T3',
-                       'Surface and Bottom Exclusion T4']
+                       'Surface and Bottom Exclusion T3']
+
+            freqlist = ['38','120','200']
+
+            # varlist = ['Surface and Bottom Exclusion T1',
+            #            'Surface and Bottom Exclusion T2',
+            #            'Surface and Bottom Exclusion T3',
+            #            'Surface and Bottom Exclusion T4']
             
-            freqlist = ['120', '200', '455', '769']
+            # freqlist = ['120', '200', '455', '769']
 
             exportpath = os.path.join(workdir, 'Echoview CSV Export Files 1x1 Grid', str(AZFPyear) + str(AZFPmonth.zfill(2)))
 

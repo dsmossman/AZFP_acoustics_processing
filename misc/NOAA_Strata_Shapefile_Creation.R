@@ -10,6 +10,22 @@ library(sf)
 library(sfheaders)
 library(rnaturalearth)
 
+files = list.files(
+  'C:/Users/Delphine/Box/ACOUSTIC DATA PROCESSING PROTOCOLS/AZFP Processing/Shapefiles/',
+  pattern = '*.shp$',
+  full.names = T
+)
+
+Study_Areas = lapply(files, function(x)
+  read_sf(x) %>% st_transform(crs = st_crs(4326)))
+
+Study_Areas_2 = read_sf(
+  "C:/Users/Delphine/Box/COOL/Offshore Wind/wind energy shapefiles/BOEM_shp_kmls/shapefiles/wind_leases/BOEM_Wind_Lease_Outlines_06_06_2024.shp"
+) %>%
+  st_transform(crs = st_crs(4326))
+
+Study_Area_Final = st_union(Study_Areas[[2]], st_union(Study_Areas_2[25:28,]))
+
 inshore_IDs = c(3150, 3160, 3170, 3180, 3190, 3200, 3230, 3120, 3130, 3140, 3100, 3090, 3110, 3060, 3070, 3080)
 midshelf_IDs = c(1730, 1010, 1690)
 offshore_IDs = c(1740, 1750, 1760, 1020, 1030, 1040, 1700, 1710, 1720)
@@ -112,6 +128,12 @@ ggplot() +
   geom_sf(data = NOAA_midshelf, aes(fill = "Midshelf")) +
   geom_sf(data = NOAA_offshore, aes(fill = "Offshore")) +
   scale_fill_viridis_d(begin = 0, end=0.8) +
+  geom_sf(
+    data = Study_Area_Final,
+    color = "black",
+    fill = "red",
+    alpha = 0.5
+  ) +
   geom_path(data = gdata_full_zoop, aes(x = longitude, y = latitude, linetype = Deployment, color = Deployment), linewidth = 1) +
   scale_color_viridis_d(option = "B", end = 0.8) +
   coord_sf(xlim = xlim,
@@ -174,6 +196,12 @@ ggplot() +
   geom_sf(data = NOAA_midshelf, aes(fill = "Midshelf")) +
   geom_sf(data = NOAA_offshore, aes(fill = "Offshore")) +
   scale_fill_viridis_d(begin = 0, end=0.8) +
+  geom_sf(
+    data = Study_Area_Final,
+    color = "black",
+    fill = "red",
+    alpha = 0.5
+  ) +
   geom_path(data = gdata_full_fish, aes(x = longitude, y = latitude, linetype = Deployment, color = Deployment), linewidth = 1) +
   scale_color_viridis_d(option = "F", begin = 0.1) +
   coord_sf(xlim = xlim,
@@ -263,10 +291,10 @@ gdata_full_zoop$Wind_Farm = as.character(t(st_intersects(Study_Area_Final, gdata
 gdata_full = rbind(gdata_full_fish, gdata_full_zoop)
 
 View(gdata_full %>%
-  group_by(Shelf_Type, Wind_Farm) %>%
+  group_by(Shelf_Type) %>%
   summarise(do_union = F) %>%
   st_cast("LINESTRING") %>%
   ungroup() %>%
-  group_by(Shelf_Type, Wind_Farm) %>%
+  group_by(Shelf_Type) %>%
   do(Length = st_length(.)))
   

@@ -1,6 +1,6 @@
 # Author: Delphine Mossman
 # Date Created: 17 July 2023
-# Date Last Modified: 8 July 2025
+# Date Last Modified: 30 July 2025
 
 # 1. Load libraries and assign some initial variables
 # 2. Read in the acoustically-derived abundance data into a single dataframe and do some reformatting
@@ -46,14 +46,15 @@ world = world[world$geounit == "United States of America",]
 
 load(paste0(data_dir, "Glider_Data.rda"))
 load(paste0(data_dir, "Peripheral_Data.rda"))
-#load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
+load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
 
 #####
 
 ## Acoustic estimates data
 
 # Read in all the data and make a big dataframe
-data_filenames = list.files(data_dir, pattern = "(^RMI) *", full.names = T)
+# data_filenames = list.files(data_dir, pattern = "(^RMI) *", full.names = T)
+data_filenames = list.files(data_dir, pattern = "*(Biomass_Data.csv)", full.names = T)
 
 data_ldf = lapply(data_filenames, function(x) read_csv(x, show_col_types = F))
 
@@ -79,8 +80,8 @@ if(glider_dep == "ru39-20230817T1520") {
   
   data = data %>% arrange(Frequency) %>% filter(Exclude_below_line_depth_mean >=0)
   
-  # data$Echo_Num = rep(1:(nrow(data)/4),times=4)
-  data$Echo_Num = rep(1:(nrow(data)/3),times=3)
+  data$Echo_Num = rep(1:(nrow(data)/4),times=4)
+  # data$Echo_Num = rep(1:(nrow(data)/3),times=3)
 }
 
 # Reformatting timestamps and converting to eastern time zone
@@ -395,8 +396,8 @@ for (i in 1:nrow(data3)) {
   data3$chlorophyll_a[i] = gdata$chlorophyll_a[idx]
   data3$temperature[i] = gdata$temperature[idx]
 
-  if(i %% 5000 == 0) {
-    print(i)
+  if(i %% 10000 == 0) {
+    print(i) # this is just to check that it hasn't crashed
   }
 }
 

@@ -442,8 +442,8 @@ Presence_Absence_Bubble_Time = ggplot() +
     size = 2.5
   ) +
   
-  scale_color_viridis_d(begin = 0, end = 0.8, option = "H", direction = 1) +
-  # scale_color_viridis_d(begin = 0.2, end = 0.9, direction = 1) +
+  # scale_color_viridis_d(begin = 0, end = 0.8, option = "H", direction = -1) + # fish
+  scale_color_viridis_d(begin = 0.2, end = 0.9, direction = -1) + # zooplankton
   scale_y_reverse() +
   geom_vline(
     xintercept = ISOdatetime(2023, 8, 22, 20, 0, 0),
@@ -462,7 +462,7 @@ Presence_Absence_Bubble_Time = ggplot() +
   ) +
   theme_bw() +
   labs(y = "Depth", fill = "Time of Day") +
-  coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0)) +
+  coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
   theme(legend.text = element_text(size = 20),
         legend.title = element_text(size = 26),
         axis.text = element_text(size = 20),
@@ -512,19 +512,21 @@ Biomass_Bubble_Time = ggplot() +
     alpha = 0.7
   ) +
   scale_y_reverse() +
-  scale_size_binned(
-    range = c(-2, 5),
-    limits = c(-6, 4),
-    breaks = seq(-6, 4, 2)
-  ) +
-  scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = 1) +
+  # fish
   # scale_size_binned(
   #   range = c(-2, 5),
-  #   limits = c(-4, 2),
-  #   breaks = seq(-4, 2, 1),
-  #   labels = c(-4, "", -2, "", 0, "", 2)
+  #   limits = c(-6, 4),
+  #   breaks = seq(-6, 4, 2)
   # ) +
-  # scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
+  # scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = -1) +
+  # zooplankton
+  scale_size_binned(
+    range = c(-2, 5),
+    limits = c(-4, 2),
+    breaks = seq(-4, 2, 1),
+    labels = c(-4, "", -2, "", 0, "", 2)
+  ) +
+  scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
   geom_vline(
     xintercept = ISOdatetime(2023, 8, 22, 20, 0, 0),
     show.legend = F,
@@ -541,12 +543,12 @@ Biomass_Bubble_Time = ggplot() +
     se = F
   ) +
   theme_bw() +
-  labs(size = expression("Log10 of Biomass"~"(g/m"^"3"*")"),
+  labs(size = "Log10 of\nBiomass (g/m^3)",
        y = "Depth",
        fill = "Time of Day") +
-  coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0)) +
-  theme(legend.text = element_text(size = 20),
-        legend.title = element_text(size = 26),
+  coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
+  theme(legend.text = element_text(size = 20, margin = margin(2, 2, 2, 2)),
+        legend.title = element_text(size = 26, margin = margin(20, 2, 20, 2)),
         axis.text = element_text(size = 20),
         axis.title = element_text(size = 26),
         plot.margin = margin(1,1,1.5,1.2, "cm"))
@@ -592,12 +594,14 @@ Concentration_Bubble_Time = ggplot() +
     alpha = 0.7
   ) +
   scale_y_reverse() +
+  # fish
   scale_size_binned(
     range = c(-2, 5),
     limits = c(-7, 1),
     breaks = seq(-7, 1, 2)
   ) +
   scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = 1) +
+  # zooplankton
   # scale_size_binned(
   #   range = c(-2, 5),
   #   limits = c(1, 4),
@@ -621,17 +625,13 @@ Concentration_Bubble_Time = ggplot() +
   ) +
   theme_bw() +
   labs(
-    size = expression(paste(
-      "log10 of\nConcentration (individuals/m"^"3" * ")"
-    )),
+    size = "log10 of\nConcentration (ind/m^3)",
     y = "Depth",
     fill = "Time of Day"
   ) +
-  coord_cartesian(
-    expand = FALSE,
-    ylim = c(max(data3$Depth + 5), 0)) +
-  theme(legend.text = element_text(size = 20),
-        legend.title = element_text(size = 26),
+  coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
+  theme(legend.text = element_text(size = 20, margin = margin(2, 2, 2, 2)),
+        legend.title = element_text(size = 26, margin = margin(20, 2, 20, 2)),
         axis.text = element_text(size = 20),
         axis.title = element_text(size = 26),
         plot.margin = margin(1,1,1.5,1.2, "cm"))
@@ -671,26 +671,26 @@ Biomass_Bubble_Map = ggplot() +
   geom_sf(data = data4[!(data4$Species %in% c("Unidentified", "Gelatinous Zooplankton", "Empty Cell")),],
           aes(size = log10(D_Int_Biomass), color = Species),
           alpha = 0.6) +
-  scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = 1) +
-  scale_size_binned(
-    range = c(-2, 6),
-    limits = c(-8, 2),
-    breaks = seq(-8, 2, 2)
-  ) +
-  # scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
+  # fish
+  # scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = 1) +
   # scale_size_binned(
-  #   range = c(-2, 5),
-  #   limits = c(-4, 2),
-  #   breaks = seq(-4, 2, 1),
-  #   labels = c(-4, "", -2, "", 0, "", 2)
+  #   range = c(-2, 6),
+  #   limits = c(-8, 2),
+  #   breaks = seq(-8, 2, 2)
   # ) +
+  # zooplankton
+  scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
+  scale_size_binned(
+    range = c(-2, 5),
+    limits = c(-4, 2),
+    breaks = seq(-4, 2, 1),
+    labels = c(-4, "", -2, "", 0, "", 2)
+  ) +
   theme_bw() +
   coord_sf(crs = st_crs(g_coords),
            xlim = xlim,
            ylim = ylim) +
-  labs(x = "Longitude", y = "Latitude", size = bquote(atop(
-    Log10 ~ Depth - Integrated ~ phantom(), Biomass ~ (g / m^2)
-  ))) +
+  labs(x = "Longitude", y = "Latitude", size = "log10 of Depth-Integrated\nBiomass (g/m^2)") +
   theme(legend.text = element_text(size = 20),
         legend.title = element_text(size = 26, hjust = 0),
         axis.text = element_text(size = 20),
@@ -723,25 +723,27 @@ Concentration_Bubble_Map = ggplot() +
   geom_sf(data = data4[!(data4$Species %in% c("Unidentified", "Gelatinous Zooplankton", "Empty Cell")),],
           aes(size = log10(D_Int_Abundance), color = Species),
           alpha = 0.6) +
-  scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = 1) +
-  scale_size_binned(
-    range = c(-2, 6),
-    limits = c(-8, 0),
-    breaks = seq(-8, 0, 2)
-  ) +
-  # scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
+  # fish
+  # scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = 1) +
   # scale_size_binned(
-  #   range = c(-2, 5),
-  #   limits = c(0.5, 4), 
-  #   breaks = seq(0.5, 4, 0.5)
+  #   range = c(-2, 6),
+  #   limits = c(-8, 0),
+  #   breaks = seq(-8, 0, 2)
   # ) +
+  # zooplankton
+  scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
+  scale_size_binned(
+    range = c(-2, 5),
+    limits = c(0.5, 4),
+    breaks = seq(0.5, 4, 0.5)
+  ) +
   theme_bw() +
   coord_sf(crs = st_crs(g_coords),
            xlim = xlim,
            ylim = ylim) +
   labs(x = "Longitude",
        y = "Latitude",
-       size = expression(atop("Log 10 Depth-Integrated"~phantom(), "Concentration (ind/m"^"2"*")"~phantom()))) +
+       size = "log10 of Depth-Integrated\nConcentration (individuals/m^2)") +
   theme(legend.text = element_text(size = 20, margin = margin(2, 2, 2, 2)),
         legend.title = element_text(size = 26, margin = margin(20, 2, 20, 2)),
         axis.text = element_text(size = 20),
@@ -866,98 +868,98 @@ ggdraw() +
 
 #####
 
-# Plots with depth/shelf-type as a factor
-
-xlim = c(-75, -72.5)
-ylim = c(38, 41)
-
-ggplot() +
-  geom_contour_filled(
-    data = bathy,
-    aes(x = x, y = y, z = z),
-    colour = NA,
-    breaks = c(seq(
-      from = 0, to = 100, by = 5
-    )),
-    show.legend = F
-  ) +
-  scale_fill_grey(start = 0.9, end = 0.3) +
-  geom_sf(data = world, fill = "gray15") +
-  geom_sf(
-    data = Study_Area_Final,
-    color = "black",
-    fill = "red",
-    alpha = 0.5
-  ) +
-  geom_sf(data = g_coords,
-          size = 0.5,
-          aes(group = Depth_Type, color = Depth_Type)) +
-  scale_color_viridis_d(option = "B", end = 0.8) +
-  coord_sf(crs = st_crs(g_coords),
-           xlim = xlim,
-           ylim = ylim) +
-  labs(x = "Longitude", y = "Latitude", color = "Depth Designation")
-fname = paste0(figure_dir, "Glider_Track_Bathymetry.png")
-ggsave(file = fname, scale = 2)
-
-xlim = c(-75, -72.5)
-ylim = c(38, 41)
-
-ggplot() +
-  geom_contour_filled(
-    data = bathy,
-    aes(x = x, y = y, z = z),
-    colour = NA,
-    breaks = c(seq(
-      from = 0, to = 100, by = 5
-    )),
-    show.legend = F
-  ) +
-  scale_fill_grey(start = 0.9, end = 0.3) +
-  geom_sf(data = world,
-          show.legend = F,
-          fill = "gray15") +
-  theme_bw() +
-  geom_sf(data = g_coords,
-          size = 0.5,
-          aes(group = Shelf_Type, color = Shelf_Type)) +
-  scale_color_viridis_d(
-    option = "B",
-    end = 0.8,
-    breaks = c("Inshore", "Midshelf", "Offshore")
-  ) +
-  guides(colour = guide_legend(override.aes = list(size = 3))) +
-  labs(
-    x = "Longitude",
-    y = "Latitude",
-    color = "Shelf Type Designation",
-    size = expression(
-      paste(
-        "Log10 of Depth-Integrated\nConcentration (individuals/m"^"2" * ")"
-      )
-    )
-  ) +
-  new_scale_color() +
-  geom_sf(data = data4,
-          alpha = 0.5,
-          aes(
-            group = Species,
-            color = Species,
-            size = log10(D_Int_Abundance)
-          )) +
-  scale_color_viridis_d(begin = 0.2, end = 0.9) +
-  scale_size_binned(
-    limits = c(2, 5),
-    breaks = seq(2, 5, 0.5),
-    range = c(0, 8)
-  ) +
-  guides(colour = guide_legend(override.aes = list(size = 3))) +
-  labs(color = "Species") +
-  coord_sf(crs = st_crs(g_coords),
-           xlim = xlim,
-           ylim = ylim)
-fname = paste0(figure_dir, "Glider_Shelf_Type_Concentration_Plot.png")
-ggsave(file = fname, scale = 2)
+# # Plots with depth/shelf-type as a factor
+# 
+# xlim = c(-75, -72.5)
+# ylim = c(38, 41)
+# 
+# ggplot() +
+#   geom_contour_filled(
+#     data = bathy,
+#     aes(x = x, y = y, z = z),
+#     colour = NA,
+#     breaks = c(seq(
+#       from = 0, to = 100, by = 5
+#     )),
+#     show.legend = F
+#   ) +
+#   scale_fill_grey(start = 0.9, end = 0.3) +
+#   geom_sf(data = world, fill = "gray15") +
+#   geom_sf(
+#     data = Study_Area_Final,
+#     color = "black",
+#     fill = "red",
+#     alpha = 0.5
+#   ) +
+#   geom_sf(data = g_coords,
+#           size = 0.5,
+#           aes(group = Depth_Type, color = Depth_Type)) +
+#   scale_color_viridis_d(option = "B", end = 0.8) +
+#   coord_sf(crs = st_crs(g_coords),
+#            xlim = xlim,
+#            ylim = ylim) +
+#   labs(x = "Longitude", y = "Latitude", color = "Depth Designation")
+# fname = paste0(figure_dir, "Glider_Track_Bathymetry.png")
+# ggsave(file = fname, scale = 2)
+# 
+# xlim = c(-75, -72.5)
+# ylim = c(38, 41)
+# 
+# ggplot() +
+#   geom_contour_filled(
+#     data = bathy,
+#     aes(x = x, y = y, z = z),
+#     colour = NA,
+#     breaks = c(seq(
+#       from = 0, to = 100, by = 5
+#     )),
+#     show.legend = F
+#   ) +
+#   scale_fill_grey(start = 0.9, end = 0.3) +
+#   geom_sf(data = world,
+#           show.legend = F,
+#           fill = "gray15") +
+#   theme_bw() +
+#   geom_sf(data = g_coords,
+#           size = 0.5,
+#           aes(group = Shelf_Type, color = Shelf_Type)) +
+#   scale_color_viridis_d(
+#     option = "B",
+#     end = 0.8,
+#     breaks = c("Inshore", "Midshelf", "Offshore")
+#   ) +
+#   guides(colour = guide_legend(override.aes = list(size = 3))) +
+#   labs(
+#     x = "Longitude",
+#     y = "Latitude",
+#     color = "Shelf Type Designation",
+#     size = expression(
+#       paste(
+#         "Log10 of Depth-Integrated\nConcentration (individuals/m"^"2" * ")"
+#       )
+#     )
+#   ) +
+#   new_scale_color() +
+#   geom_sf(data = data4,
+#           alpha = 0.5,
+#           aes(
+#             group = Species,
+#             color = Species,
+#             size = log10(D_Int_Abundance)
+#           )) +
+#   scale_color_viridis_d(begin = 0.2, end = 0.9) +
+#   scale_size_binned(
+#     limits = c(2, 5),
+#     breaks = seq(2, 5, 0.5),
+#     range = c(0, 8)
+#   ) +
+#   guides(colour = guide_legend(override.aes = list(size = 3))) +
+#   labs(color = "Species") +
+#   coord_sf(crs = st_crs(g_coords),
+#            xlim = xlim,
+#            ylim = ylim)
+# fname = paste0(figure_dir, "Glider_Shelf_Type_Concentration_Plot.png")
+# ggsave(file = fname, scale = 2)
 
 #####
 ## Zooplankton dB window overlap visualization
@@ -1011,3 +1013,131 @@ ggsave(file = fname, scale = 2)
 #
 # fname = "C:/Users/Delphine/Box/Glider Data/Zooplankton_dB_Window_Figure.png"
 # ggsave(file = fname, scale = 2)
+
+#####
+
+# Plots using volume backscatter strength
+
+# First have to generate missing values for each timestamp
+
+Sv_fill_data = data.frame()
+
+closest = na.omit(closest)
+
+closest$Depth = stats::loess(Depth ~ as.numeric(Time), data = closest, span = 0.15)$fitted
+
+for(i in 1:nrow(closest)) {
+  Sv_fill_data = rbind(Sv_fill_data, expand(closest[i,], Time, full_seq(c(0, round(closest$Depth[i], digits = 0)), period = 1)))
+}
+
+names(Sv_fill_data)[2] = "Depth_mean"
+
+save(Sv_fill_data, file = paste0(data_dir, "Sv_Fill_Data.rda"))
+
+# Gradient plot
+Sv_Gradient_Plot_Full = ggplot() +
+ geom_tile(data = Sv_fill_data, aes(x = Time, y = Depth_mean), color = "grey50") +
+  geom_tile(
+    data = day_data,
+    aes(
+      x = Date,
+      y = median(data3$Depth),
+      fill = TOD
+    ),
+    alpha = 0.2,
+    height = 400
+  ) +
+  geom_tile(
+    data = gdata,
+    aes(
+      x = time,
+      y = median(data3$Depth),
+      fill = Wind_Farm
+    ),
+    alpha = 0.2,
+    height = 400
+  ) +
+  scale_fill_manual(
+    values = c("white", "white", "black", "red"),
+    labels = c("Day", "Outside", "Night", "Inside")
+  ) +
+ geom_tile(data = data, aes(x = Time_M, y = round(Depth_mean, 0.1), color = Sv_mean)) +
+ scale_color_viridis_c() +
+  geom_smooth(
+    data = closest,
+    aes(x = Time, y = Depth),
+    method = "loess",
+    span = 0.15,
+    color = "black",
+    se = F
+  ) +
+  scale_y_reverse() +
+  theme_bw() +
+  coord_cartesian(expand = FALSE, ylim = c(max(closest$Depth) + 5, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
+  labs(x = "Time",
+       y = "Depth (m)",
+       color = "Sv (dB)",
+       fill = "Time of Day/Lease Area") +
+  facet_wrap(~Frequency)
+
+fname = paste0(figure_dir, "Sv_Gradient_Plot_Full.png")
+
+ggsave(filename = fname, height = 8.27, width = 16)
+
+# Single species data only
+
+species_list = unique(data$Species[!(data$Species %in% c("Unidentified", "Gelatinous Zooplankton", "Empty Cell"))])
+
+for(i in 1:length(species_list)) {
+Sv_Gradient_Plot_Species = ggplot() +
+  geom_tile(data = Sv_fill_data, aes(x = Time, y = Depth_mean), color = "grey50") +
+    geom_tile(
+      data = day_data,
+      aes(
+        x = Date,
+        y = median(data3$Depth),
+        fill = TOD
+      ),
+      alpha = 0.2,
+      height = 400
+    ) +
+    geom_tile(
+      data = gdata,
+      aes(
+        x = time,
+        y = median(data3$Depth),
+        fill = Wind_Farm
+      ),
+      alpha = 0.2,
+      height = 400
+    ) +
+    scale_fill_manual(
+      values = c("white", "white", "black", "red"),
+      labels = c("Day", "Outside", "Night", "Inside")
+    ) +
+  geom_tile(data = data[data$Species == species_list[i],], aes(x = Time_M, y = round(Depth_mean, 0.1), color = Sv_mean)) +
+  scale_color_viridis_c() +
+  geom_smooth(
+    data = closest,
+    aes(x = Time, y = Depth),
+    method = "loess",
+    span = 0.15,
+    color = "black",
+    se = F,
+    formula = y ~ x
+  ) +
+  scale_y_reverse() +
+  theme_bw() +
+  coord_cartesian(expand = FALSE, ylim = c(max(closest$Depth) + 5, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
+  labs(x = "Time",
+       y = "Depth (m)",
+       color = "Sv (dB)",
+       fill = "Time of Day/Lease Area") +
+  facet_wrap(~Frequency)
+
+species = species_list[i] %>% gsub(" ", "_", .)
+
+fname = paste0(figure_dir, "Sv_Gradient_Plot_", species, ".png")
+
+ggsave(filename = fname, height = 8.27, width = 16)
+}

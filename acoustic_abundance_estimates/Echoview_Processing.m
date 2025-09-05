@@ -33,7 +33,7 @@ for i = dep_start:dep_end
     input_dir = strcat('C:\Users\Delphine\Box\Glider Data\',dep_name,'\Echoview CSV Export Files 1x1 Grid',...
         '\',char(yr),sprintf('%02d',i),'\');
     % Directory to output formatted files
-    output_dir = strcat('C:\Users\Delphine\Box\Glider Data\',dep_name,'\Derived Biomass Data\');
+    output_dir = strcat('C:\Users\Delphine\Box\Glider Data\',dep_name,'\Derived Biomass Data 1x1 Grid\');
 
     days = dir([input_dir '*_200kHz.csv']);
     

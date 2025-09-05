@@ -15,7 +15,7 @@ import shutil
 
 # Directory where the AZFP monthly data are stored
 dep_name = input("Enter the full name of the deployment: ")
-basedir = os.path.join("H:/dm1679/Data/Glider Data/",dep_name,"AZFP Data","")
+basedir = os.path.join("C:/Users/Delphine/Box/Glider Data/",dep_name,"AZFP Data","")
 
 for folder in next(os.walk(basedir))[1]:
     datadir = os.path.join(basedir,folder,"")

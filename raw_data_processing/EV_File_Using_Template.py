@@ -34,7 +34,10 @@ dep_name = input('Enter the full name of the deployment: ')
 
 # Needs to be manually changed depending on whether the AZFP is zoop or fish configured
 # template = os.path.join(homedir,'AZFP_Fish_Template.EV')
-template = os.path.join(homedir,'AZFP_Zooplankton_Template_1x1_Grid.EV')
+# template = os.path.join(homedir,'AZFP_Zooplankton_Template.EV')
+
+template = os.path.join(homedir,'AZFP_Fish_Template_1x1_Grid.EV')
+# template = os.path.join(homedir,'AZFP_Zooplankton_Template_1x1_Grid.EV')
 
 workdir = os.path.join(homedir,dep_name,'')
 
@@ -52,12 +55,12 @@ AZFPyear = dep_name[5:9]
 basedir = os.path.join(workdir,'AZFP Data','')
 
 for folder in next(os.walk(basedir))[1]:
-# for folder in ['202410']:
+# for folder in ['202309']:
     AZFPmonth = folder[-2:]
     daydir = os.path.join(workdir, 'AZFP Data',str(AZFPyear) + str(AZFPmonth),'')
 
     for day in os.listdir(daydir):
-    # for day in ['21']:
+    # for day in ['14', '15', '16', '17', '18', '19', '20']:
         # Define where the AZFP and GPS/roll/pitch files are
         AZFPdir = os.path.join(daydir,day,'')
 
