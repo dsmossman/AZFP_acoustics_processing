@@ -1034,6 +1034,8 @@ names(Sv_fill_data)[2] = "Depth_mean"
 
 save(Sv_fill_data, file = paste0(data_dir, "Sv_Fill_Data.rda"))
 
+load(paste0(data_dir, "Sv_Fill_Data.rda"))
+
 # Gradient plot
 Sv_Gradient_Plot_Full = ggplot() +
  geom_tile(data = Sv_fill_data, aes(x = Time, y = Depth_mean), color = "grey50") +
@@ -1061,7 +1063,7 @@ Sv_Gradient_Plot_Full = ggplot() +
     values = c("white", "white", "black", "red"),
     labels = c("Day", "Outside", "Night", "Inside")
   ) +
- geom_tile(data = data, aes(x = Time_M, y = round(Depth_mean, 0.1), color = Sv_mean)) +
+ geom_tile(data = data[!(data$Species %in% c("Unidentified", "Gelatinous Zooplankton", "Empty Cell")),], aes(x = Time_M, y = round(Depth_mean, 0.1), color = Sv_mean)) +
  scale_color_viridis_c() +
   geom_smooth(
     data = closest,
