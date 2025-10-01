@@ -145,7 +145,8 @@ if (month(data$Time_M[1]) %in% c(6, 7, 8, 9, 10, 11)) {
   
   mack_L = 22.8 # mean length of mackerel in cm
   mack_W = exp(-12.6713 + 3.3119 * log(mack_L)) * 1000 # mean weight of mackerel in g based on L
-  
+
+  # Scoulding et al., 2017
   mack_TS = 20 * log10(mack_L) - 53.58
   mack_obs = 10^(mack_TS / 10)
   
