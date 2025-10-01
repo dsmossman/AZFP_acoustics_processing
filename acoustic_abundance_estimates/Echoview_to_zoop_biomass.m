@@ -140,7 +140,7 @@ end
 %% Export excel file with final data for that downcast
 
 % Output file base name
-BaseName = strcat('RMI',yr,'_',sprintf('%02d',mo),'_',sprintf('%02s',da),'_Biomass_Data_1x1_Grid.csv');
+BaseName = strcat('RMI',yr,'_',sprintf('%02d',mo),'_',sprintf('%02s',da),'_Biomass_Data.csv');
 disp(strcat("Writing data for ",string(mo),"/",string(da),"/",string(yr)," to file."))
 writetable(data,strcat(output_dir,BaseName))
 

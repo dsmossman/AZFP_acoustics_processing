@@ -88,7 +88,8 @@ fprintf("Roll data written to data.roll.csv\n"+...
     "Location: %s%s\n",pwd,'\data.roll.csv');
 %% Formatting depth data
 
-indexes = ~isnan(data{:,"depth"});
+indexes = ~isnan(data{:,"depth"});% calculated from CTD pressure 
+% attempts to use m_depth were........ unsuccessful
 
 depth = data{indexes,"depth"};
 

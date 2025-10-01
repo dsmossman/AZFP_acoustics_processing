@@ -36,20 +36,20 @@ library(ggcorrplot)
 library(mgcv)
 
 sourceDirectory(
-  "C:/Users/dmossman/Box/ACOUSTIC DATA PROCESSING PROTOCOLS/AZFP Processing/R Functions/",
+  "C:/Users/Delphine/Box/R Functions/",
   modifiedOnly = F
 )
 
 glider_dep = choose_directory(caption = "Select glider data folder") %>% substring(., regexpr("ru[0-9]{2}-*", .))
 year = substr(glider_dep, 6, 9)
 
-zoop_data_dir = paste0("C:/Users/dmossman/Box/Glider Data/",
+zoop_data_dir = paste0("C:/Users/Delphine/Box/Glider Data/",
                        glider_dep,
                        "/Derived Biomass Data/")
-figure_dir = paste0("C:/Users/dmossman/Box/Glider Data/", glider_dep, "/Figures/")
+figure_dir = paste0("C:/Users/Delphine/Box/Glider Data/", glider_dep, "/Figures/")
 
-ftle_data_dir = "C:/Users/dmossman/Box/FTLE Work/Processed Data/Glider Deployment Data/"
-ftle_processed_dir = "C:/Users/dmossman/Box/FTLE Work/Processed Data/Hourly CSVs/"
+ftle_data_dir = "C:/Users/Delphine/Box/FTLE Work/Processed Data/Glider Deployment Data/"
+ftle_processed_dir = "C:/Users/Delphine/Box/FTLE Work/Processed Data/Hourly CSVs/"
 
 ftle_file_name = choose.files(caption = "Select FTLE .nc file") %>% substring(., regexpr("MARACOOS_*", .))
 
@@ -346,25 +346,25 @@ save(list = c("zoop_data", "zoop_data2"), file = fname)
 ## Graphing
 
 load(
-  "C:/Users/dmossman/Box/Glider Data/ru39-20230420T1636/Derived Biomass Data/Zooplankton_FTLE_Correlation_Data.rda"
+  "C:/Users/Delphine/Box/Glider Data/ru39-20230420T1636/Derived Biomass Data/Zooplankton_FTLE_Correlation_Data.rda"
 )
 assign("zoop_data_spring_2023", zoop_data)
 zoop_data_spring_2023$Season = "Spring"
 
 load(
-  "C:/Users/dmossman/Box/Glider Data/ru39-20231103T1413/Derived Biomass Data/Zooplankton_FTLE_Correlation_Data.rda"
+  "C:/Users/Delphine/Box/Glider Data/ru39-20231103T1413/Derived Biomass Data/Zooplankton_FTLE_Correlation_Data.rda"
 )
 assign("zoop_data_fall_2023", zoop_data)
 zoop_data_fall_2023$Season = "Fall"
 
 load(
-  "C:/Users/dmossman/Box/Glider Data/ru39-20240215T1646/Derived Biomass Data/Zooplankton_FTLE_Correlation_Data.rda"
+  "C:/Users/Delphine/Box/Glider Data/ru39-20240215T1646/Derived Biomass Data/Zooplankton_FTLE_Correlation_Data.rda"
 )
 assign("zoop_data_winter_2024", zoop_data)
 zoop_data_winter_2024$Season = "Winter"
 
 load(
-  "C:/Users/dmossman/Box/Glider Data/ru39-20240429T1522/Derived Biomass Data/Zooplankton_FTLE_Correlation_Data.rda"
+  "C:/Users/Delphine/Box/Glider Data/ru39-20240429T1522/Derived Biomass Data/Zooplankton_FTLE_Correlation_Data.rda"
 )
 assign("zoop_data_spring_2024", zoop_data)
 zoop_data_spring_2024$Season = "Spring"
@@ -404,13 +404,13 @@ ggplot(data = zoop_data_full, aes(
   )), x = "FTLE Value") +
   theme(text = element_text(size = 16))
 
-ggsave(filename = "C:/Users/dmossman/Box/Glider Data/FTLE_Correlation_Full.png", scale = 2)
+ggsave(filename = "C:/Users/Delphine/Box/Glider Data/FTLE_Correlation_Full.png", scale = 2)
 
 ## FTLE heat map of strong values
 # Percentage of deployment where there was a strong FTLE value in each grid cell of the FTLE data
 
 data_filenames = list.files(
-  "C:/Users/dmossman/Box/FTLE Work/Processed Data/Daily CSVs/",
+  "C:/Users/Delphine/Box/FTLE Work/Processed Data/Daily CSVs/",
   pattern = paste0("MARACOOS_fall_deployment", "_", year, "-*"),
   full.names = T
 )
