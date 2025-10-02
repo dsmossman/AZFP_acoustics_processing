@@ -17,7 +17,8 @@ import os
 
 # Define some variables
 homedir = "C:/Users/Delphine/Box/Glider Data/"
-dep_name = "ru39-20250716T1542" # input('Enter the full name of the deployment: ')
+dep_name = "ru28-20220520T1425" # input('Enter the full name of the deployment: ')
+# for some reason the user input stopped working ugh
 
 workdir = os.path.join(homedir,dep_name,'')
 
@@ -28,8 +29,8 @@ EvApp = win32com.client.Dispatch("EchoviewCom.EvApplication")
 AZFPyear = dep_name[5:9]
 basedir = os.path.join(workdir,'Echoview Files', '')
 
-for folder in ['202508']:
-# for folder in next(os.walk(basedir))[1]:
+# for folder in ['202508']:
+for folder in next(os.walk(basedir))[1]:
     AZFPmonth = folder[-2:]
     filedir = os.path.join(workdir,'Echoview Files', str(AZFPyear) + str(AZFPmonth))
 
