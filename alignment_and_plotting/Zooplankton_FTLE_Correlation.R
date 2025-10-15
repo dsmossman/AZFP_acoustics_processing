@@ -195,9 +195,12 @@ bSquare <- function(x, a) {
   ))
 }
 
+# length of one side of grid cell in m
+dist = 2000
+
 df_squares = df %>% 
   st_transform(crs = 3857) %>%
-  bSquare(., 36000000) %>%
+  bSquare(., dist^2) %>%
   st_transform(crs = 4326) %>%
   mutate(grid_id = 1:nrow(.))
 #ggplot() + geom_sf(data = df_squares) + geom_sf(data = df, aes(color=FTLE))
@@ -271,6 +274,9 @@ zoop_data$FTLE_value = NA
 zoop_dates2 = unique(format(zoop_data2$Date, format = "%Y-%m-%d %HH"))
 zoop_data2$FTLE_value = NA
 
+# cut off everything below 90th percentile of data (Jackie used 0.1)
+cutoff = quantile(ftle_value_data, 0.9, names = F, na.rm=T)
+
 for (i in 1:length(data_filenames)) {
   df = read_csv(data_filenames[i], show_col_types = F) %>%
     mutate(Cell_ID = df_squares$grid_id) %>%
@@ -278,8 +284,6 @@ for (i in 1:length(data_filenames)) {
     st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
   # remove non-strong FTLEs and the fill values here so I don't have to keep saving the files over and over
   
-  # cut off everything below 90th percentile of data (Jackie used 0.1)
-  cutoff = 0.0201 #quantile(df$FTLE[df$FTLE > 0], 0.9, names = F)
   df$FTLE[df$FTLE <= cutoff] = NA
   df = na.omit(df)
   ftle_day = format(df$Time[1], format = "%Y-%m-%d %HH")
@@ -292,31 +296,31 @@ for (i in 1:length(data_filenames)) {
     next # proceed to the next file
   } else {
     # if the dataframe is not empty
-    if (ftle_day %in% zoop_dates) {
-      #     # if the dates match AND there are strong FTLE values
-
-      ## Do the same cell averaging procedure to assign cell IDs to the FTLE values
-
-      # for (k in 1:nrow(df)) {
-      #   idx = as.numeric(st_intersects(df[k, ], area_grid)[1])
-      #   df$Cell_ID[k] = area_grid$grid_id[idx]
-      # }
-
-
-      # grab the subset of the zoop data from that date
-      zoop_data_subset = zoop_data[format(zoop_data$Date, format = "%Y-%m-%d %HH") == ftle_day, ]
-
-      for (m in 1:nrow(zoop_data_subset)) {
-        cell_IDs = eval(parse(text = unlist(zoop_data_subset$Cell_ID[m])))
-        if(length(cell_IDs) >= 1) {
-          zoop_data_subset$FTLE_value = mean(df_squares$FTLE[cell_IDs])
-        } else
-          next
-      }
-
-      # insert the subset back into the regular dataframe
-      zoop_data$FTLE_value[format(zoop_data$Date, format = "%Y-%m-%d %HH") == ftle_day] = zoop_data_subset$FTLE_value
-    }
+    # if (ftle_day %in% zoop_dates) {
+    #   #     # if the dates match AND there are strong FTLE values
+    # 
+    #   ## Do the same cell averaging procedure to assign cell IDs to the FTLE values
+    # 
+    #   # for (k in 1:nrow(df)) {
+    #   #   idx = as.numeric(st_intersects(df[k, ], area_grid)[1])
+    #   #   df$Cell_ID[k] = area_grid$grid_id[idx]
+    #   # }
+    # 
+    # 
+    #   # grab the subset of the zoop data from that date
+    #   zoop_data_subset = zoop_data[format(zoop_data$Date, format = "%Y-%m-%d %HH") == ftle_day, ]
+    # 
+    #   for (m in 1:nrow(zoop_data_subset)) {
+    #     cell_IDs = eval(parse(text = unlist(zoop_data_subset$Cell_ID[m])))
+    #     if(length(cell_IDs) >= 1) {
+    #       zoop_data_subset$FTLE_value = mean(df_squares$FTLE[cell_IDs])
+    #     } else
+    #       next
+    #   }
+    # 
+    #   # insert the subset back into the regular dataframe
+    #   zoop_data$FTLE_value[format(zoop_data$Date, format = "%Y-%m-%d %HH") == ftle_day] = zoop_data_subset$FTLE_value
+    # }
     
     if (ftle_day %in% zoop_dates2) {
  
@@ -334,129 +338,98 @@ for (i in 1:length(data_filenames)) {
       # insert the subset back into the regular dataframe
       zoop_data2$FTLE_value[format(zoop_data2$Date, format = "%Y-%m-%d %HH") == ftle_day] = zoop_data_subset$FTLE_value
     }
-    
+
   }
 }
 
 fname = paste0(zoop_data_dir,
                "Zooplankton_FTLE_Correlation_Data.rda")
-save(list = c("zoop_data", "zoop_data2"), file = fname)
+save(list = c("zoop_data", "zoop_data2", "df_squares", "cutoff"), file = fname)
 
 #####
-## Graphing
 
-load(
-  "C:/Users/Delphine/Box/Glider Data/ru39-20230420T1636/Derived Biomass Data/Zooplankton_FTLE_Correlation_Data.rda"
-)
-assign("zoop_data_spring_2023", zoop_data)
-zoop_data_spring_2023$Season = "Spring"
+load(paste0(zoop_data_dir, "Zooplankton_FTLE_Correlation_Data.rda"))
 
-load(
-  "C:/Users/Delphine/Box/Glider Data/ru39-20231103T1413/Derived Biomass Data/Zooplankton_FTLE_Correlation_Data.rda"
-)
-assign("zoop_data_fall_2023", zoop_data)
-zoop_data_fall_2023$Season = "Fall"
-
-load(
-  "C:/Users/Delphine/Box/Glider Data/ru39-20240215T1646/Derived Biomass Data/Zooplankton_FTLE_Correlation_Data.rda"
-)
-assign("zoop_data_winter_2024", zoop_data)
-zoop_data_winter_2024$Season = "Winter"
-
-load(
-  "C:/Users/Delphine/Box/Glider Data/ru39-20240429T1522/Derived Biomass Data/Zooplankton_FTLE_Correlation_Data.rda"
-)
-assign("zoop_data_spring_2024", zoop_data)
-zoop_data_spring_2024$Season = "Spring"
-
-rm(zoop_data)
-
-zoop_data_full = rbind(
-  #zoop_data_spring_2023,
-  zoop_data_fall_2023,
-  zoop_data_winter_2024#,
-  #zoop_data_spring_2024
-) %>%
-  filter(Species == "Large Copepod")
-
-ggplot(data = zoop_data_full, aes(
-  x = FTLE_value,
-  y = log10(Abundance),
-  group = Season,
-  color = Season
-)) +
-  geom_point(na.rm = T) +
-  geom_smooth(method = "lm", se = F, na.rm = T) +
-  stat_regline_equation(aes(label = ..eq.label..),
-                        # adds equation to linear regression
-                        label.x = 0,
-                        show.legend = F) +
-  stat_cor(
-    aes(label = paste(..rr.label..)),
-    # adds R^2 value
-    r.accuracy = 0.01,
-    label.x = 0.01,
-    show.legend = F
-  ) +
-  scale_color_viridis_d(end = 0.8) +
-  labs(y = bquote(atop(
-    log10 ~ of ~ Concentration ~ phantom(), (individuals / m ^ 3)
-  )), x = "FTLE Value") +
-  theme(text = element_text(size = 16))
-
-ggsave(filename = "C:/Users/Delphine/Box/Glider Data/FTLE_Correlation_Full.png", scale = 2)
-
-## FTLE heat map of strong values
-# Percentage of deployment where there was a strong FTLE value in each grid cell of the FTLE data
-
-data_filenames = list.files(
-  "C:/Users/Delphine/Box/FTLE Work/Processed Data/Daily CSVs/",
-  pattern = paste0("MARACOOS_fall_deployment", "_", year, "-*"),
-  full.names = T
-)
-
-ftle_value_data_full = data.frame()
-
-for (i in 1:length(data_filenames)) {
-  df = read_csv(data_filenames[i], show_col_types = F)
-  # remove non-strong FTLEs and the fill values here so I don't have to keep saving the files over and over
-  
-  # cut off everything below the mean 90th percentile of the four deployments
-  df[df$FTLE < 0.001348607, 4] = NA
-  # cut off everything below 0.05 (Jackie used 0.1)
-  # df[df$FTLE < 0.05,4] = NA
-  # df = na.omit(df)
-  
-  ftle_value_data_full = rbind(ftle_value_data_full, df)
-  
-  if (nrow(df) == 0) {
-    # if the dataframe is empty
-    rm(df) # ditch the dataframe
-    next # proceed to the next file
-  } else {
-    
-  }
-}
-
-percentage_data = ftle_value_data_full %>%
-  count(Longitude, Latitude, name = "Num_Strong_FTLE", .drop = F) %>%
-  mutate(Persistence = Num_Strong_FTLE / 33) %>%
-  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
-
-percentage_data_2 = percentage_data %>%
-  st_transform(crs = 3857) %>%
-  bSquare(., 36000000) %>%
-  st_transform(crs = 4326)
-
-world = ne_countries(scale = "medium")
-world = world[world$geounit == "United States of America", ]
+## Map plot
 
 xlim = c(-75, -72.5)
 ylim = c(38.5, 41.5)
 
+world = ne_countries(scale = "medium")
+world = world[world$geounit == "United States of America", ]
+
+load(paste0(zoop_data_dir, 'Peripheral_Data.rda'))
+
 ggplot() +
+  geom_contour_filled(
+    data = bathy,
+    aes(x = x, y = y, z = z),
+    colour = NA,
+    breaks = c(seq(
+      from = 0, to = 100, by = 10
+    )),
+    show.legend = F
+  ) +
+  scale_fill_grey(start = 0.9, end = 0.3) +
   geom_sf(data = world, fill = "gray15") +
-  geom_sf(data = percentage_data, aes(color = Persistence)) +
-  coord_sf(crs = st_crs(4326),
+  geom_sf(
+    data = Study_Area_Final,
+    color = "black",
+    fill = "red",
+    alpha = 0.5
+  ) +
+  geom_sf(data = zoop_data2 %>% filter(Species == "Large Copepod"), aes(size = log10(D_Int_Abundance))) +
+  geom_sf(data = zoop_data2 %>% filter(Species == "Large Copepod"), aes(color = FTLE_value)) +
+  scale_color_viridis_c() +
+  theme_bw() +
+  coord_sf(crs = st_crs(g_coords),
            xlim = xlim,
            ylim = ylim)
+
+ggplot(data = zoop_data2 %>% filter(Species == "Large Copepod"), aes(x = FTLE_value, y = log10(D_Int_Abundance))) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+#####
+
+## Persistence plot
+
+# Percentage of time a strong (>90th quantile) FTLE value is observed in each grid cell over the entire deployment timeframe
+
+# Need a geom dataframe that has the grid IDs, the polygon for the grid cell, and the percentage value that a strong FTLE value was detected in that grid cell
+
+persistence_df = df_squares %>% 
+  dplyr::select(grid_id) %>%
+  mutate(persistence = 0)
+
+for(j in 1:length(data_filenames)) {
+  df = read_csv(data_filenames[j], show_col_types = F) %>%
+    mutate(Cell_ID = df_squares$grid_id) %>%
+    na.omit() %>%
+    st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
+  # remove non-strong FTLEs and the fill values here so I don't have to keep saving the files over and over
+  
+  df$FTLE[df$FTLE <= cutoff] = NA
+  df = na.omit(df)
+  
+  if(nrow(df) > 0) {
+    for(k in 1:nrow(df)) {
+      persistence_df$persistence[persistence_df$grid_id == df$Cell_ID[k]] = persistence_df$persistence[persistence_df$grid_id == df$Cell_ID[k]] + 1
+    }
+  } else {
+    break
+  }
+}
+
+persistence_df$persistence = persistence_df$persistence/(j - 1)
+persistence_df = persistence_df %>% filter(persistence > 0)
+
+ggplot() +
+  geom_sf(data = persistence_df, aes(color = persistence, fill = persistence)) +
+  scale_fill_viridis_c(aesthetics = c("color","fill")) +
+  geom_sf(data = zoop_data2, aes(size = log10(D_Int_Abundance)))
+
+
+fname = paste0(zoop_data_dir,
+               "FTLE_Persistence_Data.rda")
+save(list = c("persistence_df"), file = fname)

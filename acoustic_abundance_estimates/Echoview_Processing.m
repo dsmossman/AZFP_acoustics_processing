@@ -39,12 +39,12 @@ for i = dep_start:dep_end
     
     for j = 1:length(days)
         mo = i;
-        da = days(j).name(12:13);
+        da = days(j).name(15:16);
         
         % Needs to be manually changed depending on whether the AZFP is
         % zoop or fish configured
-        Echoview_to_zoop_biomass(yr,mo,da,input_dir,output_dir)
-        % Echoview_to_fish_biomass(yr,mo,da,input_dir,output_dir)
+        % Echoview_to_zoop_biomass(yr,mo,da,input_dir,output_dir)
+        Echoview_to_fish_biomass(yr,mo,da,input_dir,output_dir)
 
     end
 end

@@ -44,9 +44,9 @@ world = world[world$geounit == "United States of America",]
 
 ## Load what you have already if you need it
 
-# load(paste0(data_dir, "Glider_Data.rda"))
-# load(paste0(data_dir, "Peripheral_Data.rda"))
-# load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
+load(paste0(data_dir, "Glider_Data.rda"))
+load(paste0(data_dir, "Peripheral_Data.rda"))
+load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
 
 #####
 
@@ -439,7 +439,7 @@ data4 = data3 %>%
 
 # Need to average them into larger horizontal bins
 
-dist = 6000 # horizontal distance in meters
+dist = 2000 # horizontal distance in meters
 # 1 cell/0.1 nau mi * 1 nau mi/1852 m = num cells/m * 6000 m distance = num cells
 num_cells = (1/0.1) * (1/1852) * dist # number of 0.1 nau mi cells in new horizontal dist
 

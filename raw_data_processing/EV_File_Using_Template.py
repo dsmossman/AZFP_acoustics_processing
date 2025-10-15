@@ -156,7 +156,7 @@ for folder in next(os.walk(basedir))[1]:
         # EvFile.Lines.Delete(newline)
 
         # Create a folder for the month (if it does not already exist) and define the file name
-        folder_path = os.path.join(workdir,'Echoview 1x1 Gridded Files',str(AZFPyear) + str(AZFPmonth.zfill(2)),'')
+        folder_path = os.path.join(workdir,'Echoview Files',str(AZFPyear) + str(AZFPmonth.zfill(2)),'')
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
