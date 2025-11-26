@@ -386,7 +386,7 @@ ggplot() +
            xlim = xlim,
            ylim = ylim)
 
-ggplot(data = zoop_data2 %>% filter(Species == "Large Copepod"), aes(x = FTLE_value, y = log10(D_Int_Abundance))) +
+ggplot(data = zoop_data2 %>% filter(Species == "Large Copepod"), aes(x = FTLE_value, y = chlorophyll_a)) +
   geom_point() +
   geom_smooth(method = "lm")
 
@@ -424,12 +424,15 @@ for(j in 1:length(data_filenames)) {
 persistence_df$persistence = persistence_df$persistence/(j - 1)
 persistence_df = persistence_df %>% filter(persistence > 0)
 
-ggplot() +
-  geom_sf(data = persistence_df, aes(color = persistence, fill = persistence)) +
-  scale_fill_viridis_c(aesthetics = c("color","fill")) +
-  geom_sf(data = zoop_data2, aes(size = log10(D_Int_Abundance)))
-
-
 fname = paste0(zoop_data_dir,
                "FTLE_Persistence_Data.rda")
 save(list = c("persistence_df"), file = fname)
+
+load(paste0(zoop_data_dir, "FTLE_Persistence_Data.rda"))
+
+ggplot() +
+  geom_sf(data = persistence_df, aes(color = persistence, fill = persistence)) +
+  scale_fill_viridis_c(aesthetics = c("color","fill")) +
+  geom_sf(data = zoop_data2, aes(size = chlorophyll_a)) +
+  scale_size_area(max_size = 3)
+  

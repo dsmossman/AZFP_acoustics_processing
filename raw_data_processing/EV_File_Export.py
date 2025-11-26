@@ -17,7 +17,7 @@ import os
 
 # Define some variables
 homedir = "C:/Users/Delphine/Box/Glider Data/"
-dep_name = "ru28-20220520T1425" # input('Enter the full name of the deployment: ')
+dep_name = "ru39-20250716T1542" # input('Enter the full name of the deployment: ')
 # for some reason the user input stopped working ugh
 
 workdir = os.path.join(homedir,dep_name,'')
@@ -65,7 +65,7 @@ for folder in next(os.walk(basedir))[1]:
             # for var in ['Surface and Bottom Exclusion T4']:
                 freq = freqlist[varlist.index(var)]
 
-                exportname = 'Orsted_'+str(AZFPyear) + \
+                exportname = 'RMI_'+str(AZFPyear) + \
                              str(AZFPmonth.zfill(2)) + \
                              '_' + day + '_' + \
                             freq + \

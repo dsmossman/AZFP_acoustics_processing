@@ -442,8 +442,8 @@ Presence_Absence_Bubble_Time = ggplot() +
     size = 2.5
   ) +
   
-  # scale_color_viridis_d(begin = 0, end = 0.8, option = "H", direction = 1) + # fish
-  scale_color_viridis_d(begin = 0.2, end = 0.9, direction = -1) + # zooplankton
+  scale_color_viridis_d(begin = 0, end = 0.8, option = "H", direction = -1) + # fish
+  # scale_color_viridis_d(begin = 0.2, end = 0.9, direction = -1) + # zooplankton
   scale_y_reverse() +
   geom_vline(
     xintercept = ISOdatetime(2025, 8, 2, 20, 0, 0),
@@ -463,10 +463,10 @@ Presence_Absence_Bubble_Time = ggplot() +
   theme_bw() +
   labs(y = "Depth", fill = "Time of Day") +
   coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
-  theme(legend.text = element_text(size = 20),
-        legend.title = element_text(size = 26),
-        axis.text = element_text(size = 20),
-        axis.title = element_text(size = 26),
+  theme(legend.text = element_text(size = 16),
+        legend.title = element_text(size = 20),
+        axis.text = element_text(size = 16),
+        axis.title = element_text(size = 20),
         plot.margin = margin(1,1,1.5,1.2, "cm"))
 
 fname = paste0(figure_dir, "Presence_Absence_Bubble_Plot.png")
@@ -513,22 +513,22 @@ Biomass_Bubble_Time = ggplot() +
   ) +
   scale_y_reverse() +
   # fish
-  # scale_size_binned(
-  #   range = c(-2, 5),
-  #   limits = c(-6, 4),
-  #   breaks = seq(-6, 4, 2)
-  # ) +
-  # scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = 1) +
-  # zooplankton
   scale_size_binned(
     range = c(-2, 5),
-    limits = c(-4, 2),
-    breaks = seq(-4, 2, 1),
-    labels = c(-4, "", -2, "", 0, "", 2)
+    limits = c(-6, 4),
+    breaks = seq(-6, 4, 2)
   ) +
-  scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
+  scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = -1, guide = "none") +
+  # zooplankton
+  # scale_size_binned(
+  #   range = c(-2, 5),
+  #   limits = c(-4, 2),
+  #   breaks = seq(-4, 2, 1),
+  #   labels = c(-4, "", -2, "", 0, "", 2)
+  # ) +
+  # scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
   geom_vline(
-    xintercept = ISOdatetime(2025, 8, 2, 20, 0, 0),
+    xintercept = ISOdatetime(2023, 8, 22, 20, 0, 0),
     show.legend = F,
     color = "red",
     linetype = 2,
@@ -547,11 +547,12 @@ Biomass_Bubble_Time = ggplot() +
        y = "Depth",
        fill = "Time of Day") +
   coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
-  theme(legend.text = element_text(size = 20, margin = margin(2, 2, 2, 2)),
-        legend.title = element_text(size = 26, margin = margin(20, 2, 20, 2)),
-        axis.text = element_text(size = 20),
-        axis.title = element_text(size = 26),
-        plot.margin = margin(1,1,1.5,1.2, "cm"))
+  theme(legend.text = element_text(margin = margin(2, 2, 2, 2)),
+        legend.title = element_text(size = 20, margin = margin(20, 2, 20, 2)),
+        text = element_text(size = 16),
+        axis.title = element_text(size = 20),
+        plot.margin = margin(1,1,1.5,1.2, "cm")) +
+  facet_wrap(~ Species, ncol = 1)
 
 fname = paste0(figure_dir, "Biomass_Bubble_Plot.png")
 
@@ -595,21 +596,21 @@ Concentration_Bubble_Time = ggplot() +
   ) +
   scale_y_reverse() +
   # fish
-  # scale_size_binned(
-  #   range = c(-2, 5),
-  #   limits = c(-7, 1),
-  #   breaks = seq(-7, 1, 2)
-  # ) +
-  # scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = 1) +
-  # zooplankton
   scale_size_binned(
     range = c(-2, 5),
-    limits = c(1, 4),
-    breaks = seq(1, 4, 1)
+    limits = c(-7, 1),
+    breaks = seq(-7, 1, 2)
   ) +
-  scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
+  scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = 1, guide = "none") +
+  # zooplankton
+  # scale_size_binned(
+  #   range = c(-2, 5),
+  #   limits = c(1, 4),
+  #   breaks = seq(1, 4, 1)
+  # ) +
+  # scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
   geom_vline(
-    xintercept = ISOdatetime(2023=5, 8, 2, 20, 0, 0),
+    xintercept = ISOdatetime(2023, 8, 22, 20, 0, 0),
     show.legend = F,
     color = "red",
     linetype = 2,
@@ -630,11 +631,13 @@ Concentration_Bubble_Time = ggplot() +
     fill = "Time of Day"
   ) +
   coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
-  theme(legend.text = element_text(size = 20, margin = margin(2, 2, 2, 2)),
-        legend.title = element_text(size = 26, margin = margin(20, 2, 20, 2)),
-        axis.text = element_text(size = 20),
-        axis.title = element_text(size = 26),
-        plot.margin = margin(1,1,1.5,1.2, "cm"))
+  theme(legend.text = element_text(margin = margin(2, 2, 2, 2)),
+        legend.title = element_text(size = 20, margin = margin(20, 2, 20, 2)),
+        text = element_text(size = 16),
+        axis.title = element_text(size = 20),
+        plot.margin = margin(0,0,0,0, "cm"),
+        aspect.ratio = 0.6) +
+  facet_wrap(~Species, ncol = 1)
 
 fname = paste0(figure_dir, "Concentration_Bubble_Plot.png")
 
@@ -647,7 +650,7 @@ ggsave(Concentration_Bubble_Time,
 # Depth-integrated plots along the glider track
 
 xlim = c(-75, -72.5)
-ylim = c(38.5, 41.5)
+ylim = c(38.5, 40.75)
 
 Biomass_Bubble_Map = ggplot() +
   geom_contour_filled(
@@ -672,31 +675,31 @@ Biomass_Bubble_Map = ggplot() +
           aes(size = log10(D_Int_Biomass), color = Species),
           alpha = 0.6) +
   # fish
-  # scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = 1) +
-  # scale_size_binned(
-  #   range = c(-2, 6),
-  #   limits = c(-8, 2),
-  #   breaks = seq(-8, 2, 2)
-  # ) +
-  # zooplankton
-  scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
+  scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = -1, guide = "none") +
   scale_size_binned(
-    range = c(-2, 5),
-    limits = c(-4, 2),
-    breaks = seq(-4, 2, 1),
-    labels = c(-4, "", -2, "", 0, "", 2)
+    range = c(-2, 6),
+    limits = c(-8, 2),
+    breaks = seq(-8, 2, 2)
   ) +
+  # zooplankton
+  # scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
+  # scale_size_binned(
+  #   range = c(-2, 5),
+  #   limits = c(-4, 2),
+  #   breaks = seq(-4, 2, 1),
+  #   labels = c(-4, "", -2, "", 0, "", 2)
+  # ) +
   theme_bw() +
   coord_sf(crs = st_crs(g_coords),
            xlim = xlim,
            ylim = ylim) +
   labs(x = "Longitude", y = "Latitude", size = "log10 of Depth-Integrated\nBiomass (g/m^2)") +
-  theme(legend.text = element_text(size = 20),
-        legend.title = element_text(size = 26, hjust = 0),
-        axis.text = element_text(size = 20),
+  theme(legend.title = element_text(size = 20, hjust = 0),
+        text = element_text(size = 16),
         axis.text.x = element_text(angle = 90),
-        axis.title = element_text(size = 26),
-        plot.margin = margin(1,1,1.5,1.2, "cm"))
+        axis.title = element_text(size = 20),
+        plot.margin = margin(1,1,1.5,1.2, "cm")) +
+  facet_wrap(~Species, ncol = 1)
 
 fname = paste0(figure_dir, 'Glider_Path_Biomass_Map.png')
 ggsave(Biomass_Bubble_Map, file = fname, scale = 2)
@@ -724,19 +727,19 @@ Concentration_Bubble_Map = ggplot() +
           aes(size = log10(D_Int_Abundance), color = Species),
           alpha = 0.6) +
   # fish
-  # scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = 1) +
-  # scale_size_binned(
-  #   range = c(-2, 6),
-  #   limits = c(-8, 0),
-  #   breaks = seq(-8, 0, 2)
-  # ) +
-  # zooplankton
-  scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
+  scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = 1, guide = "none") +
   scale_size_binned(
-    range = c(-2, 5),
-    limits = c(0.5, 4),
-    breaks = seq(0.5, 4, 0.5)
+    range = c(-2, 6),
+    limits = c(-8, 0),
+    breaks = seq(-8, 0, 2)
   ) +
+  # zooplankton
+  # scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
+  # scale_size_binned(
+  #   range = c(-2, 5),
+  #   limits = c(0.5, 4),
+  #   breaks = seq(0.5, 4, 0.5)
+  # ) +
   theme_bw() +
   coord_sf(crs = st_crs(g_coords),
            xlim = xlim,
@@ -744,12 +747,14 @@ Concentration_Bubble_Map = ggplot() +
   labs(x = "Longitude",
        y = "Latitude",
        size = "log10 of Depth-Integrated\nConcentration (individuals/m^2)") +
-  theme(legend.text = element_text(size = 20, margin = margin(2, 2, 2, 2)),
-        legend.title = element_text(size = 26, margin = margin(20, 2, 20, 2)),
-        axis.text = element_text(size = 20),
+  theme(legend.text = element_text(margin = margin(2, 2, 2, 2)),
+        legend.title = element_text(size = 20, margin = margin(20, 2, 20, 2)),
+        text = element_text(size = 16),
         axis.text.x = element_text(angle = 90),
-        axis.title = element_text(size = 26),
-        plot.margin = margin(1,1,1.5,1.2, "cm"))
+        axis.title = element_text(size = 20),
+        plot.margin = margin(0,0,0,0, "cm"),
+        aspect.ratio = 0.7) +
+  facet_wrap(~Species, ncol = 1)
 
 fname = paste0(figure_dir, 'Glider_Path_Concentration_Map.png')
 ggsave(Concentration_Bubble_Map, file = fname, scale = 2)
@@ -787,7 +792,7 @@ Biomass_Bubble_Map_Whales = Biomass_Bubble_Map +
   guides(color = guide_legend(override.aes = list(size = 3)#, position = "top"
                               ))
 fname = paste0(figure_dir, 'Glider_Path_Biomass_Whales_Map.png')
-ggsave(file = fname, scale = 2)
+ggsave(Biomass_Bubble_Map_Whales, file = fname, scale = 2)
 
 Concentration_Bubble_Map_Whales = Concentration_Bubble_Map +
   new_scale_color() +
@@ -808,8 +813,14 @@ Concentration_Bubble_Map_Whales = Concentration_Bubble_Map +
   guides(colour = guide_legend(override.aes = list(size = 3)#, position = "top"
                                ))
 fname = paste0(figure_dir, 'Glider_Path_Concentration_Whales_Map.png')
-ggsave(file = fname, scale = 2)
+ggsave(Concentration_Bubble_Map_Whales, file = fname, scale = 2)
 }
+
+ggarrange(Concentration_Bubble_Time, Concentration_Bubble_Map_Whales, ncol = 2)  +
+  theme(plot.background = element_rect(fill = 'white',color='white'))
+
+fname = paste0(figure_dir, 'Glider_Concentration_Plots_Option_1.png')
+ggsave(file = fname, height = 8, width = 12)
 
 #####
 
@@ -1092,9 +1103,9 @@ Sv_Gradient_Plot_Full = ggplot() +
        y = "Depth (m)",
        color = "Sv (dB)",
        fill = "Time of Day/Lease Area") +
-  theme(text = element_text(size = 16),
-        axis.title = element_text(size = 20),
-        legend.title = element_text(size = 20)) +
+  theme(text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        legend.title = element_text(size = 16)) +
   facet_wrap(~Frequency)
 
 fname = paste0(figure_dir, "Sv_Gradient_Plot_Full.png")
@@ -1213,8 +1224,8 @@ Sv_Gradient_Plot_Diff = ggplot() +
        color = "Difference in Sv (dB)",
        fill = "Time of Day/Lease Area") +
   theme(text = element_text(size = 16),
-        axis.title = element_text(size = 20),
-        legend.title = element_text(size = 20)) +
+        axis.title = element_text(size = 16),
+        legend.title = element_text(size = 16)) +
   facet_wrap(~Frequency, nrow = 2,
              labeller = as_labeller(c("200 kHz" = "Sv_200 - Sv_120",
                                       "455 kHz" = "Sv_455 - Sv_200",
