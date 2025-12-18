@@ -195,7 +195,7 @@ for i=1:num_cells % for each triplet/pair of pings
     end
 end
 % Label non-identified rows
-data.Species(data.Species == "0") = "Unidentified";
+data.Species(data.Species == "0") = "Empty Cell";
 
 %% Specific species assignments
 % Anything I am confident about goes here
