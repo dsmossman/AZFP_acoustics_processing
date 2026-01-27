@@ -44,9 +44,9 @@ world = world[world$geounit == "United States of America",]
 
 ## Load what you have already if you need it
 
-load(paste0(data_dir, "Glider_Data.rda"))
-load(paste0(data_dir, "Peripheral_Data.rda"))
-load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
+# load(paste0(data_dir, "Glider_Data.rda"))
+# load(paste0(data_dir, "Peripheral_Data.rda"))
+# load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
 
 #####
 
@@ -220,7 +220,7 @@ robots4whales_URL = paste0("http://dcs.whoi.edu/rutgers", substr(glider_dep,8,11
 
 paired_detection = try(download.file(url = robots4whales_URL, destfile = paste0("C:/Users/Delphine/Box/Glider Data/DMON/ru43-", substr(glider_dep, 6, 13), "-dmon.csv"), quiet = T), silent = T)
 
-robots4whales_URL = paste0("http://dcs.whoi.edu/rutgers", substr(glider_dep,10,11), substr(glider_dep,8,9), "/rutgers", substr(glider_dep,10,11), substr(glider_dep,8,9), "_ru40_html/ptracks/manual_analysis.csv")
+robots4whales_URL = paste0("http://dcs.whoi.edu/rutgers", substr(glider_dep,10,11), substr(glider_dep,8,9), "/rutgers", substr(glider_dep,10,11), substr(glider_dep,8,9), "_ru43_html/ptracks/manual_analysis.csv")
 
 paired_detection = try(download.file(url = robots4whales_URL, destfile = paste0("C:/Users/Delphine/Box/Glider Data/DMON/ru40-", substr(glider_dep, 6, 13), "-dmon.csv"), quiet = T), silent = T)
 
@@ -232,7 +232,7 @@ dmon_files = list.files(
 )
 
 dmon_ldf = lapply(dmon_files, function(x)
-  read_csv(x))
+  read_csv(x, show_col_types = F))
 
 marine_mammal_detections = data.frame()
 
@@ -263,7 +263,7 @@ marine_mammal_detections = marine_mammal_detections %>% filter(sei == "present" 
                                                                  right == "present" |
                                                                  humpback == "present") %>%
   arrange(datetime_utc) %>%
-  # filter(!(is.na(lon)) | !(is.na(lat))) %>%
+  filter(!(is.na(lon)) | !(is.na(lat))) %>%
   st_as_sf(coords = c("lon", "lat"), crs = 4326) %>%
   mutate(
     Whale_Species = case_when(

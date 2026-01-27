@@ -41,7 +41,7 @@ data(data.Sv_mean == -999,:) = [];
 data(data.Sv_mean == 9999,:) = [];
 
 data_38 = data(data.Frequency == 38,:);
-data_120 = data(data.Frequency == 125,:);
+data_120 = data(data.Frequency == 120,:);
 data_200 = data(data.Frequency == 200,:);
 
 % FOR RU39-20230817T1520, 200 kHz data looks weird after August 23rd, so
@@ -91,7 +91,7 @@ end
 
 data.Difference = zeros(height(data),1) * NaN;
 
-data.Difference(data.Frequency == 125) = data2_120.Sv_mean - data2_38.Sv_mean;
+data.Difference(data.Frequency == 120) = data2_120.Sv_mean - data2_38.Sv_mean;
 if exist('data2_200','var')
     data.Difference(data.Frequency == 200) = data2_200.Sv_mean - data2_120.Sv_mean;
 end

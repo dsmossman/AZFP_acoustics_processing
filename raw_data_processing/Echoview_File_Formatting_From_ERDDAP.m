@@ -18,7 +18,7 @@ addpath(genpath('C:\Users\Delphine\Box\ACOUSTIC DATA PROCESSING PROTOCOLS\AZFP P
 addpath(genpath('C:\Users\Delphine\Box\ACOUSTIC DATA PROCESSING PROTOCOLS\AZFP Processing\Glider file formatting\seawater_ver3_3.1\'))
 addpath('C:\Users\Delphine\Box\ACOUSTIC DATA PROCESSING PROTOCOLS\AZFP Processing\Glider file formatting\')
 
-dep_name = input("Enter the full name of the deployment: ","s");
+dep_name = uigetdir("C:\Users\Delphine\Box\Glider Data\", "Select the glider deployment folder.");
 
 addpath(genpath(strcat('C:\Users\Delphine\Box\Glider Data\',dep_name)))
 

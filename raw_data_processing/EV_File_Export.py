@@ -17,7 +17,7 @@ import os
 
 # Define some variables
 homedir = "C:/Users/Delphine/Box/Glider Data/"
-dep_name = "ru39-20250716T1542" # input('Enter the full name of the deployment: ')
+dep_name = input('Enter the full name of the deployment: ')
 # for some reason the user input stopped working ugh
 
 workdir = os.path.join(homedir,dep_name,'')
@@ -29,13 +29,13 @@ EvApp = win32com.client.Dispatch("EchoviewCom.EvApplication")
 AZFPyear = dep_name[5:9]
 basedir = os.path.join(workdir,'Echoview Files', '')
 
-# for folder in ['202508']:
+# for folder in ['202205']:
 for folder in next(os.walk(basedir))[1]:
     AZFPmonth = folder[-2:]
     filedir = os.path.join(workdir,'Echoview Files', str(AZFPyear) + str(AZFPmonth))
 
     for file in os.listdir(filedir):
-    # for file in ['ru39-20230817T1520_Echogram_12.EV']:
+    # for file in ['ru28-20220520T1425_Echogram_20.EV']:
         if file[-2:] == 'EV':
 
 
@@ -43,18 +43,18 @@ for folder in next(os.walk(basedir))[1]:
             day = file[-5:-3]
 
             # Needs to be manually changed depending on whether the AZFP is zoop or fish configured
-            varlist = ['Surface and Bottom Exclusion T1',
-                       'Surface and Bottom Exclusion T2',
-                       'Surface and Bottom Exclusion T3']
-
-            freqlist = ['38','125','200']
-
             # varlist = ['Surface and Bottom Exclusion T1',
             #            'Surface and Bottom Exclusion T2',
-            #            'Surface and Bottom Exclusion T3',
-            #            'Surface and Bottom Exclusion T4']
+            #            'Surface and Bottom Exclusion T3']
+
+            # freqlist = ['38','120','200']
+
+            varlist = ['Surface and Bottom Exclusion T1',
+                       'Surface and Bottom Exclusion T2',
+                       'Surface and Bottom Exclusion T3',
+                       'Surface and Bottom Exclusion T4']
             
-            # freqlist = ['120', '200', '455', '769']
+            freqlist = ['120', '200', '455', '769']
 
             exportpath = os.path.join(workdir, 'Echoview CSV Export Files', str(AZFPyear) + str(AZFPmonth.zfill(2)))
 

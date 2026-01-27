@@ -30,7 +30,7 @@ import re
 # Define some variables
 
 homedir = "C:/Users/Delphine/Box/Glider Data/"
-dep_name = "ru28-20220520T1425" # input('Enter the full name of the deployment: ')
+dep_name = input('Enter the full name of the deployment: ')
 
 # Needs to be manually changed depending on whether the AZFP is zoop or fish configured
 template = os.path.join(homedir,'AZFP_Fish_Template.EV')
