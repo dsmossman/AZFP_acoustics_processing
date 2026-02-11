@@ -1,7 +1,6 @@
 AppData
-.RHistory
-.Rhistory
-.docx
+*.Rhistory
+*.docx
 Documents
-.evb
-.evwx
+*.evb
+*.evwx
