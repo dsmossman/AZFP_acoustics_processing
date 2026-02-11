@@ -4,6 +4,8 @@ A collection of tools to process raw AZFP data collected from glider deployments
 
 Author: Delphine Mossman
 
+[![DOI](https://zenodo.org/badge/988453846.svg)](https://doi.org/10.5281/zenodo.18612347)
+
 ## Installation Instructions
 
 Most of these files are standalone code files, with the exception of the Python files in raw_data_processing. In that folder you will find an environment file that should give you the necessary packages for a local conda environment.
