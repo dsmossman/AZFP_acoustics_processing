@@ -234,34 +234,27 @@ dmon_files = list.files(
 dmon_ldf = lapply(dmon_files, function(x)
   read_csv(x, show_col_types = F))
 
-marine_mammal_detections = data.frame()
-
-for (j in 1:length(dmon_ldf)) {
-  if (nrow(dmon_ldf[[j]]) == 0)
-    next
-  else
-    marine_mammal_detections = rbind(marine_mammal_detections, dmon_ldf[[j]])
-}
-
-marine_mammal_detections$datetime_utc = as_datetime(paste(
-  paste(
-    substr(marine_mammal_detections$datetime_utc, 1, 4),
-    substr(marine_mammal_detections$datetime_utc, 5, 6),
-    substr(marine_mammal_detections$datetime_utc, 7, 8),
-    sep = "-"
-  ),
-  paste(
-    substr(marine_mammal_detections$datetime_utc, 9, 10),
-    substr(marine_mammal_detections$datetime_utc, 11, 12),
-    substr(marine_mammal_detections$datetime_utc, 13, 14),
-    sep = ":"
-  )
-))
-
-marine_mammal_detections = marine_mammal_detections %>% filter(sei == "present" |
-                                                                 fin == "present" |
-                                                                 right == "present" |
-                                                                 humpback == "present") %>%
+marine_mammal_detections = lapply(dmon_files, function(x)
+  read_csv(x, show_col_types = F)) %>%
+  bind_rows() %>%
+  mutate(datetime_utc = as_datetime(paste(
+    paste(
+      substr(datetime_utc, 1, 4),
+      substr(datetime_utc, 5, 6),
+      substr(datetime_utc, 7, 8),
+      sep = "-"
+    ),
+    paste(
+      substr(datetime_utc, 9, 10),
+      substr(datetime_utc, 11, 12),
+      substr(datetime_utc, 13, 14),
+      sep = ":"
+    )))) %>%
+  filter(sei == "present" |
+           fin == "present" |
+           right == "present" |
+           humpback == "present") %>%
+  
   arrange(datetime_utc) %>%
   filter(!(is.na(lon)) | !(is.na(lat))) %>%
   st_as_sf(coords = c("lon", "lat"), crs = 4326) %>%
