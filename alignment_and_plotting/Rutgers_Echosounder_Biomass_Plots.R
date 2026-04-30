@@ -34,8 +34,12 @@ year = substr(glider_dep, 6, 9)
 
 data_dir = paste0("C:/Users/Delphine/Box/Glider Data/",
                   glider_dep,
-                  "/Derived Biomass Data/")
-figure_dir = paste0("C:/Users/Delphine/Box/Glider Data/", glider_dep, "/Figures/")
+                  "/Derived Biomass Data/",
+                  "School Detection Tests/"
+                  )
+figure_dir = paste0("C:/Users/Delphine/Box/Glider Data/", glider_dep, "/Figures"
+                    ,"/School Detection Tests/"
+                    )
 
 world = ne_countries(scale = "medium")
 world = world[world$geounit == "United States of America", ]
@@ -443,7 +447,7 @@ Presence_Absence_Bubble_Time = ggplot() +
   ) +
   
   # scale_color_viridis_d(begin = 0, end = 0.8, option = "H", direction = -1) + # fish
-  scale_color_viridis_d(begin = 0.2, end = 0.9, direction = -1) + # zooplankton
+  scale_color_viridis_d(begin = 0.2, end = 0.9, direction = 1) + # zooplankton
   scale_y_reverse() +
   geom_vline(
     xintercept = ISOdatetime(2025, 8, 2, 20, 0, 0),
@@ -462,7 +466,7 @@ Presence_Absence_Bubble_Time = ggplot() +
   ) +
   theme_bw() +
   labs(y = "Depth", fill = "Time of Day") +
-  coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
+  coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 35, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
   theme(legend.text = element_text(size = 16),
         legend.title = element_text(size = 20),
         axis.text = element_text(size = 16),
@@ -520,12 +524,12 @@ Biomass_Bubble_Time = ggplot() +
   # ) +
   # scale_color_viridis_d(begin = 0, end = 0.4, option="H", direction = -1, guide = "none") +
   # zooplankton
-  scale_size_binned(
-    range = c(-2, 5),
-    limits = c(-4, 2),
-    breaks = seq(-4, 2, 1),
-    labels = c(-4, "", -2, "", 0, "", 2)
-  ) +
+  # scale_size_binned(
+  #   range = c(-2, 5),
+  #   limits = c(-4, 2),
+  #   breaks = seq(-4, 2, 1),
+  #   labels = c(-4, "", -2, "", 0, "", 2)
+  # ) +
   scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
   geom_vline(
     xintercept = ISOdatetime(2025, 8, 20, 20, 0, 0),
@@ -546,13 +550,13 @@ Biomass_Bubble_Time = ggplot() +
   labs(size = "Log10 of\nBiomass (g/m^3)",
        y = "Depth",
        fill = "Time of Day") +
-  coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
+  coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 35, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
   theme(legend.text = element_text(margin = margin(2, 2, 2, 2)),
         legend.title = element_text(size = 20, margin = margin(20, 2, 20, 2)),
         text = element_text(size = 16),
         axis.title = element_text(size = 20),
-        plot.margin = margin(1,1,1.5,1.2, "cm")) +
-  facet_wrap(~ Species, ncol = 1)
+        plot.margin = margin(1,1,1.5,1.2, "cm"))# +
+  #facet_wrap(~ Species, ncol = 1)
 
 fname = paste0(figure_dir, "Biomass_Bubble_Plot.png")
 
@@ -604,11 +608,11 @@ Concentration_Bubble_Time = ggplot() +
   # scale_color_viridis_d(begin = 0, end = 0.4, option = "H", direction = 1#, guide = "none"
   #                       ) +
   # zooplankton
-  scale_size_binned(
-    range = c(-2, 5),
-    limits = c(1, 4),
-    breaks = seq(1, 4, 1)
-  ) +
+  # scale_size_binned(
+  #   range = c(-2, 5),
+  #   limits = c(1, 4),
+  #   breaks = seq(1, 4, 1)
+  # ) +
   scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
   geom_vline(
     xintercept = ISOdatetime(2025, 8, 20, 20, 0, 0),
@@ -631,7 +635,7 @@ Concentration_Bubble_Time = ggplot() +
     y = "Depth",
     fill = "Time of Day"
   ) +
-  coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 5, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
+  coord_cartesian(expand = FALSE, ylim = c(max(data3$Depth) + 35, 0), xlim = c(day_data$Date[1], day_data$Date[nrow(day_data)])) +
   theme(legend.text = element_text(margin = margin(2, 2, 2, 2)),
         legend.title = element_text(size = 20, margin = margin(20, 2, 20, 2)),
         text = element_text(size = 16),
@@ -685,12 +689,12 @@ Biomass_Bubble_Map = ggplot() +
   # ) +
   # zooplankton
   scale_color_viridis_d(begin = 0.2) + guides(color = "none") +
-  scale_size_binned(
-    range = c(-2, 5),
-    limits = c(-4, 2),
-    breaks = seq(-4, 2, 1),
-    labels = c(-4, "", -2, "", 0, "", 2)
-  ) +
+  # scale_size_binned(
+  #   range = c(-2, 5),
+  #   limits = c(-4, 2),
+  #   breaks = seq(-4, 2, 1),
+  #   labels = c(-4, "", -2, "", 0, "", 2)
+  # ) +
   theme_bw() +
   coord_sf(crs = st_crs(g_coords),
            xlim = xlim,
@@ -870,7 +874,7 @@ ggdraw() +
   draw_plot(Presence_Absence_Bubble_Time) +
   draw_plot(
     Wind_Farm_Map,
-    x = 0.58,
+    x = 0.63,
     y = 0.15,
     width = 0.3,
     height = 0.3

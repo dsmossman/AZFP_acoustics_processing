@@ -37,15 +37,17 @@ year = substr(glider_dep,6,9)
 
 data_dir = paste0("C:/Users/Delphine/Box/Glider Data/",
                   glider_dep,
-                  "/Derived Biomass Data/")
+                  "/Derived Biomass Data/"
+                  ,"/School Detection Tests/"
+                  )
 
 world = ne_countries(scale = "medium")
 world = world[world$geounit == "United States of America",]
 
 ## Load what you have already if you need it
 
-# load(paste0(data_dir, "Glider_Data.rda"))
-# load(paste0(data_dir, "Peripheral_Data.rda"))
+load(paste0(data_dir, "Glider_Data.rda"))
+load(paste0(data_dir, "Peripheral_Data.rda"))
 # load(paste0(data_dir, "Processed_Abundance_Biomass_Data.rda"))
 
 #####
@@ -56,16 +58,8 @@ world = world[world$geounit == "United States of America",]
 # data_filenames = list.files(data_dir, pattern = "(^RMI) *", full.names = T)
 data_filenames = list.files(data_dir, pattern = "*(Biomass_Data.csv)", full.names = T)
 
-data_ldf = lapply(data_filenames, function(x) read_csv(x, show_col_types = F))
-
-data = data.frame()
-
-for(j in 1:length(data_ldf)) {
-  if(nrow(data_ldf[[j]]) == 0)
-    next
-  else
-    data = rbind(data,data_ldf[[j]])
-}
+data = lapply(data_filenames, function(x) read_csv(x, show_col_types = F)) %>%
+  bind_rows()
 
 # Assigning echo number
 if(glider_dep == "ru39-20230817T1520") {
@@ -78,15 +72,16 @@ if(glider_dep == "ru39-20230817T1520") {
   
 } else {
   
-  data = data %>% arrange(Frequency) %>% filter(Exclude_below_line_depth_mean >=0)
+  data = data %>% filter(Exclude_below_line_depth_mean >=0)
   
-  data$Echo_Num = rep(1:(nrow(data)/4),times=4)
+  data$Echo_Num = 1:nrow(data)
+  # data$Echo_Num = rep(1:(nrow(data)/4),times=4)
   # data$Echo_Num = rep(1:(nrow(data)/3),times=3)
 }
 
 # Reformatting timestamps and converting to eastern time zone
 data$Time_M = paste0(data$Date_M,' ',data$Time_M)
-data$Time_M = as.POSIXct(data$Time_M, format = "%d-%b-%Y %H:%M:%S", tz = "UTC")
+data$Time_M = as.POSIXct(data$Time_M, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
 data$Time_M = as.POSIXct(format(data$Time_M, tz="America/Detroit", usetz=T))
 
 data = data %>% arrange(Time_M, Echo_Num)
@@ -173,12 +168,9 @@ if (month(data$Time_M[1]) %in% c(6, 7, 8, 9, 10, 11)) {
 #####
 ## Day, bathymetry, study area shapefiles, marine mammal detections import/formatting
 
-start_date = as.POSIXlt(paste0(data$Date_M[1], ' ', "00:00:00"),
-                        format = "%d-%b-%Y %H:%M:%S",
-                        tz = "EST")
-end_date = as.POSIXlt(paste0(data$Date_M[nrow(data)], ' ', "00:00:00"),
-                      format = "%d-%b-%Y %H:%M:%S",
-                      tz = "EST") + days(1)
+start_date = as.POSIXlt(format(paste0(data$Date_M[1], ' ', "00:00:00"), format = "%Y-%m-%d %H:%M:%S"))
+
+end_date = as.POSIXlt(format(paste0(data$Date_M[nrow(data)], ' ', "00:00:00"), format = "%Y-%m-%d %H:%M:%S")) + days(1)
 
 day_data = data.frame(Date = seq.POSIXt(start_date, end_date, by = "min"))
 
@@ -220,9 +212,9 @@ robots4whales_URL = paste0("http://dcs.whoi.edu/rutgers", substr(glider_dep,8,11
 
 paired_detection = try(download.file(url = robots4whales_URL, destfile = paste0("C:/Users/Delphine/Box/Glider Data/DMON/ru43-", substr(glider_dep, 6, 13), "-dmon.csv"), quiet = T), silent = T)
 
-robots4whales_URL = paste0("http://dcs.whoi.edu/rutgers", substr(glider_dep,10,11), substr(glider_dep,8,9), "/rutgers", substr(glider_dep,10,11), substr(glider_dep,8,9), "_ru43_html/ptracks/manual_analysis.csv")
+robots4whales_URL = paste0("http://dcs.whoi.edu/rutgers", substr(glider_dep,10,11), substr(glider_dep,8,9), "/rutgers", substr(glider_dep,10,11), substr(glider_dep,8,9), "_ru41_html/ptracks/manual_analysis.csv")
 
-paired_detection = try(download.file(url = robots4whales_URL, destfile = paste0("C:/Users/Delphine/Box/Glider Data/DMON/ru40-", substr(glider_dep, 6, 13), "-dmon.csv"), quiet = T), silent = T)
+paired_detection = try(download.file(url = robots4whales_URL, destfile = paste0("C:/Users/Delphine/Box/Glider Data/DMON/ru43-", substr(glider_dep, 6, 13), "-dmon.csv"), quiet = T), silent = T)
 
 
 dmon_files = list.files(
@@ -366,7 +358,7 @@ data3 = data %>%
   reframe(
     Abundance = sum(Abundance),
     Biomass = sum(Biomass),
-    NASC = mean(NASC, na.rm = T),
+    # NASC = mean(NASC, na.rm = T),
     Ping = mean(c(Ping_S, Ping_E), na.rm = T),
     Depth = mean(Depth_mean, na.rm = T),
     Date = mean(c(Time_M), na.rm = T),
@@ -379,22 +371,22 @@ data3 = data %>%
 
 ## Align glider variables and zooplankton data
 
-data3$pH = NA
-data3$salinity = NA
-data3$chlorophyll_a = NA
-data3$temperature = NA
-for (i in 1:nrow(data3)) {
-  idx = which.min(st_distance(data3$geometry[i], g_coords$geometry))
-
-  data3$pH[i] = gdata$pH[idx]
-  data3$salinity[i] = gdata$salinity[idx]
-  data3$chlorophyll_a[i] = gdata$chlorophyll_a[idx]
-  data3$temperature[i] = gdata$temperature[idx]
-
-  if(i %% 10000 == 0) {
-    print(i) # this is just to check that it hasn't crashed
-  }
-}
+# data3$pH = NA
+# data3$salinity = NA
+# data3$chlorophyll_a = NA
+# data3$temperature = NA
+# for (i in 1:nrow(data3)) {
+#   idx = which.min(st_distance(data3$geometry[i], g_coords$geometry))
+# 
+#   data3$pH[i] = gdata$pH[idx]
+#   data3$salinity[i] = gdata$salinity[idx]
+#   data3$chlorophyll_a[i] = gdata$chlorophyll_a[idx]
+#   data3$temperature[i] = gdata$temperature[idx]
+# 
+#   if(i %% 5000 == 0) {
+#     print(i) # this is just to check that it hasn't crashed
+#   }
+# }
 
 ## Depth-integrated abundance and biomass over glider track
 
@@ -417,10 +409,10 @@ data4 = data3 %>%
     D_Int_Biomass = sum(Biomass),
     Seafloor_Depth = mean(Seafloor_Depth, na.rm = T),
     Date = mean(Date, na.rm = T),
-    pH = mean(pH, na.rm = T),
-    salinity = mean(salinity, na.rm = T),
-    chlorophyll_a = mean(chlorophyll_a, na.rm = T),
-    temperature = mean(temperature, na.rm = T)
+    # pH = mean(pH, na.rm = T),
+    # salinity = mean(salinity, na.rm = T),
+    # chlorophyll_a = mean(chlorophyll_a, na.rm = T),
+    # temperature = mean(temperature, na.rm = T)
   ) %>%
   st_as_sf(coords = c("Long", "Lat"), crs = 4326) %>%
   arrange(Date) %>%
@@ -508,7 +500,7 @@ for(k in 1:nrow(data4)) {
 
 ## Save the abundance/biomass data
 fname = paste0(data_dir, "Processed_Abundance_Biomass_Data.rda")
-save(list=c("data_ldf", "data_filenames","data","data2","data3","data4"), file = fname)
+save(list=c("data_filenames","data","data2","data3","data4"), file = fname)
 #####
 ## Some misc tests
 # data4 %>% reframe(Abundance = D_Int_Abundance,
