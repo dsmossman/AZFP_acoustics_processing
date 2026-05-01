@@ -16,6 +16,6 @@ RU39_20230817T1520_Filter_Check.R and RU39_20241021T1717_Pitch_Roll_Check.R were
 
 TS_to_Sv.m was an experimental little file to try and convert threshold target strength values to threshold Sv values.
 
-dB_Window_Biomass_Testing.R was written when I thought larvaceans had similar scattering properties to copepods (they don't, apparently they're gelatinous) to try and test different methods of differentiating the two.
+choose_directory.R is a helper file for dynamic selection of glider deployment folders.
 
-intersectm.m and ismemberm.m are both used in the acoustic_abundance_estimates Matlab files.
+dB_Window_Biomass_Testing.R was written when I thought larvaceans had similar scattering properties to copepods (they don't, apparently they're gelatinous) to try and test different methods of differentiating the two.

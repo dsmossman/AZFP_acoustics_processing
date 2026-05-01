@@ -6,11 +6,11 @@ These files take the cleaned acoustic data exported by Echoview and calculate sp
 
 1. You've already run the raw_data_processing code.
 2. The data are contained in a file structure that follows the format [name of deployment]/Echoview CSV Export Files/[monthly folder] (e.g. ru39-20230420T1636/Echoview CSV Export Files/202304).
-3. You are in the MAB or a similar ecosystem where the dB differencing windows hold.
+3. You are in the MAB or a similar ecosystem where the dB differencing windows for relevant taxa hold.
 
 # Steps
 
-1. Open the Echoview_Processing.m file.
-2. Change the function in the final for loop to either Echoview_to_fish_biomass or Echoview_to_zoop_biomass, depending on the configuration of your echosounder.
-3. Run the Echoview_Processing file.
+1. Open the Echoview_Processing.R file.
+2. Change the function in the final for loop to match the desired output, depending on the configuration of your echosounder.
+3. Run the Echoview_Processing.R file in its entirety.
 4. Proceed to alignment_and_plotting.

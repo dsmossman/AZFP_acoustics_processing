@@ -3,15 +3,11 @@
 rm(list = ls())
 
 library(tidyverse)
-library(R.utils)
 library(tcltk)
 
-sourceDirectory(
-  "H:/dm1679/Code/R_Functions",
-  modifiedOnly = F
-)
+source("./AZFP_acoustics_processing/misc/choose_directory.R")
 
-source("./echoview_to_abundance_functions.R")
+source("./AZFP_acoustics_processing/acoustic_abundance_estimates/echoview_to_abundance_functions.R")
 
 # Getting file paths set up
 

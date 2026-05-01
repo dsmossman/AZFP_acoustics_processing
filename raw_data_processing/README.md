@@ -13,9 +13,9 @@ These files take the raw data offloaded from the glider-mounted AZFP and put the
 
 # Steps
 
-1. Run the AZFP_data_by_day.py file to organize the AZFP data into daily subfolders within the monthly folder.
-2. Run the Echoview_File_Formatting_From_ERRDAP.m file to create specifically formatted time/date, pitch, roll, and depth files that Echoview can read and use.
-3. Plug in your Echoview dongle, then run the EV_File_Using_Template.py file to generate an Echoview file from each day of data (my templates can be found in the misc folder).
-4. Manually open each new EV file and set the seafloor using whatever algorithm best suits your data (unfortunately this step can't be automated in the code, at least as far as I can figure out).
-5. Run the EV_File_Export.py file to export your processed data to .csv files - make sure that the frequencies being exported line up with the AZFP configuration!
+1. Run the AZFP_data_by_day.R file to organize the AZFP data into daily subfolders within the monthly folder.
+2. Run the Echoview_File_Formatting_From_ERRDAP.R file to create specifically formatted time/date, pitch, roll, and depth files that Echoview can read and use.
+3. Plug in your Echoview dongle, then run the EV_File_Using_Template.R file to generate an Echoview file from each day of data (my templates can be found in the misc folder).
+4. Manually open each new EV file and set the seafloor using whatever algorithm best suits your data, making sure to double-check for spots where the algorithm makes mistakes.
+5. Run the EV_File_Export.R file to export your processed data to .csv files - make sure that the frequencies being exported line up with the AZFP configuration!
 6. Proceed to acoustic_abundance_estimates.

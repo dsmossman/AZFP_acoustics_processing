@@ -1,9 +1,3 @@
-# Author: Delphine Mossman
-# Date Created: 23 Aug 2024
-# Date Last Modified: 25 June 2025
-
-# WIP
-
 ## Initialization/Setup
 
 rm(list = ls())
@@ -12,18 +6,8 @@ library(tidyverse)
 library(readxl)
 library(ncdf4)
 library(CFtime)
-# library(hms)
-# library(rnaturalearth)
-# library(rnaturalearthdata)
 library(sf)
-# library(sfheaders)
-# library(lubridate)
-# library(marmap)
 library(rstatix)
-library(R.utils)
-# library(cowplot)
-# library(ggpubr)
-# library(ggnewscale)
 library(tcltk)
 library(MASS)
 library(GGally)
@@ -35,10 +19,7 @@ library(quest)
 library(ggcorrplot)
 library(mgcv)
 
-sourceDirectory(
-  "C:/Users/Delphine/Box/R Functions/",
-  modifiedOnly = F
-)
+source("./AZFP_acoustics_processing/misc/choose_directory.R")
 
 glider_dep = choose_directory(caption = "Select glider data folder") %>% substring(., regexpr("ru[0-9]{2}-*", .))
 year = substr(glider_dep, 6, 9)

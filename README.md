@@ -8,7 +8,7 @@ Author: Delphine Mossman
 
 ## Installation Instructions
 
-Most of these files are standalone code files, with the exception of the Python files in raw_data_processing. In that folder you will find an environment file that should give you the necessary packages for a local conda environment.
+Download the entire repository and extract to a location of your choice. The dependencies should all be contained within their relevant folders.
 
 ## Processing Instructions
 

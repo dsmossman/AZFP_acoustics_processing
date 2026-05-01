@@ -14,13 +14,9 @@ rm(list = ls())
 library(tidyverse)
 library(readxl)
 library(sf)
-library(R.utils)
 library(tcltk)
 
-sourceDirectory(
-  "H:/dm1679/Code/R_Functions",
-  modifiedOnly = F
-)
+source("./AZFP_acoustics_processing/misc/choose_directory.R")
 
 figure_dir = "C:/Users/Delphine/Box/Zooplankton Protocols and Data/Figures/"
 

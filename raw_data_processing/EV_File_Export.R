@@ -2,13 +2,9 @@ rm(list = ls())
 
 library(tidyverse)
 library(RDCOMClient)
-library(R.utils)
 library(tcltk)
 
-sourceDirectory(
-  "H:/dm1679/Code/R_Functions",
-  modifiedOnly = F
-)
+source("./AZFP_acoustics_processing/misc/choose_directory.R")
 
 ## Setup
 glider_dep = choose_directory(caption = "Select the glider deployment directory folder")

@@ -12,7 +12,6 @@ rm(list = ls())
 library(tidyverse)
 library(readxl)
 library(ncdf4)
-library(R.utils)
 library(tcltk)
 library(rsample)
 library(mgcv)
@@ -23,11 +22,6 @@ library(gridExtra)
 library(MASS)
 library(pscl)
 library(fitdistrplus)
-
-sourceDirectory(
-  "H:/dm1679/Code/R Functions",
-  modifiedOnly = F
-)
 
 figure_dir = "H:/dm1679/Data/Glider Data/Statistics Plots/"
 
