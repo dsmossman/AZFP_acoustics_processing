@@ -1,13 +1,5 @@
 # Author: Delphine Mossman
 # Date Created: 17 July 2023
-# Date Last Modified: 30 July 2025
-
-# 1. Load libraries and assign some initial variables
-# 2. Read in the acoustically-derived abundance data into a single dataframe and do some reformatting
-# 3. Create dataframes for time of day, bathymetry, and marine mammal detections, and a shapefile for the wind farm lease areas
-# 4. Read and reformat in glider data
-# 5. Create some new dataframes for later plotting steps, including depth-integration
-# 6. Save all these dataframes into three separate RDA files
 
 
 #####
@@ -27,6 +19,7 @@ library(rnaturalearth)
 library(tcltk)
 
 source("./AZFP_acoustics_processing/misc/choose_directory.R")
+source("./AZFP_acoustics_processing/misc/create_dir.R")
 
 glider_dep = choose_directory() %>% substring(., regexpr("ru[0-9]{2}-*", .))
 year = substr(glider_dep,6,9)
@@ -34,7 +27,7 @@ year = substr(glider_dep,6,9)
 data_dir = paste0("C:/Users/Delphine/Box/Glider Data/",
                   glider_dep,
                   "/Derived Biomass Data/"
-                  ,"/School Detection Tests/"
+                  ,"School Detection Tests/"
                   )
 
 world = ne_countries(scale = "medium")

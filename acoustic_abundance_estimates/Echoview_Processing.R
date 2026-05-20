@@ -6,7 +6,7 @@ library(tidyverse)
 library(tcltk)
 
 source("./AZFP_acoustics_processing/misc/choose_directory.R")
-
+source("./AZFP_acoustics_processing/misc/create_dir.R")
 source("./AZFP_acoustics_processing/acoustic_abundance_estimates/echoview_to_abundance_functions.R")
 
 # Getting file paths set up
@@ -17,8 +17,9 @@ year = substr(glider_dep,6,9)
 output_dir = paste0("C:/Users/Delphine/Box/Glider Data/",
                     glider_dep,
                     "/Derived Biomass Data/"
-                    ,"/School Detection Tests/"
+                    ,"School Detection Tests/"
 )
+create_dir(output_dir)
 
 dep_start = as.numeric(readline("Enter the numerical month the deployment started: "))
 dep_end = as.numeric(readline("Enter the numerical month the deployment ended: "))

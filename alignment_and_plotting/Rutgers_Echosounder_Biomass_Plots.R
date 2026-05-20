@@ -1,6 +1,5 @@
 # Author: Delphine Mossman
 # Date Created: 19 Sept 2024
-# Date Last Modified: 15 July 2025
 
 # 1. Load in the data created by the processing script
 # 2. Plot total concentration/biomass by day
@@ -27,17 +26,18 @@ library(tcltk)
 library(cowplot)
 
 source("./AZFP_acoustics_processing/misc/choose_directory.R")
+source("./AZFP_acoustics_processing/misc/create_dir.R")
 
 glider_dep = choose_directory() %>% substring(., regexpr("ru[0-9]{2}-*", .))
 year = substr(glider_dep, 6, 9)
 
 data_dir = paste0("C:/Users/Delphine/Box/Glider Data/",
                   glider_dep,
-                  "/Derived Biomass Data/",
-                  "School Detection Tests/"
+                  "/Derived Biomass Data/"
+                  #,"School Detection Tests/"
                   )
-figure_dir = paste0("C:/Users/Delphine/Box/Glider Data/", glider_dep, "/Figures"
-                    ,"/School Detection Tests/"
+figure_dir = paste0("C:/Users/Delphine/Box/Glider Data/", glider_dep, "/Figures/"
+                    #,"School Detection Tests/"
                     )
 
 world = ne_countries(scale = "medium")
@@ -873,7 +873,7 @@ ggdraw() +
   draw_plot(Presence_Absence_Bubble_Time) +
   draw_plot(
     Wind_Farm_Map,
-    x = 0.63,
+    x = 0.58,
     y = 0.15,
     width = 0.3,
     height = 0.3

@@ -13,18 +13,15 @@ library(R.utils)
 library(tcltk)
 library(hms)
 
-sourceDirectory(
-  "H:/dm1679/Code/R_Functions",
-  modifiedOnly = F
-)
+source("./AZFP_acoustics_processing/misc/choose_directory.R")
+source("./AZFP_acoustics_processing/misc/create_dir.R")
 
 glider_dep = choose_directory() %>% substring(., regexpr("ru[0-9]{2}-*", .))
 year = substr(glider_dep,6,9)
 
 data_dir = paste0("C:/Users/Delphine/Box/Glider Data/",
                   glider_dep,
-                  "/Echoview CSV Export Files/",
-                  "/School Detection Tests/")
+                  "/Echoview CSV Export Files/School Detection Tests/")
 
 #####
 ## Aggregation data formatting

@@ -5,6 +5,7 @@ library(RDCOMClient)
 library(tcltk)
 
 source("./AZFP_acoustics_processing/misc/choose_directory.R")
+source("./AZFP_acoustics_processing/misc/create_dir.R")
 
 ## Setup
 glider_dep = choose_directory(caption = "Select the glider deployment directory folder")
