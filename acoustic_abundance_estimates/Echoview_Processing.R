@@ -14,7 +14,7 @@ source("./AZFP_acoustics_processing/acoustic_abundance_estimates/echoview_to_abu
 glider_dep = choose_directory() %>% substring(., regexpr("ru[0-9]{2}-*", .))
 year = substr(glider_dep,6,9)
 
-output_dir = paste0("C:/Users/Delphine/Box/Glider Data/",
+output_dir = paste0("C:/Users/dm1679/Box/Glider Data/",
                     glider_dep,
                     "/Derived Biomass Data/"
                     ,"School Detection Tests/"
@@ -28,13 +28,13 @@ dep_end = as.numeric(readline("Enter the numerical month the deployment ended: "
 for(i in dep_start:dep_end) {
   
   # Get input folder and list of files
-  input_dir = paste0("C:/Users/Delphine/Box/Glider Data/",
+  input_dir = paste0("C:/Users/dm1679/Box/Glider Data/",
                      glider_dep,
                      "/Echoview CSV Export Files/",
                      "School Detection Tests/",
                      year,sprintf("%02d",i),"/")
   
-  days = list.files(input_dir, pattern = "*_abundance.csv")
+  days = list.files(input_dir, pattern = "*_abundance_median.csv")
   # days = list.files(input_dir, pattern = "*200kHz.csv")
   
   if(length(days) == 0){

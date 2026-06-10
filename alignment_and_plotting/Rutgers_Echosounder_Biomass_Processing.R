@@ -24,7 +24,7 @@ source("./AZFP_acoustics_processing/misc/create_dir.R")
 glider_dep = choose_directory() %>% substring(., regexpr("ru[0-9]{2}-*", .))
 year = substr(glider_dep,6,9)
 
-data_dir = paste0("C:/Users/Delphine/Box/Glider Data/",
+data_dir = paste0("C:/Users/dm1679/Box/Glider Data/",
                   glider_dep,
                   "/Derived Biomass Data/"
                   ,"School Detection Tests/"
@@ -181,7 +181,7 @@ bathy2 = st_as_sf(bathy, coords = c("x", "y"))
 st_crs(bathy2) = st_crs(4326)
 
 files = list.files(
-  'C:/Users/Delphine/Box/ACOUSTIC DATA PROCESSING PROTOCOLS/AZFP Processing/Shapefiles/',
+  'C:/Users/dm1679/Box/ACOUSTIC DATA PROCESSING PROTOCOLS/AZFP Processing/Shapefiles/',
   pattern = '*.shp$',
   full.names = T
 )
@@ -190,7 +190,7 @@ Study_Areas = lapply(files, function(x)
   read_sf(x) %>% st_transform(crs = st_crs(4326)))
 
 Study_Areas_2 = read_sf(
-  "C:/Users/Delphine/Box/COOL/Offshore Wind/wind energy shapefiles/BOEM_shp_kmls/shapefiles/wind_leases/BOEM_Wind_Lease_Outlines_06_06_2024.shp"
+  "C:/Users/dm1679/Box/COOL/Offshore Wind/wind energy shapefiles/BOEM_shp_kmls/shapefiles/wind_leases/BOEM_Wind_Lease_Outlines_06_06_2024.shp"
 ) %>%
   st_transform(crs = st_crs(4326))
 
@@ -199,15 +199,15 @@ Study_Area_Final = st_union(Study_Areas[[2]], st_union(Study_Areas_2[25:28,]))
 # Sometimes it's year-month, sometimes it's month-year...
 robots4whales_URL = paste0("http://dcs.whoi.edu/rutgers", substr(glider_dep,8,11), "/rutgers", substr(glider_dep,8,11), "_ru43_html/ptracks/manual_analysis.csv")
 
-paired_detection = try(download.file(url = robots4whales_URL, destfile = paste0("C:/Users/Delphine/Box/Glider Data/DMON/ru43-", substr(glider_dep, 6, 13), "-dmon.csv"), quiet = T), silent = T)
+paired_detection = try(download.file(url = robots4whales_URL, destfile = paste0("C:/Users/dm1679/Box/Glider Data/DMON/ru43-", substr(glider_dep, 6, 13), "-dmon.csv"), quiet = T), silent = T)
 
 robots4whales_URL = paste0("http://dcs.whoi.edu/rutgers", substr(glider_dep,10,11), substr(glider_dep,8,9), "/rutgers", substr(glider_dep,10,11), substr(glider_dep,8,9), "_ru41_html/ptracks/manual_analysis.csv")
 
-paired_detection = try(download.file(url = robots4whales_URL, destfile = paste0("C:/Users/Delphine/Box/Glider Data/DMON/ru43-", substr(glider_dep, 6, 13), "-dmon.csv"), quiet = T), silent = T)
+paired_detection = try(download.file(url = robots4whales_URL, destfile = paste0("C:/Users/dm1679/Box/Glider Data/DMON/ru43-", substr(glider_dep, 6, 13), "-dmon.csv"), quiet = T), silent = T)
 
 
 dmon_files = list.files(
-  "C:/Users/Delphine/Box/Glider Data/DMON/",
+  "C:/Users/dm1679/Box/Glider Data/DMON/",
   pattern = "^ru[0-9]{2}.*.csv",
   full.names = T
 )
@@ -256,7 +256,7 @@ save(list=c("bathy","bathy2","day_data","Study_Area_Final","marine_mammal_detect
 ## Glider data import/formatting
 gdata = read_csv(
   paste0(
-    "C:/Users/Delphine/Box/Glider Data/",
+    "C:/Users/dm1679/Box/Glider Data/",
     glider_dep,
     "/",
     glider_dep,

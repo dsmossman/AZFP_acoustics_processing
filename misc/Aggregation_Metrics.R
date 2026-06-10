@@ -19,7 +19,7 @@ source("./AZFP_acoustics_processing/misc/create_dir.R")
 glider_dep = choose_directory() %>% substring(., regexpr("ru[0-9]{2}-*", .))
 year = substr(glider_dep,6,9)
 
-data_dir = paste0("C:/Users/Delphine/Box/Glider Data/",
+data_dir = paste0("C:/Users/dm1679/Box/Glider Data/",
                   glider_dep,
                   "/Echoview CSV Export Files/School Detection Tests/")
 

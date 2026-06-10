@@ -1,16 +1,17 @@
 rm(list = ls())
 
 library(tidyverse)
-library(RDCOMClient)
+library(RDCOMClient) # Download package using pak::pak("jkylearmstrong-temple/RDCOMClient") for R version >= 4.6
 library(tcltk)
 
 source("./AZFP_acoustics_processing/misc/choose_directory.R")
+source("./AZFP_acoustics_processing/misc/create_dir.R")
 
 ## Setup
 glider_dep = choose_directory(caption = "Select the glider deployment directory folder")
 
 # School detection template
-template = "C:/Users/Delphine/Box/Glider Data/AZFP_Zooplankton_Template_School_Detection.EV"
+template = "C:/Users/dm1679/Box/Glider Data/AZFP_Zooplankton_Template_School_Detection.EV"
 
 EVAppObj = COMCreate('EchoviewCom.EvApplication')
 

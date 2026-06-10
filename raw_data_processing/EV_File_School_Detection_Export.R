@@ -41,7 +41,8 @@ for(folder in list.files(EV_dir, recursive = F,
     EVAppObj$Exec("Properties SchoolsMinimumTotalLength = | 12.0")
     
     
-    copepod_schools = EVFile[["Variables"]]$FindByName("Minus 1")
+    # copepod_schools = EVFile[["Variables"]]$FindByName("Minus 1")
+    copepod_schools = EVFile[["Variables"]]$FindByName("Median filter 3x3 1")
     
     copepod_schools$DetectSchools("C. fin swarm", 0, -1, T)
     
@@ -49,13 +50,13 @@ for(folder in list.files(EV_dir, recursive = F,
     
     export_file_name_abundance = paste0(gsub("Echoview Files", "Echoview CSV Export Files", folder),
                               "/RMI_",substr(folder, nchar(folder)-5, nchar(folder)),
-                              "_",day,"_455kHz_abundance.csv")
+                              "_",day,"_455kHz_abundance_median.csv")
     ExpVar_abundance = EVFile[["Exporters"]]$FindByDynamicName('Sv integration [{AnalysisDomain}]')
     ExpVar_abundance$Export(export_file_name_abundance)
     
     export_file_name_aggregation = paste0(gsub("Echoview Files", "Echoview CSV Export Files", folder),
                                         "/RMI_",substr(folder, nchar(folder)-5, nchar(folder)),
-                                        "_",day,"_455kHz_aggregation.csv")
+                                        "_",day,"_455kHz_aggregation_median.csv")
     ExpVar_aggregation = EVFile[["Exporters"]]$FindByDynamicName('Aggregation analysis [{AnalysisDomain}]')
     ExpVar_aggregation$Export(export_file_name_aggregation)
     
